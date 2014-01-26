@@ -28,13 +28,17 @@ ASCII art by "VK" @ [RetroJunkie.com](http://www.retrojunkie.com/asciiart/cartch
 
 First, ensure that you have [Node.js](http://nodejs.org/download/) and Conan.js installed on each machine that will interact with the deployer (both the machine that issues the deploy command, as well as the machines that the deployment will occur on):
 
-    $ npm install conan -g
+```shell
+$ npm install conan -g
+````
 
 # Running Tests
 
 You can run conan's test suite by running the following from the module directory:
 
-    $ npm test
+```shell
+$ npm test
+```
 
 # Examples
 
