@@ -1,6 +1,6 @@
 # Conan.js
 
-## Barbarically simple asynchronous code deployment with Node.js
+## Barbarically simple deployment with Node.js
 
 Asynchronous code deployment library. Easily triggered via revision control systems such as Git, Mercurial, or Subversion with a built-in WebHook server.
 
