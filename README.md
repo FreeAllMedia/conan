@@ -24,7 +24,7 @@ ASCII art by "VK" @ [RetroJunkie.com](http://www.retrojunkie.com/asciiart/cartch
 
 ## Conan.js Is Different
 
-Conan.js is unique in that it does *not* issue shell commands directly, and instead opts to complete all instructions through native Node.js libraries. This approach allows Conan.js to take full advantage of Node's excellent cross-platform capabilities, providing maximum compatibility.
+Conan.js does *not* issue shell commands directly, and instead opts to complete all instructions through native Node.js libraries. This approach allows Conan.js to take full advantage of Node's excellent cross-platform capabilities, providing maximum compatibility.
 
 ### How It Works:
 
