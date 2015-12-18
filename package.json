@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/FreeAllMedia/conan",
   "dependencies": {
+    "aws-sdk": "^2.2.24",
     "flowsync": "^0.1.11",
     "incognito": "^0.1.4"
   },
@@ -37,6 +38,7 @@
     "gulp-mocha": "^2.1.3",
     "gulp-util": "^3.0.6",
     "mocha": "^2.2.5",
+    "rewire": "^2.5.1",
     "sinon": "^1.17.2",
     "superstack": "0.0.4"
   }

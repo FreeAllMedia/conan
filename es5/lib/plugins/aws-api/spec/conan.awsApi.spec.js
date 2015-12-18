@@ -14,7 +14,7 @@ var _awsApiBuilderJs = require("../awsApiBuilder.js");
 
 var _awsApiBuilderJs2 = _interopRequireDefault(_awsApiBuilderJs);
 
-describe("ConanApi.constructor(conan)", function () {
+describe("ConanAwsApi.constructor(conan)", function () {
 	var conan = undefined;
 
 	before(function () {

@@ -16,8 +16,8 @@ var _awsApiBuilderJs = require("./awsApiBuilder.js");
 
 var _awsApiBuilderJs2 = _interopRequireDefault(_awsApiBuilderJs);
 
-var ConanApi = function ConanApi(conan) {
-	_classCallCheck(this, ConanApi);
+var ConanAwsApi = function ConanAwsApi(conan) {
+	_classCallCheck(this, ConanAwsApi);
 
 	conan.api = function (name) {
 		var awsApiBuilder = new _awsApiBuilderJs2["default"](name);
@@ -26,5 +26,5 @@ var ConanApi = function ConanApi(conan) {
 	};
 };
 
-exports["default"] = ConanApi;
+exports["default"] = ConanAwsApi;
 module.exports = exports["default"];
