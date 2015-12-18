@@ -1,3 +1,5 @@
-describe("Conan.config", () => {
-	it("should return the config object passed to the constructor");
+import Conan from "../../lib/conan.js";
+
+describe("conan.config", () => {
+
 });

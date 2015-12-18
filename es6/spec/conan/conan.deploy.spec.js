@@ -1,3 +1,3 @@
-describe("Conan.deploy(callback)", () => {
-	it("should iterate through all deployment steps and run them");
+describe("conan.deploy(callback)", () => {
+	it("should iterate through all deployment steps and deploy them");
 });

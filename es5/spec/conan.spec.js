@@ -6,6 +6,32 @@ var _libConanJs = require("../lib/conan.js");
 
 var _libConanJs2 = _interopRequireDefault(_libConanJs);
 
-describe("Conan.constructor(conanConfig)", function () {
-  it("should save conanConfig to conan.config");
+describe("Conan(config)", function () {
+  describe("(Instantiating with a config object)", function () {
+    it("should not throw an error", function () {
+      (function () {
+        var config = {};
+        var conan = new _libConanJs2["default"](config);
+      }).should.not["throw"]();
+    });
+
+    it("should save config object to conan.config", function () {
+      var config = {};
+      var conan = new _libConanJs2["default"](config);
+      conan.config.should.eql(config);
+    });
+  });
+
+  describe("(Instantiating without a config object)", function () {
+    it("should not throw an error", function () {
+      (function () {
+        var conan = new _libConanJs2["default"]();
+      }).should.not["throw"]();
+    });
+
+    it("should save an empty object to conan.config", function () {
+      var conan = new _libConanJs2["default"]();
+      conan.config.should.eql({});
+    });
+  });
 });

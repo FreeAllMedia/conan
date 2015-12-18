@@ -1,5 +1,5 @@
 "use strict";
 
-describe("Conan.deploy(callback)", function () {
-	it("should iterate through all deployment steps and run them");
+describe("conan.deploy(callback)", function () {
+	it("should iterate through all deployment steps and deploy them");
 });
