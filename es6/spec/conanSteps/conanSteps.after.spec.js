@@ -26,5 +26,5 @@ describe("conanSteps.after(existingStep, afterStep)", () => {
 		conanSteps.after(conanStepOne, conanStepThree);
 
 		conanSteps.all[1].should.eql(conanStepThree);
-	})
+	});
 });

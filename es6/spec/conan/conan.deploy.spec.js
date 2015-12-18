@@ -9,7 +9,7 @@ describe("conan.deploy(callback)", () => {
 	});
 
 	it("should run all step functions in order", done => {
-		const conanStepFunction = (conan, stepDone) => stepDone();
+		const conanStepFunction = (stepConan, stepDone) => stepDone();
 
 		const conanStepOne = sinon.spy(conanStepFunction);
 		const conanStepTwo = sinon.spy(conanStepFunction);

@@ -13,5 +13,5 @@ describe("conanSteps.add(conanStep)", () => {
 		}
 		conanSteps.add(conanStep);
 		conanSteps.all[0].should.eql(conanStep);
-	})
+	});
 });
