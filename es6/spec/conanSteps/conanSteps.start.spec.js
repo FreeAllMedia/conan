@@ -1,23 +1,23 @@
-import Conan from "../../lib/conan.js";
+import ConanSteps from "../../lib/conanSteps.js";
 import sinon from "sinon";
 
-describe("conan.deploy(callback)", () => {
-	let conan;
+describe("conanSteps.start(callback)", () => {
+	let conanSteps;
 
 	beforeEach(() => {
-		conan = new Conan();
+		conanSteps = new ConanSteps();
 	});
 
 	it("should run all step functions in order", done => {
-		const conanStepFunction = (conan, stepDone) => stepDone();
+		const conanStepFunction = (conan, done) => done();
 
 		const conanStepOne = sinon.spy(conanStepFunction);
 		const conanStepTwo = sinon.spy(conanStepFunction);
 
-		conan.steps.add(conanStepOne);
-		conan.steps.add(conanStepTwo);
+		conanSteps.add(conanStepOne);
+		conanSteps.add(conanStepTwo);
 
-		conan.deploy((error) => {
+		conanSteps.start((error) => {
 			sinon.assert.callOrder(conanStepOne, conanStepTwo);
 			done(error);
 		});

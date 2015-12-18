@@ -2,33 +2,33 @@
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _libConanJs = require("../../lib/conan.js");
+var _libConanStepsJs = require("../../lib/conanSteps.js");
 
-var _libConanJs2 = _interopRequireDefault(_libConanJs);
+var _libConanStepsJs2 = _interopRequireDefault(_libConanStepsJs);
 
 var _sinon = require("sinon");
 
 var _sinon2 = _interopRequireDefault(_sinon);
 
-describe("conan.deploy(callback)", function () {
-	var conan = undefined;
+describe("conanSteps.start(callback)", function () {
+	var conanSteps = undefined;
 
 	beforeEach(function () {
-		conan = new _libConanJs2["default"]();
+		conanSteps = new _libConanStepsJs2["default"]();
 	});
 
 	it("should run all step functions in order", function (done) {
-		var conanStepFunction = function conanStepFunction(conan, stepDone) {
-			return stepDone();
+		var conanStepFunction = function conanStepFunction(conan, done) {
+			return done();
 		};
 
 		var conanStepOne = _sinon2["default"].spy(conanStepFunction);
 		var conanStepTwo = _sinon2["default"].spy(conanStepFunction);
 
-		conan.steps.add(conanStepOne);
-		conan.steps.add(conanStepTwo);
+		conanSteps.add(conanStepOne);
+		conanSteps.add(conanStepTwo);
 
-		conan.deploy(function (error) {
+		conanSteps.start(function (error) {
 			_sinon2["default"].assert.callOrder(conanStepOne, conanStepTwo);
 			done(error);
 		});

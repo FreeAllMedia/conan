@@ -44,6 +44,11 @@ var Conan = (function () {
 			return require("./conan/conan.use.js").call(this, ConanPlugin);
 		}
 	}, {
+		key: "deploy",
+		value: function deploy(callback) {
+			this.steps.start(callback);
+		}
+	}, {
 		key: "version",
 		get: function get() {
 			return require("./conan/conan.version.js").call(this);

@@ -27,6 +27,21 @@ var ConanSteps = (function () {
 			return require("./conanSteps/conanSteps.add.js").call(this, conanStep);
 		}
 	}, {
+		key: "before",
+		value: function before(existingStep, beforeStep) {
+			return require("./conanSteps/conanSteps.before.js").call(this, existingStep, beforeStep);
+		}
+	}, {
+		key: "after",
+		value: function after(existingStep, afterStep) {
+			return require("./conanSteps/conanSteps.after.js").call(this, existingStep, afterStep);
+		}
+	}, {
+		key: "start",
+		value: function start(callback) {
+			return require("./conanSteps/conanSteps.start.js").call(this, callback);
+		}
+	}, {
 		key: "all",
 		get: function get() {
 			return require("./conanSteps/conanSteps.all.js").call(this);

@@ -21,6 +21,10 @@ export default class Conan {
 		return require("./conan/conan.use.js").call(this, ConanPlugin);
 	}
 
+	deploy(callback) {
+		this.steps.start(callback);
+	}
+
 	get version() {
 		return require("./conan/conan.version.js").call(this);
 	}
