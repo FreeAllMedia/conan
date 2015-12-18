@@ -1,3 +1,3 @@
-class ConanAwsApi {
-	
+export default class ConanAwsApi {
+
 }

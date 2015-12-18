@@ -4,13 +4,13 @@ describe("Conan(config)", () => {
   describe("(Instantiating with a config object)", () => {
     it("should not throw an error", () => {
       () => {
-        const config = {};
+        const config = {key: "value"};
         const conan = new Conan(config);
       }.should.not.throw();
     });
 
     it("should save config object to conan.config", () => {
-      const config = {};
+      const config = {key: "value"};
       const conan = new Conan(config);
       conan.config.should.eql(config);
     });

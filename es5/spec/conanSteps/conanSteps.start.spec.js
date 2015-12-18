@@ -18,8 +18,8 @@ describe("conanSteps.start(callback)", function () {
 	});
 
 	it("should run all step functions in order", function (done) {
-		var conanStepFunction = function conanStepFunction(conan, done) {
-			return done();
+		var conanStepFunction = function conanStepFunction(conan, doneStep) {
+			return doneStep();
 		};
 
 		var conanStepOne = _sinon2["default"].spy(conanStepFunction);

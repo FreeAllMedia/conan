@@ -10,13 +10,13 @@ describe("Conan(config)", function () {
   describe("(Instantiating with a config object)", function () {
     it("should not throw an error", function () {
       (function () {
-        var config = {};
+        var config = { key: "value" };
         var conan = new _libConanJs2["default"](config);
       }).should.not["throw"]();
     });
 
     it("should save config object to conan.config", function () {
-      var config = {};
+      var config = { key: "value" };
       var conan = new _libConanJs2["default"](config);
       conan.config.should.eql(config);
     });

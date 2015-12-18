@@ -5,5 +5,5 @@ export default function after(existingStep, afterStep) {
 
 	const index = _.steps.indexOf(existingStep);
 
-	_.steps.splice(index+1, 0, afterStep);
+	_.steps.splice(index + 1, 0, afterStep);
 }
