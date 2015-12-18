@@ -16,11 +16,9 @@ var _flowsync = require("flowsync");
 var _flowsync2 = _interopRequireDefault(_flowsync);
 
 function start(callback) {
-	var _this = this;
-
 	var _ = (0, _incognito2["default"])(this);
 	_flowsync2["default"].mapSeries(_.steps, function (step, done) {
-		step(_this, done);
+		step(_.parent, _.context, done);
 	}, callback);
 }
 

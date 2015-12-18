@@ -10,48 +10,36 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var _stepsConanFindApiStepJs = require("./steps/conan.findApi.step.js");
+
+var _stepsConanFindApiStepJs2 = _interopRequireDefault(_stepsConanFindApiStepJs);
+
+var _awsApiBuilderJs = require("./awsApiBuilder.js");
+
+var _awsApiBuilderJs2 = _interopRequireDefault(_awsApiBuilderJs);
+
 var _incognito = require("incognito");
 
 var _incognito2 = _interopRequireDefault(_incognito);
 
-var ConanSteps = (function () {
-	function ConanSteps(parent) {
-		_classCallCheck(this, ConanSteps);
+var ConanAwsApiPlugin = (function () {
+	function ConanAwsApiPlugin(conan) {
+		_classCallCheck(this, ConanAwsApiPlugin);
 
-		var _ = (0, _incognito2["default"])(this);
-		_.parent = parent;
-		_.steps = [];
+		(0, _incognito2["default"])(this).conan = conan;
+		conan.api = this.newApi;
 	}
 
-	_createClass(ConanSteps, [{
-		key: "add",
-		value: function add(conanStep) {
-			return require("./conanSteps/conanSteps.add.js").call(this, conanStep);
-		}
-	}, {
-		key: "before",
-		value: function before(existingStep, beforeStep) {
-			return require("./conanSteps/conanSteps.before.js").call(this, existingStep, beforeStep);
-		}
-	}, {
-		key: "after",
-		value: function after(existingStep, afterStep) {
-			return require("./conanSteps/conanSteps.after.js").call(this, existingStep, afterStep);
-		}
-	}, {
-		key: "start",
-		value: function start(callback) {
-			return require("./conanSteps/conanSteps.start.js").call(this, callback);
-		}
-	}, {
-		key: "all",
-		get: function get() {
-			return require("./conanSteps/conanSteps.all.js").call(this);
+	_createClass(ConanAwsApiPlugin, [{
+		key: "newApi",
+		value: function newApi(name) {
+			var conan = (0, _incognito2["default"])(this).conan;
+			return new ConanAwsApi(conan, name);
 		}
 	}]);
 
-	return ConanSteps;
+	return ConanAwsApiPlugin;
 })();
 
-exports["default"] = ConanSteps;
+exports["default"] = ConanAwsApiPlugin;
 module.exports = exports["default"];

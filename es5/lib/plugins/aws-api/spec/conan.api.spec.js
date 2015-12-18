@@ -14,50 +14,32 @@ var _awsApiBuilderJs = require("../awsApiBuilder.js");
 
 var _awsApiBuilderJs2 = _interopRequireDefault(_awsApiBuilderJs);
 
-describe("ConanApi.constructor(conan)", function () {
-	var conan = undefined;
+describe("ConanAwsApi(conan, name)", function () {
+	var api = undefined,
+	    conan = undefined,
+	    name = undefined;
 
 	before(function () {
+		name = "tester-api";
 		conan = new _conanJs2["default"]();
 		conan.use(_conanApiJs2["default"]);
+
+		api = conan.api(name);
 	});
 
-	it("should be correctly plugged into conan", function () {
-		conan.plugins[0].should.be.instanceOf(_conanApiJs2["default"]);
-	});
-
-	describe("(plugged methods)", function () {
-		describe(".api", function () {
-			it("should have an api member", function () {
-				conan.should.have.property("api");
-			});
-
-			it("should be a function", function () {
-				(typeof conan.api).should.equal("function");
-			});
-
-			describe("(after calling it)", function () {
-				var awsApiBuilder = undefined;
-
-				before(function () {
-					awsApiBuilder = conan.api("testApi");
-				});
-
-				it("should call the setup function", function () {
-					awsApiBuilder.should.be.instanceOf(_awsApiBuilderJs2["default"]);
-				});
-
-				it("should add all the necessary steps", function () {
-					var names = conan.steps.all.map(function (step) {
-						return step.name;
-					});
-					names.should.eql(["conanFindApiStep"]);
-				});
-			});
-
-			describe("(after calling deploy)", function () {
-				it("should call the aws find api function");
-			});
+	describe(".constructor(conan, name)", function () {
+		it("should add the find api step", function () {
+			conan.steps.all.map(function (step) {
+				return step.name === "conanFindApiStep";
+			}).should.be.ok;
 		});
+	});
+
+	describe(".description(text)", function () {
+		it("should set the description text for the api");
+	});
+
+	describe(".stage(name)", function () {
+		it("should return an instance of ConanAwsApiStage");
 	});
 });

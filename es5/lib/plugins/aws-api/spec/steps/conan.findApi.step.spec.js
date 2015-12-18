@@ -27,6 +27,7 @@ describe("conanFindApiStep", function () {
 			callback();
 		});
 		awsApiGatewayConstructorSpy = _sinon2["default"].spy();
+
 		conanFindApiStep.__set__("ApiGateWayConstructor", function (params) {
 			awsApiGatewayConstructorSpy(params);
 			return {

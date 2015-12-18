@@ -2,7 +2,8 @@ import AWS from "aws-sdk";
 // shotcut constructor to allow rewire
 const ApiGateWayConstructor = AWS.APIGateway;
 
-export default function conanFindApiStep(conanContext, finishStep) {
+export default function conanFindApiStep(conan, confinishStep) {
+	conan.stepInputData
 	const apiGateway = new ApiGateWayConstructor({region: conanContext.config("region")});
 	// need to find if the api is new
 	apiGateway.getRestApis({},
