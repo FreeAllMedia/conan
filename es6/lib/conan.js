@@ -1,4 +1,5 @@
 import ConanContext from "./conanContext.js";
+import ConanSteps from "./conanSteps.js";
 
 /**
  * @class Conan
@@ -12,6 +13,7 @@ export default class Conan {
 	constructor(config) {
 		this.config = config || {};
 		this.context = new ConanContext();
+		this.steps = new ConanSteps();
 		this.plugins = [];
 	}
 

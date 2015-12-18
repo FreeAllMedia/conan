@@ -10,48 +10,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _conanContextJs = require("./conanContext.js");
+var _incognito = require("incognito");
 
-var _conanContextJs2 = _interopRequireDefault(_conanContextJs);
+var _incognito2 = _interopRequireDefault(_incognito);
 
-var _conanStepsJs = require("./conanSteps.js");
+var ConanSteps = (function () {
+	function ConanSteps() {
+		_classCallCheck(this, ConanSteps);
 
-var _conanStepsJs2 = _interopRequireDefault(_conanStepsJs);
-
-/**
- * @class Conan
- */
-
-var Conan = (function () {
-	/**
-  * @constructor
-  * @method constructor
-  * @return {undefined} Nothing is returned.
-  */
-
-	function Conan(config) {
-		_classCallCheck(this, Conan);
-
-		this.config = config || {};
-		this.context = new _conanContextJs2["default"]();
-		this.steps = new _conanStepsJs2["default"]();
-		this.plugins = [];
+		(0, _incognito2["default"])(this).steps = [];
 	}
 
-	_createClass(Conan, [{
-		key: "use",
-		value: function use(ConanPlugin) {
-			return require("./conan/conan.use.js").call(this, ConanPlugin);
+	_createClass(ConanSteps, [{
+		key: "add",
+		value: function add(conanStep) {
+			return require("./conanSteps/conanSteps.add.js").call(this, conanStep);
 		}
 	}, {
-		key: "version",
+		key: "all",
 		get: function get() {
-			return require("./conan/conan.version.js").call(this);
+			return require("./conanSteps/conanSteps.all.js").call(this);
 		}
 	}]);
 
-	return Conan;
+	return ConanSteps;
 })();
 
-exports["default"] = Conan;
+exports["default"] = ConanSteps;
 module.exports = exports["default"];
