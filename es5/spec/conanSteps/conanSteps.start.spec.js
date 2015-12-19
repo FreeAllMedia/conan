@@ -26,11 +26,11 @@ describe("conanSteps.start(callback)", function () {
 		conan = new _libConanJs2["default"]();
 		steps = new _libConanStepsJs2["default"](conan);
 
-		stepOne = _sinon2["default"].spy(function (conan, context, done) {
+		stepOne = _sinon2["default"].spy(function (parentConan, context, done) {
 			done(null, { apiId: 15 });
 		});
 
-		stepTwo = _sinon2["default"].spy(function (conan, context, done) {
+		stepTwo = _sinon2["default"].spy(function (parentConan, context, done) {
 			done(null, { stageId: 8 });
 		});
 

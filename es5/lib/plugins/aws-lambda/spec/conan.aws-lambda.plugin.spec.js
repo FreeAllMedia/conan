@@ -1,5 +1,5 @@
 "use strict";
 
-describe("ConanAwsLambda.constructor(conan)", function () {
+describe("ConanAwsLambdaPlugin(conan)", function () {
   it("should set .lambda() to the lambda function");
 });

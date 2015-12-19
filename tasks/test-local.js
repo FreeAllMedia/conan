@@ -1,20 +1,20 @@
 import gulp from "gulp";
 import mocha from "gulp-mocha";
-import istanbul from "gulp-istanbul";
+import istanbul from "gulp-babel-istanbul";
 import paths from "../paths.json";
 
 import chai from "chai";
 chai.should(); // This enables should-style syntax
 
 gulp.task("test-local", ["build"], (cb) => {
-  gulp.src(paths.build.lib)
+  gulp.src(paths.source.lib)
     .pipe(istanbul()) // Covering files
     .pipe(istanbul.hookRequire()) // Force `require` to return covered files
     .on("finish", () => {
-      gulp.src(paths.build.spec)
+      gulp.src(paths.source.spec)
         .pipe(mocha())
-        .pipe(istanbul.writeReports({dir: `${__dirname}/../`, reporters: ["text-summary", "lcovonly"]})) // Creating the reports after tests ran
-		//.pipe(istanbul.enforceThresholds({ thresholds: { global: 90 } })) // Enforce a coverage of at least 90%
+        .pipe(istanbul.writeReports({dir: `${__dirname}/../`, reporters: ["text", "lcovonly"]})) // Creating the reports after tests ran
+				// .pipe(istanbul.enforceThresholds({ thresholds: { global: 100 } })) // Enforce a coverage of 100%
         .on("end", cb);
     });
 });

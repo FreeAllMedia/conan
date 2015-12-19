@@ -15,11 +15,11 @@ describe("conanSteps.start(callback)", () => {
 		conan = new Conan();
 		steps = new ConanSteps(conan);
 
-		stepOne = sinon.spy((conan, context, done) => {
+		stepOne = sinon.spy((parentConan, context, done) => {
 			done(null, {apiId: 15});
 		});
 
-		stepTwo = sinon.spy((conan, context, done) => {
+		stepTwo = sinon.spy((parentConan, context, done) => {
 			done(null, {stageId: 8});
 		});
 

@@ -14,13 +14,14 @@ var _incognito2 = _interopRequireDefault(_incognito);
 function after(existingStep, afterStep, parameters) {
 	var _ = (0, _incognito2["default"])(this);
 
-	var step = _.steps.find(function (step) {
+	var foundStep = _.steps.find(function (step) {
 		return step.handler === existingStep;
 	});
 
-	var index = _.steps.indexOf(step);
+	var index = _.steps.indexOf(foundStep);
+	var nextIndex = index + 1;
 
-	_.steps.splice(index + 1, 0, {
+	_.steps.splice(nextIndex, 0, {
 		handler: afterStep,
 		parameters: parameters
 	});
