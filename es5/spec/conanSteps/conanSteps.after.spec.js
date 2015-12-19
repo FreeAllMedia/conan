@@ -26,11 +26,17 @@ describe("conanSteps.after(existingStep, afterStep)", function () {
 			done();
 		}
 
-		conanSteps.add(conanStepOne);
-		conanSteps.add(conanStepTwo);
+		var stepOneParameters = { foo: "bar" };
+		conanSteps.add(conanStepOne, stepOneParameters);
 
-		conanSteps.after(conanStepOne, conanStepThree);
+		var stepTwoParameters = { baz: "squee" };
+		conanSteps.add(conanStepTwo, stepTwoParameters);
 
-		conanSteps.all[1].should.eql(conanStepThree);
+		var stepThreeParameters = { blah: "bing" };
+		conanSteps.after(conanStepOne, conanStepThree, stepThreeParameters);
+
+		conanSteps.all[1].should.eql({
+			handler: conanStepThree, parameters: stepThreeParameters
+		});
 	});
 });

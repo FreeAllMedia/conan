@@ -16,9 +16,21 @@ describe("conanSteps.before(existingStep, beforeStep)", () => {
 			done();
 		}
 
-		conanSteps.add(conanStepOne);
-		conanSteps.before(conanStepOne, conanStepTwo);
+		function conanStepThree(conan, done) {
+			done();
+		}
 
-		conanSteps.all[0].should.eql(conanStepTwo);
+		const stepOneParameters = {foo: "bar"};
+		conanSteps.add(conanStepOne, stepOneParameters);
+
+		const stepTwoParameters = {baz: "squee"};
+		conanSteps.add(conanStepTwo, stepTwoParameters);
+
+		const stepThreeParameters = {blah: "bing"};
+		conanSteps.before(conanStepTwo, conanStepThree, stepThreeParameters);
+
+		conanSteps.all[1].should.eql({
+			handler: conanStepThree, parameters: stepThreeParameters
+		});
 	});
 });

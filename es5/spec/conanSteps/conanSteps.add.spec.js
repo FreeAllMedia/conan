@@ -13,11 +13,12 @@ describe("conanSteps.add(conanStep)", function () {
 		conanSteps = new _libConanStepsJs2["default"]();
 	});
 
-	it("should add a step to the collection", function () {
-		function conanStep(conan, done) {
+	it("should add the step function to the collection", function () {
+		function conanStep(conan, context, done) {
 			done();
 		}
-		conanSteps.add(conanStep);
-		conanSteps.all[0].should.eql(conanStep);
+		var parameters = { name: "stepName" };
+		conanSteps.add(conanStep, parameters);
+		conanSteps.all[0].should.eql({ handler: conanStep, parameters: parameters });
 	});
 });

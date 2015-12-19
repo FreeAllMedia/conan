@@ -5,37 +5,70 @@ import sinon from "sinon";
 
 describe("conanSteps.start(callback)", () => {
 	let conan,
-			conanSteps,
-			conanStepOne,
-			conanStepTwo;
+			steps,
+			stepOne,
+			stepOneParameters,
+			stepTwo,
+			stepTwoParameters;
 
 	beforeEach(() => {
 		conan = new Conan();
-		conanSteps = new ConanSteps(conan);
-		const conanStepFunction = (conan, context, stepDone) => stepDone();
+		steps = new ConanSteps(conan);
 
-		conanStepOne = sinon.spy(conanStepFunction);
-		conanStepTwo = sinon.spy(conanStepFunction);
-		conanSteps.add(conanStepOne);
-		conanSteps.add(conanStepTwo);
+		stepOne = sinon.spy((conan, context, done) => {
+			done(null, {apiId: 15});
+		});
+
+		stepTwo = sinon.spy((conan, context, done) => {
+			done(null, {stageId: 8});
+		});
+
+		stepOneParameters = {"apiName": "test-dev"};
+		steps.add(stepOne, stepOneParameters);
+
+		stepTwoParameters = {"stageName": "production"};
+		steps.add(stepTwo, stepTwoParameters);
 	});
 
 	it("should run all step functions in order", done => {
-		conanSteps.start((error) => {
-			sinon.assert.callOrder(conanStepOne, conanStepTwo);
+		steps.start((error) => {
+			sinon.assert.callOrder(stepOne, stepTwo);
 			done(error);
 		});
 	});
 
 	it("should pass conan as the first argument to each step", done => {
-		conanSteps.start((error) => {
-			conanStepOne.firstCall.args[0].should.eql(conan);
+		steps.start((error) => {
+			stepOne.firstCall.args[0].should.eql(conan);
 			done(error);
 		});
 	});
 
-	it("should pass the api context as the second argument to each step");
-	it("should pass step callback as the last argument to each step");
+	it("should pass the step context as the second argument to each step", done => {
+		steps.start((error) => {
+			stepOne.firstCall.args[1].should.eql({
+				parameters: stepOneParameters,
+				results: {}
+			});
+			done(error);
+		});
+	});
+	it("should pass step callback as the last argument to each step", done => {
+		steps.start((error) => {
+			(typeof stepOne.firstCall.args[2]).should.equal("function");
+			done(error);
+		});
+	});
 
-	it("should aggregate context changes across steps");
+	it("should pass results to each next steps", done => {
+		steps.start((error) => {
+			stepTwo.firstCall.args[1].should.eql({
+				parameters: stepTwoParameters,
+				results: {
+					apiId: 15
+				}
+			});
+			done(error);
+		});
+	});
 });

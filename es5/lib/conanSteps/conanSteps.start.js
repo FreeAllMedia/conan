@@ -17,8 +17,17 @@ var _flowsync2 = _interopRequireDefault(_flowsync);
 
 function start(callback) {
 	var _ = (0, _incognito2["default"])(this);
+	var accumulatedResults = {};
 	_flowsync2["default"].mapSeries(_.steps, function (step, done) {
-		step(_.parent, _.context, done);
+		var context = {
+			parameters: step.parameters,
+			results: Object.assign({}, accumulatedResults)
+		};
+
+		step.handler(_.parent, context, function (stepError, stepResult) {
+			Object.assign(accumulatedResults, stepResult);
+			done(stepError, stepResult);
+		});
 	}, callback);
 }
 

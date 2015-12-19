@@ -11,8 +11,8 @@ var _incognito = require("incognito");
 
 var _incognito2 = _interopRequireDefault(_incognito);
 
-function add(conanStep) {
-	(0, _incognito2["default"])(this).steps.push(conanStep);
+function add(conanStep, parameters) {
+	(0, _incognito2["default"])(this).steps.push({ handler: conanStep, parameters: parameters });
 }
 
 module.exports = exports["default"];

@@ -1,9 +1,16 @@
 import privateData from "incognito";
 
-export default function before(existingStep, beforeStep) {
+export default function before(existingStep, beforeStep, parameters) {
 	const _ = privateData(this);
 
-	const index = _.steps.indexOf(existingStep);
+	const step = _.steps.find(step => {
+		return step.handler === existingStep;
+	});
 
-	_.steps.splice(index, 0, beforeStep);
+	const index = _.steps.indexOf(step);
+
+	_.steps.splice(index, 0, {
+		handler: beforeStep,
+		parameters: parameters
+	});
 }

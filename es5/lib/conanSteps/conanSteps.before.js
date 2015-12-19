@@ -11,12 +11,19 @@ var _incognito = require("incognito");
 
 var _incognito2 = _interopRequireDefault(_incognito);
 
-function before(existingStep, beforeStep) {
+function before(existingStep, beforeStep, parameters) {
 	var _ = (0, _incognito2["default"])(this);
 
-	var index = _.steps.indexOf(existingStep);
+	var step = _.steps.find(function (step) {
+		return step.handler === existingStep;
+	});
 
-	_.steps.splice(index, 0, beforeStep);
+	var index = _.steps.indexOf(step);
+
+	_.steps.splice(index, 0, {
+		handler: beforeStep,
+		parameters: parameters
+	});
 }
 
 module.exports = exports["default"];

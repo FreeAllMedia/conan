@@ -14,10 +14,6 @@ var _stepsConanFindApiStepJs = require("./steps/conan.findApi.step.js");
 
 var _stepsConanFindApiStepJs2 = _interopRequireDefault(_stepsConanFindApiStepJs);
 
-var _awsApiBuilderJs = require("./awsApiBuilder.js");
-
-var _awsApiBuilderJs2 = _interopRequireDefault(_awsApiBuilderJs);
-
 var _incognito = require("incognito");
 
 var _incognito2 = _interopRequireDefault(_incognito);

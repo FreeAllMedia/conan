@@ -25,18 +25,18 @@ var ConanSteps = (function () {
 
 	_createClass(ConanSteps, [{
 		key: "add",
-		value: function add(conanStep) {
-			return require("./conanSteps/conanSteps.add.js").call(this, conanStep);
+		value: function add(conanStep, parameters) {
+			return require("./conanSteps/conanSteps.add.js").call(this, conanStep, parameters);
 		}
 	}, {
 		key: "before",
-		value: function before(existingStep, beforeStep) {
-			return require("./conanSteps/conanSteps.before.js").call(this, existingStep, beforeStep);
+		value: function before(existingStep, beforeStep, parameters) {
+			return require("./conanSteps/conanSteps.before.js").call(this, existingStep, beforeStep, parameters);
 		}
 	}, {
 		key: "after",
-		value: function after(existingStep, afterStep) {
-			return require("./conanSteps/conanSteps.after.js").call(this, existingStep, afterStep);
+		value: function after(existingStep, afterStep, parameters) {
+			return require("./conanSteps/conanSteps.after.js").call(this, existingStep, afterStep, parameters);
 		}
 	}, {
 		key: "start",

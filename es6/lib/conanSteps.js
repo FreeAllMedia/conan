@@ -1,23 +1,22 @@
 import privateData from "incognito";
 
 export default class ConanSteps {
-	constructor(parent, context) {
+	constructor(parent) {
 		const _ = privateData(this);
 		_.parent = parent;
-		_.arguments = stepArguments;
 		_.steps = [];
 	}
 
-	add(conanStep) {
-		return require("./conanSteps/conanSteps.add.js").call(this, conanStep);
+	add(conanStep, parameters) {
+		return require("./conanSteps/conanSteps.add.js").call(this, conanStep, parameters);
 	}
 
-	before(existingStep, beforeStep) {
-		return require("./conanSteps/conanSteps.before.js").call(this, existingStep, beforeStep);
+	before(existingStep, beforeStep, parameters) {
+		return require("./conanSteps/conanSteps.before.js").call(this, existingStep, beforeStep, parameters);
 	}
 
-	after(existingStep, afterStep) {
-		return require("./conanSteps/conanSteps.after.js").call(this, existingStep, afterStep);
+	after(existingStep, afterStep, parameters) {
+		return require("./conanSteps/conanSteps.after.js").call(this, existingStep, afterStep, parameters);
 	}
 
 	start(callback) {

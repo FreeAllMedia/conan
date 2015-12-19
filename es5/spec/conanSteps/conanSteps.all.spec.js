@@ -21,7 +21,11 @@ describe("conanSteps.all", function () {
 		function conanStep(conan, done) {
 			done();
 		}
-		conanSteps.add(conanStep);
-		conanSteps.all.should.eql([conanStep]);
+		var parameters = { foo: "bar" };
+		conanSteps.add(conanStep, parameters);
+		conanSteps.all.should.eql([{
+			handler: conanStep,
+			parameters: parameters
+		}]);
 	});
 });
