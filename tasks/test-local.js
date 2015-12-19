@@ -11,7 +11,7 @@ gulp.task("test-local", ["build"], (cb) => {
     .pipe(istanbul()) // Covering files
     .pipe(istanbul.hookRequire()) // Force `require` to return covered files
     .on("finish", () => {
-      gulp.src(paths.source.spec)
+      gulp.src(paths.build.sourceSpec)
         .pipe(mocha())
         .pipe(istanbul.writeReports({dir: `${__dirname}/../`, reporters: ["text", "lcovonly"]})) // Creating the reports after tests ran
 				// .pipe(istanbul.enforceThresholds({ thresholds: { global: 100 } })) // Enforce a coverage of 100%

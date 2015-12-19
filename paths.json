@@ -16,6 +16,7 @@
 			"spec": "./es5/spec"
 		},
 		"lib": "./es5/lib/**/*.js",
-		"spec": "./es5/**/*.spec.js"
+		"spec": "./es5/**/*.spec.js",
+		"sourceSpec": "./es6/**/*.spec.js"
 	}
 }

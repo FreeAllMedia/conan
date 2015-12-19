@@ -1,9 +1,13 @@
 import privateData from "incognito";
 
-export default class ConanAwsLambda {
+export default class ConanAwsLambdaPlugin {
 	constructor (conan) {
 		privateData(this).conan = conan;
 
-		// conan.lambda = this;
+		conan.lambda = this.newLambda;
+	}
+
+	newLambda() {
+		
 	}
 }
