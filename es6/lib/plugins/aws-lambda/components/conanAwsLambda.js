@@ -7,17 +7,55 @@ export default class ConanAwsLambda extends ConanComponent {
 		this.parameters.name = name;
 		this.parameters.filePath = filePath;
 		this.parameters.handler = handler;
+
+		// attach steps to conan region
+		// find lambda
+		// create zip
+		// create/update lambda
+		// request method
+		// response methods
+		// this.parameters = new ConanParameter(this);
+		// this.parameters.add("description", "runtime", "role", "memorySize", "timeout", "publish");
+		this.chainableParameters("description", "runtime", "role", "memorySize", "timeout", "publish");
 	}
 
-	runtime(runtime) {
-		this.parameters.runtime = runtime;
-		return this;
+	chainableParameters(...functions) {
+		functions.forEach(functionName => {
+			let newChainedFunction = (value) => {
+				this.parameters[functionName] = value;
+				return this;
+			};
+			this[functionName] = newChainedFunction;
+		});
 	}
 
-	// .runtime("nodejs")
-	// .role("lambdaRole")
-	// .description("This is my Lambda!")
-	// .memorySize(0)
-	// .timeout(60)
-	// .publish(true) // defaults to true
+	// runtime(runtime) {
+	// 	this.parameters.runtime = runtime;
+	// 	return this;
+	// }
+
+	// role(role) {
+	// 	this.parameters.role = role;
+	// 	return this;
+	// }
+
+	// description(description) {
+	// 	this.parameters.description = description;
+	// 	return this;
+	// }
+
+	// memorySize(description) {
+	// 	this.parameters.memorySize = memorySize;
+	// 	return this;
+	// }
+
+	// timeout(description) {
+	// 	this.parameters.timeout = timeout;
+	// 	return this;
+	// }
+
+	// publish(description) {
+	// 	this.parameters.publish = publish;
+	// 	return this;
+	// }
 }

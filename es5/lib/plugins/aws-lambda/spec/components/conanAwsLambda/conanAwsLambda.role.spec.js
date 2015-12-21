@@ -10,7 +10,7 @@ var _componentsConanAwsLambdaJs = require("../../../components/conanAwsLambda.js
 
 var _componentsConanAwsLambdaJs2 = _interopRequireDefault(_componentsConanAwsLambdaJs);
 
-describe("conanAwsLambda.runtime(name)", function () {
+describe("conanAwsLambda.role(name)", function () {
 	var conan = undefined;
 	var lambda = undefined;
 
@@ -20,10 +20,10 @@ describe("conanAwsLambda.runtime(name)", function () {
 	});
 
 	it("should return `this` to allow chaining", function () {
-		lambda.runtime("nodejs").should.eql(lambda);
+		lambda.role("roleName").should.eql(lambda);
 	});
 
-	it("should set conanAwsLambda.parameters.runtime to the provided runtime name", function () {
-		lambda.runtime("nodejs").parameters.runtime.should.equal("nodejs");
+	it("should set conanAwsLambda.parameters.role to the provided role name", function () {
+		lambda.role("roleName").parameters.role.should.equal("roleName");
 	});
 });
