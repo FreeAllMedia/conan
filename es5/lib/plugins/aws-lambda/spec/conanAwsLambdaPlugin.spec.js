@@ -10,7 +10,7 @@ var _componentsConanAwsLambdaJs = require("../components/conanAwsLambda.js");
 
 var _componentsConanAwsLambdaJs2 = _interopRequireDefault(_componentsConanAwsLambdaJs);
 
-var _conanAwsLambdaPluginJs = require("../conan.aws-lambda.plugin.js");
+var _conanAwsLambdaPluginJs = require("../conanAwsLambdaPlugin.js");
 
 var _conanAwsLambdaPluginJs2 = _interopRequireDefault(_conanAwsLambdaPluginJs);
 
@@ -33,13 +33,15 @@ describe("ConanAwsLambdaPlugin(conan)", function () {
 	describe("conan.lambda(name, handlerPath)", function () {
 		var lambda = undefined;
 		var name = undefined;
+		var filePath = undefined;
 		var handler = undefined;
 
 		beforeEach(function () {
 			name = "AccountCreate";
+			filePath = "/account/create";
 			handler = "handler";
 
-			lambda = conan.lambda(name, handler);
+			lambda = conan.lambda(name, filePath, handler);
 		});
 
 		it("should return an instance of ConanAwsLambda", function () {
@@ -52,6 +54,10 @@ describe("ConanAwsLambdaPlugin(conan)", function () {
 
 		it("should pass the lambda name to the ConanAwsLambda constructor", function () {
 			lambda.parameters.name.should.eql(name);
+		});
+
+		it("should pass the lambda file path to the ConanAwsLambda constructor", function () {
+			lambda.parameters.filePath.should.eql(filePath);
 		});
 
 		it("should pass the lambda handler to the ConanAwsLambda constructor", function () {

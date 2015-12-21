@@ -6,7 +6,7 @@ export default class ConanAwsLambdaPlugin {
 		conan.lambdas = {};
 	}
 
-	lambda(name, handlerName) {
-		return new ConanAwsLambda(this, name, handlerName);
+	lambda(name, filePath, handlerName) {
+		return new ConanAwsLambda(this, name, filePath, handlerName);
 	}
 }

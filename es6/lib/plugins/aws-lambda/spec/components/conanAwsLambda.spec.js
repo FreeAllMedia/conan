@@ -2,19 +2,21 @@ import Conan from "../../../../conan.js";
 import ConanAwsLambda from "../../components/conanAwsLambda.js";
 import ConanComponent from "../../../../components/conanComponent.js";
 
-describe("ConanAwsLambda(conan, name, handler)", () => {
+describe("ConanAwsLambda(conan, name, filePath, handler)", () => {
 	let lambda;
 
 	let conan;
 	let name;
+	let filePath;
 	let handler;
 
 	beforeEach(() => {
 		name = "AccountCreate";
+		filePath = "/account/create.js";
 		handler = "handler";
 
 		conan = new Conan();
-		lambda = new ConanAwsLambda(conan, name, handler);
+		lambda = new ConanAwsLambda(conan, name, filePath, handler);
 	});
 
 	it("should extend ConanComponent", () => {
@@ -27,6 +29,10 @@ describe("ConanAwsLambda(conan, name, handler)", () => {
 
 	it("should save name to .parameters.name", () => {
 		lambda.parameters.name.should.eql(name);
+	});
+
+	it("should save filePath to .parameters.filePath", () => {
+		lambda.parameters.filePath.should.eql(filePath);
 	});
 
 	it("should save handler to .parameters.handler", () => {

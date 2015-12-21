@@ -1,10 +1,11 @@
 import ConanComponent from "../../../components/conanComponent.js";
 
 export default class ConanAwsLambda extends ConanComponent {
-	initialize(conan, name, handler) {
+	initialize(conan, name, filePath, handler) {
 		this.conan = conan;
 
 		this.parameters.name = name;
+		this.parameters.filePath = filePath;
 		this.parameters.handler = handler;
 	}
 

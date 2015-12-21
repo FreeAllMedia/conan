@@ -14,19 +14,21 @@ var _componentsConanComponentJs = require("../../../../components/conanComponent
 
 var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
 
-describe("ConanAwsLambda(conan, name, handler)", function () {
+describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 	var lambda = undefined;
 
 	var conan = undefined;
 	var name = undefined;
+	var filePath = undefined;
 	var handler = undefined;
 
 	beforeEach(function () {
 		name = "AccountCreate";
+		filePath = "/account/create.js";
 		handler = "handler";
 
 		conan = new _conanJs2["default"]();
-		lambda = new _componentsConanAwsLambdaJs2["default"](conan, name, handler);
+		lambda = new _componentsConanAwsLambdaJs2["default"](conan, name, filePath, handler);
 	});
 
 	it("should extend ConanComponent", function () {
@@ -39,6 +41,10 @@ describe("ConanAwsLambda(conan, name, handler)", function () {
 
 	it("should save name to .parameters.name", function () {
 		lambda.parameters.name.should.eql(name);
+	});
+
+	it("should save filePath to .parameters.filePath", function () {
+		lambda.parameters.filePath.should.eql(filePath);
 	});
 
 	it("should save handler to .parameters.handler", function () {

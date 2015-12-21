@@ -1,6 +1,6 @@
 import Conan from "../../../conan.js";
 import ConanAwsLambda from "../components/conanAwsLambda.js";
-import ConanAwsLambdaPlugin from "../conan.aws-lambda.plugin.js";
+import ConanAwsLambdaPlugin from "../conanAwsLambdaPlugin.js";
 
 describe("ConanAwsLambdaPlugin(conan)", () => {
 	let conan;
@@ -21,13 +21,15 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 	describe("conan.lambda(name, handlerPath)", () => {
 		let lambda;
 		let name;
+		let filePath;
 		let handler;
 
 		beforeEach(() => {
 			name = "AccountCreate";
+			filePath = "/account/create";
 			handler = "handler";
 
-			lambda = conan.lambda(name, handler);
+			lambda = conan.lambda(name, filePath, handler);
 		});
 
 		it("should return an instance of ConanAwsLambda", () => {
@@ -40,6 +42,10 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 
 		it("should pass the lambda name to the ConanAwsLambda constructor", () => {
 			lambda.parameters.name.should.eql(name);
+		});
+
+		it("should pass the lambda file path to the ConanAwsLambda constructor", () => {
+			lambda.parameters.filePath.should.eql(filePath);
 		});
 
 		it("should pass the lambda handler to the ConanAwsLambda constructor", () => {
