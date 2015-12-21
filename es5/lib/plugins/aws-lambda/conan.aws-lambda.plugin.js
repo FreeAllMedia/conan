@@ -24,8 +24,8 @@ var ConanAwsLambdaPlugin = (function () {
 
 	_createClass(ConanAwsLambdaPlugin, [{
 		key: "lambda",
-		value: function lambda(name, path, handlerName) {
-			return new _componentsConanAwsLambdaJs2["default"](this, name, path, handlerName);
+		value: function lambda(name, handlerName) {
+			return new _componentsConanAwsLambdaJs2["default"](this, name, handlerName);
 		}
 	}]);
 

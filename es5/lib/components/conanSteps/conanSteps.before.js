@@ -14,8 +14,8 @@ var _incognito2 = _interopRequireDefault(_incognito);
 function before(existingStep, beforeStep, parameters) {
 	var _ = (0, _incognito2["default"])(this);
 
-	var step = _.steps.find(function (step) {
-		return step.handler === existingStep;
+	var step = _.steps.find(function (currentStep) {
+		return currentStep.handler === existingStep;
 	});
 
 	var index = _.steps.indexOf(step);

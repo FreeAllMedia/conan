@@ -21,15 +21,13 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 	describe("conan.lambda(name, handlerPath)", () => {
 		let lambda;
 		let name;
-		let path;
 		let handler;
 
 		beforeEach(() => {
 			name = "AccountCreate";
-			path = "/account/create";
 			handler = "handler";
 
-			lambda = conan.lambda(name, path, handler);
+			lambda = conan.lambda(name, handler);
 		});
 
 		it("should return an instance of ConanAwsLambda", () => {
@@ -37,19 +35,15 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 		});
 
 		it("should pass conan to the ConanAwsLambda constructor", () => {
-			lambda.properties.conan.should.eql(conan);
+			lambda.conan.should.eql(conan);
 		});
 
 		it("should pass the lambda name to the ConanAwsLambda constructor", () => {
-			lambda.properties.name.should.eql(name);
-		});
-
-		it("should pass the lambda path to the ConanAwsLambda constructor", () => {
-			lambda.properties.path.should.eql(path);
+			lambda.parameters.name.should.eql(name);
 		});
 
 		it("should pass the lambda handler to the ConanAwsLambda constructor", () => {
-			lambda.properties.handler.should.eql(handler);
+			lambda.parameters.handler.should.eql(handler);
 		});
 	});
 });

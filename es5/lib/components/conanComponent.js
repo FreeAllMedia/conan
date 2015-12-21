@@ -9,11 +9,17 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var ConanComponent = (function () {
-	function ConanComponent(parameters) {
+	function ConanComponent() {
 		_classCallCheck(this, ConanComponent);
 
-		this.parameters = parameters || {};
-		this.initialize(this.parameters);
+		//initialize the parameters object
+		this.parameters = {};
+
+		for (var _len = arguments.length, parameters = Array(_len), _key = 0; _key < _len; _key++) {
+			parameters[_key] = arguments[_key];
+		}
+
+		this.initialize.apply(this, parameters);
 	}
 
 	_createClass(ConanComponent, [{

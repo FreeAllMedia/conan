@@ -3,12 +3,20 @@ import sinon from "sinon";
 
 describe("ConanComponent()", () => {
 	let component,
-			parameters;
+			parameters,
+			initializeSpy;
 
-	class MyComponent extends ConanComponent {}
+	class MyComponent extends ConanComponent {
+		initialize(some) {
+			initializeSpy(some);
+			if(some) {
+				this.parameters.some = some;
+			}
+		}
+	}
 
 	beforeEach(() => {
-		MyComponent.prototype.initialize = sinon.spy();
+		initializeSpy = sinon.spy();
 	});
 
 	describe("(with parameters provided)", () => {
@@ -17,7 +25,7 @@ describe("ConanComponent()", () => {
 				some: "parameter"
 			};
 
-			component = new MyComponent(parameters);
+			component = new MyComponent(parameters.some);
 		});
 
 		it("should set .parameters to the supplied parameters", () => {
@@ -25,17 +33,15 @@ describe("ConanComponent()", () => {
 		});
 
 		it("should call .initialize with all constructor parameters", () => {
-			component.initialize.calledWith(parameters).should.be.true;
+			initializeSpy.calledWith(parameters.some).should.be.true;
 		});
 	});
 
 	describe("(without parameters provided)", () => {
-		beforeEach(() => {
-			parameters = {
-				some: "parameter"
-			};
+		class MyEmptyComponent extends ConanComponent {}
 
-			component = new MyComponent();
+		beforeEach(() => {
+			component = new MyEmptyComponent();
 		});
 
 		it("should set component.parameters to an empty object", () => {

@@ -29,16 +29,16 @@ var ConanAwsLambda = (function (_ConanComponent) {
 
 	_createClass(ConanAwsLambda, [{
 		key: "initialize",
-		value: function initialize(conan, name, path, handler) {
+		value: function initialize(conan, name, handler) {
 			this.conan = conan;
 
 			this.parameters.name = name;
-			this.parameters.path = path;
 			this.parameters.handler = handler;
 		}
 	}, {
 		key: "runtime",
 		value: function runtime(_runtime) {
+			this.parameters.runtime = _runtime;
 			return this;
 		}
 
