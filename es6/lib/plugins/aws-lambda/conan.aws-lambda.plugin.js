@@ -1,13 +1,12 @@
-import privateData from "incognito";
+import ConanAwsLambda from "./components/conanAwsLambda.js";
 
 export default class ConanAwsLambdaPlugin {
 	constructor (conan) {
-		privateData(this).conan = conan;
-
-		conan.lambda = this.newLambda;
+		conan.lambda = this.lambda;
+		conan.lambdas = {};
 	}
 
-	newLambda() {
-		
+	lambda(name, path, handlerName) {
+		return new ConanAwsLambda(this, name, path, handlerName);
 	}
 }

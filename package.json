@@ -23,6 +23,7 @@
   "homepage": "https://github.com/FreeAllMedia/conan",
   "dependencies": {
     "aws-sdk": "^2.2.24",
+    "dovima": "^0.3.2",
     "flowsync": "^0.1.11",
     "incognito": "^0.1.4"
   },

@@ -1,4 +1,4 @@
-import ConanSteps from "../../lib/conanSteps.js";
+import ConanSteps from "../../../lib/components/conanSteps.js";
 
 describe("conanSteps.after(existingStep, afterStep)", () => {
 	let conanSteps;

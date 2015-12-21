@@ -1,5 +1,5 @@
-import ConanSteps from "../../lib/conanSteps.js";
-import Conan from "../../lib/conan.js";
+import ConanSteps from "../../../lib/components/conanSteps.js";
+import Conan from "../../../lib/conan.js";
 
 import sinon from "sinon";
 
@@ -60,7 +60,7 @@ describe("conanSteps.start(callback)", () => {
 		});
 	});
 
-	it("should pass results to each next steps", done => {
+	it("should pass results to each next step", done => {
 		steps.start((error) => {
 			stepTwo.firstCall.args[1].should.eql({
 				parameters: stepTwoParameters,

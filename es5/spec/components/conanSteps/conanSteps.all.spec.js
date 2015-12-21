@@ -2,15 +2,15 @@
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _libConanStepsJs = require("../../lib/conanSteps.js");
+var _libComponentsConanStepsJs = require("../../../lib/components/conanSteps.js");
 
-var _libConanStepsJs2 = _interopRequireDefault(_libConanStepsJs);
+var _libComponentsConanStepsJs2 = _interopRequireDefault(_libComponentsConanStepsJs);
 
 describe("conanSteps.all", function () {
 	var conanSteps = undefined;
 
 	beforeEach(function () {
-		conanSteps = new _libConanStepsJs2["default"]();
+		conanSteps = new _libComponentsConanStepsJs2["default"]();
 	});
 
 	it("should default to an empty array", function () {

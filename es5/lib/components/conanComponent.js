@@ -6,31 +6,24 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _componentsConanAwsLambdaJs = require("./components/conanAwsLambda.js");
+var ConanComponent = (function () {
+	function ConanComponent(parameters) {
+		_classCallCheck(this, ConanComponent);
 
-var _componentsConanAwsLambdaJs2 = _interopRequireDefault(_componentsConanAwsLambdaJs);
-
-var ConanAwsLambdaPlugin = (function () {
-	function ConanAwsLambdaPlugin(conan) {
-		_classCallCheck(this, ConanAwsLambdaPlugin);
-
-		conan.lambda = this.lambda;
-		conan.lambdas = {};
+		this.parameters = parameters || {};
+		this.initialize(this.parameters);
 	}
 
-	_createClass(ConanAwsLambdaPlugin, [{
-		key: "lambda",
-		value: function lambda(name, path, handlerName) {
-			return new _componentsConanAwsLambdaJs2["default"](this, name, path, handlerName);
-		}
+	_createClass(ConanComponent, [{
+		key: "initialize",
+		value: function initialize() {}
+		// Stub for overridding
 	}]);
 
-	return ConanAwsLambdaPlugin;
+	return ConanComponent;
 })();
 
-exports["default"] = ConanAwsLambdaPlugin;
+exports["default"] = ConanComponent;
 module.exports = exports["default"];

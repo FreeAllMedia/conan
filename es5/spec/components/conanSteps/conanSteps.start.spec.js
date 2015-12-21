@@ -2,11 +2,11 @@
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _libConanStepsJs = require("../../lib/conanSteps.js");
+var _libComponentsConanStepsJs = require("../../../lib/components/conanSteps.js");
 
-var _libConanStepsJs2 = _interopRequireDefault(_libConanStepsJs);
+var _libComponentsConanStepsJs2 = _interopRequireDefault(_libComponentsConanStepsJs);
 
-var _libConanJs = require("../../lib/conan.js");
+var _libConanJs = require("../../../lib/conan.js");
 
 var _libConanJs2 = _interopRequireDefault(_libConanJs);
 
@@ -24,7 +24,7 @@ describe("conanSteps.start(callback)", function () {
 
 	beforeEach(function () {
 		conan = new _libConanJs2["default"]();
-		steps = new _libConanStepsJs2["default"](conan);
+		steps = new _libComponentsConanStepsJs2["default"](conan);
 
 		stepOne = _sinon2["default"].spy(function (parentConan, context, done) {
 			done(null, { apiId: 15 });
@@ -71,7 +71,7 @@ describe("conanSteps.start(callback)", function () {
 		});
 	});
 
-	it("should pass results to each next steps", function (done) {
+	it("should pass results to each next step", function (done) {
 		steps.start(function (error) {
 			stepTwo.firstCall.args[1].should.eql({
 				parameters: stepTwoParameters,

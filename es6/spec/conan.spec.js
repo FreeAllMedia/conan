@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Conan from "../lib/conan.js";
 
 describe("Conan(config)", () => {

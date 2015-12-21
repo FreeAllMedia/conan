@@ -42,7 +42,7 @@ const conan = new Conan({
 conan.use(AwsLambda, AwsApi);
 
 conan
-  .lambda("AccountList", "/account/list.handler")
+  .lambda("AccountList", "/account/list", "handler")
     .runtime("nodejs")
     .role("lambdaRole")
     .description("This is my Lambda!")
