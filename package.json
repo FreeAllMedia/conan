@@ -25,7 +25,8 @@
     "aws-sdk": "^2.2.24",
     "dovima": "^0.3.2",
     "flowsync": "^0.1.11",
-    "incognito": "^0.1.4"
+    "incognito": "^0.1.4",
+    "jargon": "^0.1.22"
   },
   "devDependencies": {
     "babel": "^5.5.6",

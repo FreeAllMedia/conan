@@ -23,6 +23,10 @@ export default class ConanSteps {
 		return require("./conanSteps/conanSteps.start.js").call(this, callback);
 	}
 
+	findByName(stepName) {
+		return require("./conanSteps/conanSteps.findByName.js").call(this, stepName);
+	}
+
 	get all() {
 		return require("./conanSteps/conanSteps.all.js").call(this);
 	}

@@ -32,9 +32,11 @@ var ConanAwsLambda = (function (_ConanComponent) {
 		value: function initialize(conan, name, filePath, handler) {
 			this.conan = conan;
 
-			this.parameters.name = name;
-			this.parameters.filePath = filePath;
-			this.parameters.handler = handler;
+			this.parameters("name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish");
+
+			this.name(name);
+			this.filePath(filePath);
+			this.handler(handler);
 
 			// attach steps to conan region
 			// find lambda
@@ -42,55 +44,7 @@ var ConanAwsLambda = (function (_ConanComponent) {
 			// create/update lambda
 			// request method
 			// response methods
-			this.addChainableAttribute("description", "runtime", "role", "memorySize", "timeout", "publish");
 		}
-	}, {
-		key: "addChainableAttribute",
-		value: function addChainableAttribute() {
-			var _this = this;
-
-			for (var _len = arguments.length, functions = Array(_len), _key = 0; _key < _len; _key++) {
-				functions[_key] = arguments[_key];
-			}
-
-			functions.forEach(function (functionName) {
-				var newChainedFunction = function newChainedFunction(value) {
-					_this.parameters[functionName] = value;
-					return _this;
-				};
-				_this[functionName] = newChainedFunction;
-			});
-		}
-
-		// runtime(runtime) {
-		// 	this.parameters.runtime = runtime;
-		// 	return this;
-		// }
-
-		// role(role) {
-		// 	this.parameters.role = role;
-		// 	return this;
-		// }
-
-		// description(description) {
-		// 	this.parameters.description = description;
-		// 	return this;
-		// }
-
-		// memorySize(description) {
-		// 	this.parameters.memorySize = memorySize;
-		// 	return this;
-		// }
-
-		// timeout(description) {
-		// 	this.parameters.timeout = timeout;
-		// 	return this;
-		// }
-
-		// publish(description) {
-		// 	this.parameters.publish = publish;
-		// 	return this;
-		// }
 	}]);
 
 	return ConanAwsLambda;

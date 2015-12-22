@@ -20,7 +20,8 @@ var _sinon2 = _interopRequireDefault(_sinon);
 
 describe("ConanComponent()", function () {
 	var component = undefined,
-	    parameters = undefined,
+	    name = undefined,
+	    age = undefined,
 	    initializeSpy = undefined;
 
 	var MyComponent = (function (_ConanComponent) {
@@ -34,11 +35,8 @@ describe("ConanComponent()", function () {
 
 		_createClass(MyComponent, [{
 			key: "initialize",
-			value: function initialize(some) {
-				initializeSpy(some);
-				if (some) {
-					this.parameters.some = some;
-				}
+			value: function initialize(newName, newAge) {
+				initializeSpy(newName, newAge);
 			}
 		}]);
 
@@ -47,45 +45,52 @@ describe("ConanComponent()", function () {
 
 	beforeEach(function () {
 		initializeSpy = _sinon2["default"].spy();
+		name = "Bob Belcher";
+		age = 44;
+		component = new MyComponent(name, age);
 	});
 
-	describe("(with parameters provided)", function () {
-		beforeEach(function () {
-			parameters = {
-				some: "parameter"
-			};
+	it("should stub .initialize", function () {
+		var BlankComponent = (function (_ConanComponent2) {
+			_inherits(BlankComponent, _ConanComponent2);
 
-			component = new MyComponent(parameters.some);
-		});
+			function BlankComponent() {
+				_classCallCheck(this, BlankComponent);
 
-		it("should set .parameters to the supplied parameters", function () {
-			component.parameters.should.eql(parameters);
-		});
-
-		it("should call .initialize with all constructor parameters", function () {
-			initializeSpy.calledWith(parameters.some).should.be["true"];
-		});
-	});
-
-	describe("(without parameters provided)", function () {
-		var MyEmptyComponent = (function (_ConanComponent2) {
-			_inherits(MyEmptyComponent, _ConanComponent2);
-
-			function MyEmptyComponent() {
-				_classCallCheck(this, MyEmptyComponent);
-
-				_get(Object.getPrototypeOf(MyEmptyComponent.prototype), "constructor", this).apply(this, arguments);
+				_get(Object.getPrototypeOf(BlankComponent.prototype), "constructor", this).apply(this, arguments);
 			}
 
-			return MyEmptyComponent;
+			return BlankComponent;
 		})(_libComponentsConanComponentJs2["default"]);
 
-		beforeEach(function () {
-			component = new MyEmptyComponent();
-		});
+		component = new BlankComponent();
+		(typeof component.initialize).should.eql("function");
+	});
 
-		it("should set component.parameters to an empty object", function () {
-			component.parameters.should.eql({});
+	it("should call .initialize with all constructor parameters", function () {
+		initializeSpy.calledWith(name, age).should.be["true"];
+	});
+
+	describe(".parameters()", function () {
+		it("should return all parameters in an object", function () {
+			component.parameters("name", "age");
+			component.name("Bob");
+			component.age(44);
+			component.parameters().should.eql({
+				name: "Bob",
+				age: 44
+			});
+		});
+	});
+
+	describe(".parameters(...newParameters)", function () {
+		it("should create a getter and setter function for each new parameter", function () {
+			component.parameters("name", "age");
+
+			component.name(name);
+			component.age(age);
+
+			(component.name() === name && component.age() === age).should.be["true"];
 		});
 	});
 });

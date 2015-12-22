@@ -44,6 +44,11 @@ var ConanSteps = (function () {
 			return require("./conanSteps/conanSteps.start.js").call(this, callback);
 		}
 	}, {
+		key: "findByName",
+		value: function findByName(stepName) {
+			return require("./conanSteps/conanSteps.findByName.js").call(this, stepName);
+		}
+	}, {
 		key: "all",
 		get: function get() {
 			return require("./conanSteps/conanSteps.all.js").call(this);

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import ConanSteps from "../../lib/components/conanSteps.js";
 
 describe("ConanSteps()", () => {

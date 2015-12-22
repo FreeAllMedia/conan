@@ -53,15 +53,15 @@ describe("ConanAwsLambdaPlugin(conan)", function () {
 		});
 
 		it("should pass the lambda name to the ConanAwsLambda constructor", function () {
-			lambda.parameters.name.should.eql(name);
+			lambda.name().should.eql(name);
 		});
 
 		it("should pass the lambda file path to the ConanAwsLambda constructor", function () {
-			lambda.parameters.filePath.should.eql(filePath);
+			lambda.filePath().should.eql(filePath);
 		});
 
 		it("should pass the lambda handler to the ConanAwsLambda constructor", function () {
-			lambda.parameters.handler.should.eql(handler);
+			lambda.handler().should.eql(handler);
 		});
 	});
 });

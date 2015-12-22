@@ -14,9 +14,12 @@ var _componentsConanComponentJs = require("../../../../components/conanComponent
 
 var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
 
+var _specHelpersTestComponentParametersJs = require("../../../../../spec/helpers/testComponentParameters.js");
+
+var _specHelpersTestComponentParametersJs2 = _interopRequireDefault(_specHelpersTestComponentParametersJs);
+
 describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 	var lambda = undefined;
-
 	var conan = undefined;
 	var name = undefined;
 	var filePath = undefined;
@@ -35,19 +38,11 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 		lambda.should.be.instanceOf(_componentsConanComponentJs2["default"]);
 	});
 
-	it("should save conan to .parameters.conan", function () {
+	it("should save conan to .conan", function () {
 		lambda.conan.should.eql(conan);
 	});
 
-	it("should save name to .parameters.name", function () {
-		lambda.parameters.name.should.eql(name);
-	});
-
-	it("should save filePath to .parameters.filePath", function () {
-		lambda.parameters.filePath.should.eql(filePath);
-	});
-
-	it("should save handler to .parameters.handler", function () {
-		lambda.parameters.handler.should.eql(handler);
+	describe("(parameters)", function () {
+		(0, _specHelpersTestComponentParametersJs2["default"])(_componentsConanAwsLambdaJs2["default"], ["name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish"]);
 	});
 });

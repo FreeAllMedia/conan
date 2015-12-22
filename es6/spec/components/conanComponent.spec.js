@@ -3,49 +3,54 @@ import sinon from "sinon";
 
 describe("ConanComponent()", () => {
 	let component,
-			parameters,
+			name,
+			age,
 			initializeSpy;
 
 	class MyComponent extends ConanComponent {
-		initialize(some) {
-			initializeSpy(some);
-			if(some) {
-				this.parameters.some = some;
-			}
+		initialize(newName, newAge) {
+			initializeSpy(newName, newAge);
 		}
 	}
 
 	beforeEach(() => {
 		initializeSpy = sinon.spy();
+		name = "Bob Belcher";
+		age = 44;
+		component = new MyComponent(name, age);
 	});
 
-	describe("(with parameters provided)", () => {
-		beforeEach(() => {
-			parameters = {
-				some: "parameter"
-			};
+	it("should stub .initialize", () => {
+		class BlankComponent extends ConanComponent {}
 
-			component = new MyComponent(parameters.some);
-		});
+		component = new BlankComponent();
+		(typeof component.initialize).should.eql("function");
+	});
 
-		it("should set .parameters to the supplied parameters", () => {
-			component.parameters.should.eql(parameters);
-		});
+	it("should call .initialize with all constructor parameters", () => {
+		initializeSpy.calledWith(name, age).should.be.true;
+	});
 
-		it("should call .initialize with all constructor parameters", () => {
-			initializeSpy.calledWith(parameters.some).should.be.true;
+	describe(".parameters()", () => {
+		it("should return all parameters in an object", () => {
+			component.parameters("name", "age");
+			component.name("Bob");
+			component.age(44);
+			component.parameters().should.eql({
+				name: "Bob",
+				age: 44
+			});
 		});
 	});
 
-	describe("(without parameters provided)", () => {
-		class MyEmptyComponent extends ConanComponent {}
+	describe(".parameters(...newParameters)", () => {
+		it("should create a getter and setter function for each new parameter", () => {
+			component.parameters("name", "age");
 
-		beforeEach(() => {
-			component = new MyEmptyComponent();
-		});
+			component.name(name);
+			component.age(age);
 
-		it("should set component.parameters to an empty object", () => {
-			component.parameters.should.eql({});
+			(component.name() === name && component.age() === age).should.be.true;
 		});
 	});
 });
