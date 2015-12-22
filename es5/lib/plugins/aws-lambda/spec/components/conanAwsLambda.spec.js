@@ -42,6 +42,10 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 		lambda.conan.should.eql(conan);
 	});
 
+	describe("(steps)", function () {
+		// TODO: ADD STEPS
+	});
+
 	describe("(parameters)", function () {
 		(0, _specHelpersTestComponentParametersJs2["default"])(_componentsConanAwsLambdaJs2["default"], ["name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish"]);
 	});

@@ -27,6 +27,10 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", () => {
 		lambda.conan.should.eql(conan);
 	});
 
+	describe("(steps)", () => {
+		// TODO: ADD STEPS
+	});
+
 	describe("(parameters)", () => {
 		testComponentParameters(ConanAwsLambda, [
 			"name",
