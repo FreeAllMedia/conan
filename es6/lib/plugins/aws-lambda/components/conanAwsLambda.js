@@ -24,12 +24,13 @@ export default class ConanAwsLambda extends ConanComponent {
 
 		// attach steps to conan
 		const parameters = this.parameters();
+
+		// thaumaturgy compilation, download and extraction
+		// tmp folder build with necessary code & zip creation
+		// upload zip to s3
 		// find lambda
 		this.conan.steps.add(findLambdaByNameStep, parameters);
-		// create zip
 		// create/update lambda
 		this.conan.steps.add(upsertLambdaByNameStep, parameters);
-		// request method
-		// response methods
 	}
 }
