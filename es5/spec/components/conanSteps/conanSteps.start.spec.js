@@ -58,6 +58,7 @@ describe("conanSteps.start(callback)", function () {
 	it("should pass the step context as the second argument to each step", function (done) {
 		steps.start(function (error) {
 			stepOne.firstCall.args[1].should.eql({
+				dependencies: {},
 				parameters: stepOneParameters,
 				results: {}
 			});
@@ -74,6 +75,7 @@ describe("conanSteps.start(callback)", function () {
 	it("should pass results to each next step", function (done) {
 		steps.start(function (error) {
 			stepTwo.firstCall.args[1].should.eql({
+				dependencies: {},
 				parameters: stepTwoParameters,
 				results: {
 					apiId: 15

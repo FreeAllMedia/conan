@@ -3,8 +3,13 @@ import privateData from "incognito";
 export default class ConanSteps {
 	constructor(parent) {
 		const _ = privateData(this);
+		_.dependencies = {};
 		_.parent = parent;
 		_.steps = [];
+	}
+
+	get parent() {
+		return privateData(this).parent;
 	}
 
 	add(conanStep, parameters) {
@@ -29,5 +34,9 @@ export default class ConanSteps {
 
 	get all() {
 		return require("./conanSteps/conanSteps.all.js").call(this);
+	}
+
+	dependency(name, value) {
+		return require("./conanSteps/conanSteps.dependency.js").call(this, name, value);
 	}
 }

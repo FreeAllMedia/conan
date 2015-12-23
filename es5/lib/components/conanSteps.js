@@ -19,6 +19,7 @@ var ConanSteps = (function () {
 		_classCallCheck(this, ConanSteps);
 
 		var _ = (0, _incognito2["default"])(this);
+		_.dependencies = {};
 		_.parent = parent;
 		_.steps = [];
 	}
@@ -47,6 +48,16 @@ var ConanSteps = (function () {
 		key: "findByName",
 		value: function findByName(stepName) {
 			return require("./conanSteps/conanSteps.findByName.js").call(this, stepName);
+		}
+	}, {
+		key: "dependency",
+		value: function dependency(name, value) {
+			return require("./conanSteps/conanSteps.dependency.js").call(this, name, value);
+		}
+	}, {
+		key: "parent",
+		get: function get() {
+			return (0, _incognito2["default"])(this).parent;
 		}
 	}, {
 		key: "all",

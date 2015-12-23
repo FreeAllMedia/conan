@@ -20,6 +20,7 @@ function start(callback) {
 	var accumulatedResults = {};
 	_flowsync2["default"].mapSeries(_.steps, function (step, done) {
 		var context = {
+			dependencies: _.dependencies,
 			parameters: step.parameters,
 			results: Object.assign({}, accumulatedResults)
 		};

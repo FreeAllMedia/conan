@@ -48,13 +48,14 @@ var ConanAwsLambda = (function (_ConanComponent) {
 
 			// attach steps to conan
 			var parameters = this.parameters();
+
+			// thaumaturgy compilation, download and extraction
+			// tmp folder build with necessary code & zip creation
+			// upload zip to s3
 			// find lambda
 			this.conan.steps.add(_stepsFindLambdaByNameStepJs2["default"], parameters);
-			// create zip
 			// create/update lambda
 			this.conan.steps.add(_stepsUpsertLambdaByNameStepJs2["default"], parameters);
-			// request method
-			// response methods
 		}
 	}]);
 

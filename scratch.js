@@ -1,3 +1,19 @@
+const steps = new ConanSteps();
+steps.dependencies({
+	aws: AWS
+});
+
+steps.add("")
+
+function step(conan, context, done) {
+	const AWS = context.dependencies.aws;
+}
+
+
+
+
+
+
 // Conan Deployment Step
 function findApiByName(context) {
   AWS.Lambda.findApiByName(name, (api) => {

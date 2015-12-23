@@ -6,6 +6,7 @@ export default function start(callback) {
 	let accumulatedResults = {};
 	Async.mapSeries(_.steps, (step, done) => {
 		const context = {
+			dependencies: _.dependencies,
 			parameters: step.parameters,
 			results: Object.assign({}, accumulatedResults)
 		};
