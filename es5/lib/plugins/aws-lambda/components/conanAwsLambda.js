@@ -18,6 +18,14 @@ var _componentsConanComponentJs = require("../../../components/conanComponent.js
 
 var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
 
+var _stepsFindLambdaByNameStepJs = require("../steps/findLambdaByNameStep.js");
+
+var _stepsFindLambdaByNameStepJs2 = _interopRequireDefault(_stepsFindLambdaByNameStepJs);
+
+var _stepsUpsertLambdaByNameStepJs = require("../steps/upsertLambdaByNameStep.js");
+
+var _stepsUpsertLambdaByNameStepJs2 = _interopRequireDefault(_stepsUpsertLambdaByNameStepJs);
+
 var ConanAwsLambda = (function (_ConanComponent) {
 	_inherits(ConanAwsLambda, _ConanComponent);
 
@@ -38,10 +46,13 @@ var ConanAwsLambda = (function (_ConanComponent) {
 			this.filePath(filePath);
 			this.handler(handler);
 
-			// attach steps to conan region
+			// attach steps to conan
+			var parameters = this.parameters();
 			// find lambda
+			this.conan.steps.add(_stepsFindLambdaByNameStepJs2["default"], parameters);
 			// create zip
 			// create/update lambda
+			this.conan.steps.add(_stepsUpsertLambdaByNameStepJs2["default"], parameters);
 			// request method
 			// response methods
 		}

@@ -14,16 +14,16 @@ var _componentsConanComponentJs = require("../../../../components/conanComponent
 
 var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
 
-var _specHelpersTestComponentParametersJs = require("../../../../../spec/helpers/testComponentParameters.js");
+var _jargon = require("jargon");
 
-var _specHelpersTestComponentParametersJs2 = _interopRequireDefault(_specHelpersTestComponentParametersJs);
+var _jargon2 = _interopRequireDefault(_jargon);
 
 describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 	var lambda = undefined;
-	var conan = undefined;
 	var name = undefined;
 	var filePath = undefined;
 	var handler = undefined;
+	var conan = undefined;
 
 	beforeEach(function () {
 		name = "AccountCreate";
@@ -42,11 +42,27 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 		lambda.conan.should.eql(conan);
 	});
 
-	describe("(steps)", function () {
-		// TODO: ADD STEPS
+	describe("(parameters)", function () {
+		["name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish"].forEach(function (parameterName) {
+			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
+
+			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function describeComponentParameter() {
+				it("should save new" + parameterNamePascalCase, function itShouldSaveComponentParameter() {
+					var component = new _componentsConanAwsLambdaJs2["default"](conan);
+					var testValue = "abc123";
+					component = component[parameterName](testValue);
+					component[parameterName]().should.eql(testValue);
+				});
+			});
+		});
 	});
 
-	describe("(parameters)", function () {
-		(0, _specHelpersTestComponentParametersJs2["default"])(_componentsConanAwsLambdaJs2["default"], ["name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish"]);
+	describe("(steps)", function () {
+		it("should add the steps to conan to deploy the lambda afterwards", function () {
+			var stepNames = conan.steps.all.map(function (step) {
+				return step.handler.name;
+			});
+			stepNames.should.eql(["findLambdaByNameStep", "upsertLambdaByNameStep"]);
+		});
 	});
 });
