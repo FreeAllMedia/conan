@@ -26,6 +26,10 @@ var _stepsUpsertLambdaByNameStepJs = require("../steps/upsertLambdaByNameStep.js
 
 var _stepsUpsertLambdaByNameStepJs2 = _interopRequireDefault(_stepsUpsertLambdaByNameStepJs);
 
+var _stepsCompileDependenciesStepJs = require("../steps/compileDependenciesStep.js");
+
+var _stepsCompileDependenciesStepJs2 = _interopRequireDefault(_stepsCompileDependenciesStepJs);
+
 var ConanAwsLambda = (function (_ConanComponent) {
 	_inherits(ConanAwsLambda, _ConanComponent);
 
@@ -50,6 +54,7 @@ var ConanAwsLambda = (function (_ConanComponent) {
 			var parameters = this.parameters();
 
 			// thaumaturgy compilation, download and extraction
+			this.conan.steps.add(_stepsCompileDependenciesStepJs2["default"], parameters);
 			// tmp folder build with necessary code & zip creation
 			// upload zip to s3
 			// find lambda

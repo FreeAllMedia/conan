@@ -1,9 +1,5 @@
-import AWS from "aws-sdk";
-// shotcut constructor to allow rewireLambdaConstructor
-const LambdaConstructor = AWS.Lambda;
-
 export default function upsertLambdaByNameStep(conan, context, done) {
-	const lambda = new LambdaConstructor({"region": conan.config.region});
+	const lambda = new context.dependencies.aws.Lambda({"region": conan.config.region});
 	if(context.results.lambda && context.results.lambda.found === true) {
 		let lambdaParameters = {
 			"FunctionName": context.parameters.name,
@@ -16,20 +12,28 @@ export default function upsertLambdaByNameStep(conan, context, done) {
 		const result = { lambda: { name: context.parameters.name } };
 		lambda.updateFunctionConfiguration(lambdaParameters,
 			(error, response) => {
-				result.lambda.response = response;
-				lambdaParameters = {
-					"FunctionName": context.parameters.name,
-					"S3Bucket": context.results.s3Bucket,
-					"S3Key": context.results.s3Key,
-					"S3ObjectVersion": context.results.s3ObjectVersion,
-					"Publish": context.parameters.publish
-				};
-				lambda.updateFunctionCode(lambdaParameters,
-					(updateCodeError, updateCodeResponse) => {
-						result.lambda.response.Code = updateCodeResponse;
-						done(updateCodeError, result);
-					}
-				);
+				if(!error && response) {
+					result.lambda.response = response;
+					lambdaParameters = {
+						"FunctionName": context.parameters.name,
+						"S3Bucket": context.results.s3Bucket,
+						"S3Key": context.results.s3Key,
+						"S3ObjectVersion": context.results.s3ObjectVersion,
+						"Publish": context.parameters.publish
+					};
+					lambda.updateFunctionCode(lambdaParameters,
+						(updateCodeError, updateCodeResponse) => {
+							if(!updateCodeError && updateCodeResponse) {
+								result.lambda.response.Code = updateCodeResponse;
+								done(null, result);
+							} else {
+								done(updateCodeError);
+							}
+						}
+					);
+				} else {
+					done(error);
+				}
 			});
 	} else {
 		const lambdaParameters = {
@@ -50,8 +54,12 @@ export default function upsertLambdaByNameStep(conan, context, done) {
 		const result = { lambda: { name: context.parameters.name } };
 		lambda.createFunction(lambdaParameters,
 			(error, response) => {
-				result.lambda.response = response;
-				done(error, result);
+				if(!error && response) {
+					result.lambda.response = response;
+					done(null, result);
+				} else {
+					done(error);
+				}
 			});
 	}
 }

@@ -58,6 +58,7 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", () => {
 				return step.handler.name;
 			});
 			stepNames.should.eql([
+				"compileDependenciesStep",
 				"findLambdaByNameStep",
 				"upsertLambdaByNameStep"
 			]);

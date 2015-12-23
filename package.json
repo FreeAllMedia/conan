@@ -41,7 +41,6 @@
     "gulp-mocha": "^2.1.3",
     "gulp-util": "^3.0.6",
     "mocha": "^2.2.5",
-    "rewire": "^2.5.1",
     "sinon": "^1.17.2",
     "superstack": "0.0.4"
   }

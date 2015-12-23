@@ -14,6 +14,14 @@ var _conanAwsLambdaPluginJs = require("../conanAwsLambdaPlugin.js");
 
 var _conanAwsLambdaPluginJs2 = _interopRequireDefault(_conanAwsLambdaPluginJs);
 
+var _sinon = require("sinon");
+
+var _sinon2 = _interopRequireDefault(_sinon);
+
+var _awsSdk = require("aws-sdk");
+
+var _awsSdk2 = _interopRequireDefault(_awsSdk);
+
 describe("ConanAwsLambdaPlugin(conan)", function () {
 	var conan = undefined;
 
@@ -28,6 +36,30 @@ describe("ConanAwsLambdaPlugin(conan)", function () {
 
 	it("should setup an empty object to hold lambdas at conan.lambdas", function () {
 		conan.lambdas.should.eql({});
+	});
+
+	describe("(AWS)", function () {
+		var dependencySpy = undefined;
+		var fakeConan = undefined;
+
+		before(function (done) {
+			dependencySpy = _sinon2["default"].spy();
+			fakeConan = {
+				steps: {
+					dependency: function dependency(name, value) {
+						dependencySpy(name, value);
+						done();
+					}
+				}
+			};
+
+			/* eslint-disable no-new */
+			new _conanAwsLambdaPluginJs2["default"](fakeConan);
+		});
+
+		it("should add the AWS dependency", function () {
+			dependencySpy.calledWith("aws", _awsSdk2["default"]).should.be["true"];
+		});
 	});
 
 	describe("conan.lambda(name, handlerPath)", function () {

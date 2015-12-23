@@ -62,7 +62,7 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 			var stepNames = conan.steps.all.map(function (step) {
 				return step.handler.name;
 			});
-			stepNames.should.eql(["findLambdaByNameStep", "upsertLambdaByNameStep"]);
+			stepNames.should.eql(["compileDependenciesStep", "findLambdaByNameStep", "upsertLambdaByNameStep"]);
 		});
 	});
 });

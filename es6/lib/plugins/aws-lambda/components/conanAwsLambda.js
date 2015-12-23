@@ -1,6 +1,7 @@
 import ConanComponent from "../../../components/conanComponent.js";
 import findLambdaByNameStep from "../steps/findLambdaByNameStep.js";
 import upsertLambdaByNameStep from "../steps/upsertLambdaByNameStep.js";
+import compileDependenciesStep from "../steps/compileDependenciesStep.js";
 
 export default class ConanAwsLambda extends ConanComponent {
 	initialize(conan, name, filePath, handler) {
@@ -26,6 +27,7 @@ export default class ConanAwsLambda extends ConanComponent {
 		const parameters = this.parameters();
 
 		// thaumaturgy compilation, download and extraction
+		this.conan.steps.add(compileDependenciesStep, parameters);
 		// tmp folder build with necessary code & zip creation
 		// upload zip to s3
 		// find lambda

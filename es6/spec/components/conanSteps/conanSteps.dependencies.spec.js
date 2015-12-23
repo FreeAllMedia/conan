@@ -11,7 +11,6 @@ describe("conanSteps.dependency(name, value)", () => {
 		class FakeAWS {}
 		conanSteps.dependency("AWS", FakeAWS);
 		function stepExample(conan, context, done) {
-			console.log(context);
 			context.dependencies.AWS.should.eql(FakeAWS);
 			done();
 		}

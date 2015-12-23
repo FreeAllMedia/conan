@@ -1,6 +1,8 @@
 import Conan from "../../../conan.js";
 import ConanAwsLambda from "../components/conanAwsLambda.js";
 import ConanAwsLambdaPlugin from "../conanAwsLambdaPlugin.js";
+import sinon from "sinon";
+import AWS from "aws-sdk";
 
 describe("ConanAwsLambdaPlugin(conan)", () => {
 	let conan;
@@ -16,6 +18,30 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 
 	it("should setup an empty object to hold lambdas at conan.lambdas", () => {
 		conan.lambdas.should.eql({});
+	});
+
+	describe("(AWS)", () => {
+		let dependencySpy;
+		let fakeConan;
+
+		before(done => {
+			dependencySpy = sinon.spy();
+			fakeConan = {
+				steps: {
+					dependency: (name, value) => {
+						dependencySpy(name, value);
+						done();
+					}
+				}
+			};
+
+			/* eslint-disable no-new */
+			new ConanAwsLambdaPlugin(fakeConan);
+		});
+
+		it("should add the AWS dependency", () => {
+			dependencySpy.calledWith("aws", AWS).should.be.true;
+		});
 	});
 
 	describe("conan.lambda(name, handlerPath)", () => {

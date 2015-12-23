@@ -14,12 +14,17 @@ var _componentsConanAwsLambdaJs = require("./components/conanAwsLambda.js");
 
 var _componentsConanAwsLambdaJs2 = _interopRequireDefault(_componentsConanAwsLambdaJs);
 
+var _awsSdk = require("aws-sdk");
+
+var _awsSdk2 = _interopRequireDefault(_awsSdk);
+
 var ConanAwsLambdaPlugin = (function () {
 	function ConanAwsLambdaPlugin(conan) {
 		_classCallCheck(this, ConanAwsLambdaPlugin);
 
 		conan.lambda = this.lambda;
 		conan.lambdas = {};
+		conan.steps.dependency("aws", _awsSdk2["default"]);
 	}
 
 	_createClass(ConanAwsLambdaPlugin, [{

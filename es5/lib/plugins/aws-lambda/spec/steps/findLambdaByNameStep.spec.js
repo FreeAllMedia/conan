@@ -1,10 +1,10 @@
 "use strict";
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _rewire = require("rewire");
-
-var _rewire2 = _interopRequireDefault(_rewire);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _sinon = require("sinon");
 
@@ -14,99 +14,89 @@ var _chai = require("chai");
 
 var _chai2 = _interopRequireDefault(_chai);
 
-var _conanJs = require("../../../../conan.js");
+var _stepsFindLambdaByNameStepJs = require("../../steps/findLambdaByNameStep.js");
 
-var _conanJs2 = _interopRequireDefault(_conanJs);
-
-var conanFindLambdaByNameStep = (0, _rewire2["default"])("../../steps/findLambdaByNameStep.js");
+var _stepsFindLambdaByNameStepJs2 = _interopRequireDefault(_stepsFindLambdaByNameStepJs);
 
 describe("findLambdaByNameStep", function () {
-	var awsSpy = undefined,
+	var getFunctionSpy = undefined,
+	    constructorSpy = undefined,
 	    conan = undefined,
 	    context = undefined,
 	    should = undefined;
 
-	before(function () {
+	var Lambda = (function () {
+		function Lambda(parameters) {
+			_classCallCheck(this, Lambda);
+
+			constructorSpy(parameters);
+		}
+
+		_createClass(Lambda, [{
+			key: "getFunction",
+			value: function getFunction(params, callback) {
+				getFunctionSpy(params, callback);
+			}
+		}]);
+
+		return Lambda;
+	})();
+
+	beforeEach(function () {
+		constructorSpy = _sinon2["default"].spy();
+		getFunctionSpy = _sinon2["default"].spy(function (params, callback) {
+			callback();
+		});
 		should = _chai2["default"].should();
+
 		context = {
 			parameters: {
 				name: "test Lambda"
+			},
+			dependencies: {
+				aws: {
+					Lambda: Lambda
+				}
 			}
 		};
-		conan = new _conanJs2["default"]({ "region": "us-east-1" });
+
+		conan = { config: { "region": "us-east-1" }
+		};
 	});
 
 	it("should be a function", function () {
-		(typeof conanFindLambdaByNameStep).should.equal("function");
+		(typeof _stepsFindLambdaByNameStepJs2["default"]).should.equal("function");
 	});
 
 	describe("(parameters)", function () {
-		var revertRewiredConstructor = undefined;
-		var expectedFunctionParameters = undefined;
-		var expectedConstructorParameters = undefined;
-		var constructorSpy = undefined;
-
 		beforeEach(function (done) {
-			awsSpy = _sinon2["default"].spy(function (params, callback) {
-				callback({ statusCode: 404 });
-			});
-
-			expectedFunctionParameters = {
-				FunctionName: context.parameters.name
-			};
-
-			expectedConstructorParameters = {
-				region: "us-east-1"
-			};
-
-			constructorSpy = _sinon2["default"].spy();
-
-			revertRewiredConstructor = conanFindLambdaByNameStep.__set__("LambdaConstructor", function (constructorParameters) {
-				constructorSpy(constructorParameters);
-				return {
-					getFunction: awsSpy
-				};
-			});
-
-			conanFindLambdaByNameStep(conan, context, function () {
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function () {
 				done();
 			});
 		});
 
-		afterEach(function () {
-			revertRewiredConstructor();
-		});
-
-		it("should send the ", function () {
-			awsSpy.firstCall.args[0].should.eql(expectedFunctionParameters);
+		it("should send the appropiate parameters to the AWS get function call", function () {
+			getFunctionSpy.firstCall.args[0].should.eql({
+				FunctionName: context.parameters.name
+			});
 		});
 
 		it("should set the constructor parameters", function () {
-			constructorSpy.firstCall.args[0].should.eql(expectedConstructorParameters);
+			constructorSpy.firstCall.args[0].should.eql({
+				"region": conan.config.region
+			});
 		});
 	});
 
 	describe("(lambda not found)", function () {
-		var revertRewiredConstructor = undefined;
-
 		beforeEach(function () {
-			awsSpy = _sinon2["default"].spy(function (params, callback) {
+			getFunctionSpy = _sinon2["default"].spy(function (params, callback) {
 				callback({ statusCode: 404 });
 			});
-
-			revertRewiredConstructor = conanFindLambdaByNameStep.__set__("LambdaConstructor", function () {
-				return {
-					getFunction: awsSpy
-				};
-			});
-		});
-
-		afterEach(function () {
-			revertRewiredConstructor();
 		});
 
 		it("should return false for that lambda", function (done) {
-			conanFindLambdaByNameStep(conan, context, function (error, result) {
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, result) {
 				result.lambda.found.should.equal(false);
 				done();
 			});
@@ -114,35 +104,24 @@ describe("findLambdaByNameStep", function () {
 	});
 
 	describe("(lambda found)", function () {
-		var revertRewiredConstructor = undefined;
 		var responseData = undefined;
 
 		beforeEach(function () {
 			responseData = { Configuration: {} };
-			awsSpy = _sinon2["default"].spy(function (params, callback) {
+			getFunctionSpy = _sinon2["default"].spy(function (params, callback) {
 				callback(null, responseData);
 			});
-
-			revertRewiredConstructor = conanFindLambdaByNameStep.__set__("LambdaConstructor", function () {
-				return {
-					getFunction: awsSpy
-				};
-			});
-		});
-
-		afterEach(function () {
-			revertRewiredConstructor();
 		});
 
 		it("should return true for that lambda", function (done) {
-			conanFindLambdaByNameStep(conan, context, function (error, result) {
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, result) {
 				result.lambda.found.should.equal(true);
 				done();
 			});
 		});
 
 		it("should return the response data for the lambda", function (done) {
-			conanFindLambdaByNameStep(conan, context, function (error, result) {
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, result) {
 				result.lambda.response.should.eql(responseData);
 				done();
 			});
@@ -150,26 +129,14 @@ describe("findLambdaByNameStep", function () {
 	});
 
 	describe("(unknown error)", function () {
-		var revertRewiredConstructor = undefined;
-
 		beforeEach(function () {
-			awsSpy = _sinon2["default"].spy(function (params, callback) {
+			getFunctionSpy = _sinon2["default"].spy(function (params, callback) {
 				callback({ statusCode: 401 });
 			});
-
-			revertRewiredConstructor = conanFindLambdaByNameStep.__set__("LambdaConstructor", function () {
-				return {
-					getFunction: awsSpy
-				};
-			});
-		});
-
-		afterEach(function () {
-			revertRewiredConstructor();
 		});
 
 		it("should return error", function (done) {
-			conanFindLambdaByNameStep(conan, context, function (error) {
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error) {
 				should.exist(error);
 				done();
 			});
