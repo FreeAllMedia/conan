@@ -1,5 +1,3 @@
-"use strict";
-
 // import compileDependenciesStep from "../../steps/compileDependenciesStep.js";
 //
 //

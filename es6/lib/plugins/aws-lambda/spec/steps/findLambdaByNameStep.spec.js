@@ -1,121 +1,116 @@
-import sinon from "sinon";
-import chai from "chai";
+import Conan from "../../../../conan.js";
 import findLambdaByNameStep from "../../steps/findLambdaByNameStep.js";
+import sinon from "sinon";
 
-describe("findLambdaByNameStep", () => {
-	let getFunctionSpy,
-		constructorSpy,
-		conan,
-		context,
-		should;
+describe(".findLambdaByNameStep(event, context, stepDone)", () => {
+	let conan,
+			conanConfig,
+			stepParameters,
+			awsError,
+			awsData,
+			stepReturnData,
+			context;
 
-	class Lambda {
-		constructor(parameters) {
-			constructorSpy(parameters);
-		}
+	const lambdaClient = {
+		getFunction: sinon.spy((params, callback) => {
+			callback(awsError, awsData);
+		})
+	};
 
-		getFunction(params, callback) {
-			getFunctionSpy(params, callback);
-		}
+	function newLambdaClient() {
+		return lambdaClient;
 	}
 
-	beforeEach(() => {
-		constructorSpy = sinon.spy();
-		getFunctionSpy = sinon.spy((params, callback) => {
-			callback();
-		});
-		should = chai.should();
+	const AWS = {
+		Lambda: sinon.spy(newLambdaClient)
+	};
+
+	beforeEach(done => {
+		awsError = null;
+		awsData = {
+			Configuration: {
+				FunctionArn: "arn:aws:lambda:us-east-1:166191841105:function:SomeLambda"
+			}, Code: {}
+		};
+
+		conanConfig = {
+			region: "us-east-1"
+		};
+		conan = new Conan(conanConfig);
+
+		stepParameters = {
+			name: "SomeLambda"
+		};
 
 		context = {
-			parameters: {
-				name: "test Lambda"
-			},
-			dependencies: {
-				aws: {
-					Lambda
-				}
-			}
+			parameters: stepParameters,
+			dependencies: { AWS: AWS },
+			results: {}
 		};
 
-		conan = { config:
-			{ "region": "us-east-1" }
-		};
+		findLambdaByNameStep(conan, context, (error, data) => {
+			stepReturnData = data;
+			done();
+		});
 	});
 
 	it("should be a function", () => {
 		(typeof findLambdaByNameStep).should.equal("function");
 	});
 
-	describe("(parameters)", () => {
+	it("should set the designated region on the lambda client", () => {
+		AWS.Lambda.calledWith({
+			region: conanConfig.region
+		}).should.be.true;
+	});
+
+	it("should call AWS with the designated function name parameter", () => {
+		lambdaClient.getFunction.calledWith({
+			FunctionName: stepParameters.name
+		}).should.be.true;
+	});
+
+	describe("(Lambda is Found)", () => {
 		beforeEach(done => {
-			findLambdaByNameStep(conan, context, () => {
+			findLambdaByNameStep(conan, context, (error, data) => {
+				stepReturnData = data;
 				done();
 			});
 		});
 
-		it("should send the appropiate parameters to the AWS get function call", () => {
-			getFunctionSpy.firstCall.args[0].should.eql({
-				FunctionName: context.parameters.name
-			});
-		});
-
-		it("should set the constructor parameters", () => {
-			constructorSpy.firstCall.args[0].should.eql({
-				"region": conan.config.region
+		it("should return the found lambda id", () => {
+			stepReturnData.should.eql({
+				lambda: {
+					id: awsData.Configuration.FunctionArn
+				}
 			});
 		});
 	});
 
-	describe("(lambda not found)", () => {
-		beforeEach(() => {
-			getFunctionSpy = sinon.spy((params, callback) => {
-				callback({ statusCode: 404 });
+	describe("(Lambda is not Found)", () => {
+		beforeEach(done => {
+			awsError = { statusCode: 404 };
+			findLambdaByNameStep(conan, context, (error, data) => {
+				stepReturnData = data;
+				done();
 			});
 		});
 
-		it("should return false for that lambda", done => {
-			findLambdaByNameStep(conan, context, (error, result) => {
-				result.lambda.found.should.equal(false);
-				done();
+		it("should return the lambda id as null", () => {
+			stepReturnData.should.eql({
+				lambda: {
+					id: null
+				}
 			});
 		});
 	});
 
-	describe("(lambda found)", () => {
-		let responseData;
-
-		beforeEach(() => {
-			responseData = {Configuration: {}};
-			getFunctionSpy = sinon.spy((params, callback) => {
-				callback(null, responseData);
-			});
-		});
-
-		it("should return true for that lambda", done => {
-			findLambdaByNameStep(conan, context, (error, result) => {
-				result.lambda.found.should.equal(true);
-				done();
-			});
-		});
-
-		it("should return the response data for the lambda", done => {
-			findLambdaByNameStep(conan, context, (error, result) => {
-				result.lambda.response.should.eql(responseData);
-				done();
-			});
-		});
-	});
-
-	describe("(unknown error)", () => {
-		beforeEach(() => {
-			getFunctionSpy = sinon.spy((params, callback) => {
-				callback({ statusCode: 401 });
-			});
-		});
-
-		it("should return error", done => {
+	describe("(Unknown Error is Returned)", () => {
+		it("should return an error which stops the step runner", done => {
+			const errorMessage = "AWS returned status code 401";
+			awsError = { statusCode: 401, message: errorMessage };
 			findLambdaByNameStep(conan, context, (error) => {
-				should.exist(error);
+				error.message.should.eql(errorMessage);
 				done();
 			});
 		});

@@ -22,13 +22,8 @@ var _stepsFindLambdaByNameStepJs = require("../steps/findLambdaByNameStep.js");
 
 var _stepsFindLambdaByNameStepJs2 = _interopRequireDefault(_stepsFindLambdaByNameStepJs);
 
-var _stepsUpsertLambdaByNameStepJs = require("../steps/upsertLambdaByNameStep.js");
-
-var _stepsUpsertLambdaByNameStepJs2 = _interopRequireDefault(_stepsUpsertLambdaByNameStepJs);
-
-var _stepsCompileDependenciesStepJs = require("../steps/compileDependenciesStep.js");
-
-var _stepsCompileDependenciesStepJs2 = _interopRequireDefault(_stepsCompileDependenciesStepJs);
+// import upsertLambdaByNameStep from "../steps/upsertLambdaByNameStep.js";
+// import compileDependenciesStep from "../steps/compileDependenciesStep.js";
 
 var ConanAwsLambda = (function (_ConanComponent) {
 	_inherits(ConanAwsLambda, _ConanComponent);
@@ -53,14 +48,15 @@ var ConanAwsLambda = (function (_ConanComponent) {
 			// attach steps to conan
 			var parameters = this.parameters();
 
+			this.conan.steps.add(_stepsFindLambdaByNameStepJs2["default"], parameters);
+
 			// thaumaturgy compilation, download and extraction
-			this.conan.steps.add(_stepsCompileDependenciesStepJs2["default"], parameters);
+			// this.conan.steps.add(compileDependenciesStep, parameters);
 			// tmp folder build with necessary code & zip creation
 			// upload zip to s3
 			// find lambda
-			this.conan.steps.add(_stepsFindLambdaByNameStepJs2["default"], parameters);
 			// create/update lambda
-			this.conan.steps.add(_stepsUpsertLambdaByNameStepJs2["default"], parameters);
+			//this.conan.steps.add(upsertLambdaByNameStep, parameters);
 		}
 	}]);
 

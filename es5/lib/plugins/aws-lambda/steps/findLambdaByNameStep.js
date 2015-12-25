@@ -5,20 +5,29 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = findLambdaByNameStep;
 
-function findLambdaByNameStep(conan, context, done) {
-	var lambda = new context.dependencies.aws.Lambda({ "region": conan.config.region });
-	var lambdaParameters = { "FunctionName": context.parameters.name };
-	var result = { lambda: { name: context.parameters.name } };
-	lambda.getFunction(lambdaParameters, function (error, response) {
+function findLambdaByNameStep(conan, context, stepDone) {
+	var AWS = context.dependencies.AWS;
+	var lambda = new AWS.Lambda({
+		region: conan.config.region
+	});
+
+	lambda.getFunction({
+		"FunctionName": context.parameters.name
+	}, function (error, responseData) {
 		if (error && error.statusCode === 404) {
-			result.lambda.found = false;
-			done(error, result);
-		} else if (response) {
-			result.lambda.response = response;
-			result.lambda.found = true;
-			done(error, result);
+			stepDone(null, {
+				lambda: {
+					id: null
+				}
+			});
+		} else if (error) {
+			stepDone(error);
 		} else {
-			done(error);
+			stepDone(null, {
+				lambda: {
+					id: responseData.Configuration.FunctionArn
+				}
+			});
 		}
 	});
 }
