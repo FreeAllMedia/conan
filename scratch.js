@@ -1,3 +1,14 @@
+stepParameters = {
+	"FunctionName": "SomeFunction",
+	"Description": "This is some function. It does things.",
+	"Handler": "/some/function.handler",
+	"MemorySize": "128",
+	"Role": ,
+	"Timeout": context.parameters.timeout
+
+
+
+
 const steps = new ConanSteps();
 steps.dependencies({
 	aws: AWS

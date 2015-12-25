@@ -1,8 +1,8 @@
 import Conan from "../../../../conan.js";
-import findLambdaByNameStep from "../../steps/findLambdaByNameStep.js";
+import findRoleByNameStep from "../../steps/findRoleByNameStep.js";
 import sinon from "sinon";
 
-describe(".findLambdaByNameStep(event, context, stepDone)", () => {
+describe(".findRoleByNameStep(event, context, stepDone)", () => {
 	let conan,
 			conanConfig,
 			stepParameters,
@@ -11,15 +11,15 @@ describe(".findLambdaByNameStep(event, context, stepDone)", () => {
 			stepReturnData,
 			context;
 
-	const lambdaClient = {
-		getFunction: sinon.spy((params, callback) => {
+	const iam = {
+		getRole: sinon.spy((params, callback) => {
 			callback(awsError, awsData);
 		})
 	};
 
 	const AWS = {
-		Lambda: sinon.spy(() => {
-			return lambdaClient;
+		IAM: sinon.spy(() => {
+			return iam;
 		})
 	};
 
@@ -30,7 +30,7 @@ describe(".findLambdaByNameStep(event, context, stepDone)", () => {
 		conan = new Conan(conanConfig);
 
 		stepParameters = {
-			name: "SomeLambda"
+			name: "Conan"
 		};
 
 		context = {
@@ -44,47 +44,48 @@ describe(".findLambdaByNameStep(event, context, stepDone)", () => {
 	});
 
 	it("should be a function", () => {
-		(typeof findLambdaByNameStep).should.equal("function");
+		(typeof findRoleByNameStep).should.equal("function");
 	});
 
-	describe("(Lambda is Found)", () => {
+	describe("(Role is Found)", () => {
 		beforeEach(done => {
 			awsData = {
-				Configuration: {
-					FunctionArn: "arn:aws:lambda:us-east-1:166191841105:function:SomeLambda"
-				}, Code: {}
+				Role: {
+					Arn: "arn:aws:lambda:us-east-1:123895237541:role:SomeRole"
+				}
 			};
-			findLambdaByNameStep(conan, context, (error, data) => {
+
+			findRoleByNameStep(conan, context, (error, data) => {
 				stepReturnData = data;
 				done();
 			});
 		});
 
 		it("should set the designated region on the lambda client", () => {
-			AWS.Lambda.calledWith({
+			AWS.IAM.calledWith({
 				region: conanConfig.region
 			}).should.be.true;
 		});
 
-		it("should call AWS with the designated function name parameter", () => {
-			lambdaClient.getFunction.calledWith({
-				FunctionName: stepParameters.name
+		it("should call AWS with the designated role name parameter", () => {
+			iam.getRole.calledWith({
+				RoleName: stepParameters.name
 			}).should.be.true;
 		});
 
-		it("should return the found lambda id", () => {
+		it("should return the found role id", () => {
 			stepReturnData.should.eql({
-				lambda: {
-					id: awsData.Configuration.FunctionArn
+				role: {
+					id: awsData.Role.Arn
 				}
 			});
 		});
 	});
 
-	describe("(Lambda is not Found)", () => {
+	describe("(Role is not Found)", () => {
 		beforeEach(done => {
 			awsError = { statusCode: 404 };
-			findLambdaByNameStep(conan, context, (error, data) => {
+			findRoleByNameStep(conan, context, (error, data) => {
 				stepReturnData = data;
 				done();
 			});
@@ -92,7 +93,7 @@ describe(".findLambdaByNameStep(event, context, stepDone)", () => {
 
 		it("should return the lambda id as null", () => {
 			stepReturnData.should.eql({
-				lambda: {
+				role: {
 					id: null
 				}
 			});
@@ -103,7 +104,7 @@ describe(".findLambdaByNameStep(event, context, stepDone)", () => {
 		it("should return an error which stops the step runner", done => {
 			const errorMessage = "AWS returned status code 401";
 			awsError = { statusCode: 401, message: errorMessage };
-			findLambdaByNameStep(conan, context, (error) => {
+			findRoleByNameStep(conan, context, (error) => {
 				error.message.should.eql(errorMessage);
 				done();
 			});

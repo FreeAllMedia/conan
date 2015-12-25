@@ -1,7 +1,7 @@
 const AWS = require("aws-sdk");
-const lambda = new AWS.Lambda({region: "us-east-1"});
-lambda.getFunction({
-	FunctionName: "Bob"
+const iam = new AWS.IAM({region: "us-east-1"});
+iam.getRole({
+	RoleName: "Bob"
 }, (error) => {
 	console.log(error.statusCode);
 });

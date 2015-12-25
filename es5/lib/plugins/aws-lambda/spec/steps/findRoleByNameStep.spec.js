@@ -6,15 +6,15 @@ var _conanJs = require("../../../../conan.js");
 
 var _conanJs2 = _interopRequireDefault(_conanJs);
 
-var _stepsFindLambdaByNameStepJs = require("../../steps/findLambdaByNameStep.js");
+var _stepsFindRoleByNameStepJs = require("../../steps/findRoleByNameStep.js");
 
-var _stepsFindLambdaByNameStepJs2 = _interopRequireDefault(_stepsFindLambdaByNameStepJs);
+var _stepsFindRoleByNameStepJs2 = _interopRequireDefault(_stepsFindRoleByNameStepJs);
 
 var _sinon = require("sinon");
 
 var _sinon2 = _interopRequireDefault(_sinon);
 
-describe(".findLambdaByNameStep(event, context, stepDone)", function () {
+describe(".findRoleByNameStep(event, context, stepDone)", function () {
 	var conan = undefined,
 	    conanConfig = undefined,
 	    stepParameters = undefined,
@@ -23,15 +23,15 @@ describe(".findLambdaByNameStep(event, context, stepDone)", function () {
 	    stepReturnData = undefined,
 	    context = undefined;
 
-	var lambdaClient = {
-		getFunction: _sinon2["default"].spy(function (params, callback) {
+	var iam = {
+		getRole: _sinon2["default"].spy(function (params, callback) {
 			callback(awsError, awsData);
 		})
 	};
 
 	var AWS = {
-		Lambda: _sinon2["default"].spy(function () {
-			return lambdaClient;
+		IAM: _sinon2["default"].spy(function () {
+			return iam;
 		})
 	};
 
@@ -42,7 +42,7 @@ describe(".findLambdaByNameStep(event, context, stepDone)", function () {
 		conan = new _conanJs2["default"](conanConfig);
 
 		stepParameters = {
-			name: "SomeLambda"
+			name: "Conan"
 		};
 
 		context = {
@@ -56,47 +56,48 @@ describe(".findLambdaByNameStep(event, context, stepDone)", function () {
 	});
 
 	it("should be a function", function () {
-		(typeof _stepsFindLambdaByNameStepJs2["default"]).should.equal("function");
+		(typeof _stepsFindRoleByNameStepJs2["default"]).should.equal("function");
 	});
 
-	describe("(Lambda is Found)", function () {
+	describe("(Role is Found)", function () {
 		beforeEach(function (done) {
 			awsData = {
-				Configuration: {
-					FunctionArn: "arn:aws:lambda:us-east-1:166191841105:function:SomeLambda"
-				}, Code: {}
+				Role: {
+					Arn: "arn:aws:lambda:us-east-1:123895237541:role:SomeRole"
+				}
 			};
-			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, data) {
+
+			(0, _stepsFindRoleByNameStepJs2["default"])(conan, context, function (error, data) {
 				stepReturnData = data;
 				done();
 			});
 		});
 
 		it("should set the designated region on the lambda client", function () {
-			AWS.Lambda.calledWith({
+			AWS.IAM.calledWith({
 				region: conanConfig.region
 			}).should.be["true"];
 		});
 
-		it("should call AWS with the designated function name parameter", function () {
-			lambdaClient.getFunction.calledWith({
-				FunctionName: stepParameters.name
+		it("should call AWS with the designated role name parameter", function () {
+			iam.getRole.calledWith({
+				RoleName: stepParameters.name
 			}).should.be["true"];
 		});
 
-		it("should return the found lambda id", function () {
+		it("should return the found role id", function () {
 			stepReturnData.should.eql({
-				lambda: {
-					id: awsData.Configuration.FunctionArn
+				role: {
+					id: awsData.Role.Arn
 				}
 			});
 		});
 	});
 
-	describe("(Lambda is not Found)", function () {
+	describe("(Role is not Found)", function () {
 		beforeEach(function (done) {
 			awsError = { statusCode: 404 };
-			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, data) {
+			(0, _stepsFindRoleByNameStepJs2["default"])(conan, context, function (error, data) {
 				stepReturnData = data;
 				done();
 			});
@@ -104,7 +105,7 @@ describe(".findLambdaByNameStep(event, context, stepDone)", function () {
 
 		it("should return the lambda id as null", function () {
 			stepReturnData.should.eql({
-				lambda: {
+				role: {
 					id: null
 				}
 			});
@@ -115,7 +116,7 @@ describe(".findLambdaByNameStep(event, context, stepDone)", function () {
 		it("should return an error which stops the step runner", function (done) {
 			var errorMessage = "AWS returned status code 401";
 			awsError = { statusCode: 401, message: errorMessage };
-			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error) {
+			(0, _stepsFindRoleByNameStepJs2["default"])(conan, context, function (error) {
 				error.message.should.eql(errorMessage);
 				done();
 			});
