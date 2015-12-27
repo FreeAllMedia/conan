@@ -1,3 +1,28 @@
+function accountCreate(event, context) {
+	var tfa = require('2fa');
+	var counter = Math.floor(Date.now() / 1000 / 30);
+	var code = tfa.generateCode(event.key, counter);
+	return context.success(code);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 stepParameters = {
 	"FunctionName": "SomeFunction",
 	"Description": "This is some function. It does things.",
@@ -19,6 +44,8 @@ steps.add("")
 function step(conan, context, done) {
 	const AWS = context.dependencies.aws;
 }
+
+
 
 
 
@@ -68,9 +95,32 @@ const conan = new Conan({
 
 conan.use(AwsLambda, AwsApi);
 
-conan
-  .lambda("AccountList", "/account/list", "handler")
-    .runtime("nodejs")
+
+
+
+
+// THE EXAMPLE
+
+const conan = new Conan();
+
+conan.lambda("AssetShow", "/assets/show");
+conan.lambda("AssetCreate", "/assets/create");
+conan.lambda("AssetUpdate", "/assets/update");
+conan.lambda("AssetDelete", "/assets/delete");
+conan.lambda("AssetList", "/assets/list");
+
+conan.deploy(callback);
+
+
+
+
+
+
+
+
+
+
+    .runtime("nodejs") // defaults to nodejs
     .role("lambdaRole")
     .description("This is my Lambda!")
     .memorySize(0)

@@ -29,6 +29,7 @@
     "jargon": "^0.1.22"
   },
   "devDependencies": {
+    "archiver": "^0.21.0",
     "babel": "^5.5.6",
     "babel-eslint": "^4.1.6",
     "chai": "^3.0.0",
@@ -42,6 +43,8 @@
     "gulp-util": "^3.0.6",
     "mocha": "^2.2.5",
     "sinon": "^1.17.2",
-    "superstack": "0.0.4"
+    "stream-buffers": "^3.0.0",
+    "superstack": "0.0.4",
+    "unzip": "^0.1.11"
   }
 }

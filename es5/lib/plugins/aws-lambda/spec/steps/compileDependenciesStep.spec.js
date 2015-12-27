@@ -1,78 +1,121 @@
 "use strict";
 
-// import compileDependenciesStep from "../../steps/compileDependenciesStep.js";
-//
-//
-// // TODO: for this step, instead of using a shell cli command to call thaumaturgy
-// // it's better to just invoke the lambda using the aws sdk
-// // this compile step is: invoke + uncompress + copying around
-// // or it can be three different steps which will result in more specs and
-// // a more complex step shared communication in exchange of reusable steps
-// // so it's maybe an early optimization at this point
-//
-// // TIP: almost exact aws sdk invoke example in the very same thaumaturgy source code:
-// // https://github.com/nicosommi/thaumaturgy/blob/master/cli/thaumaturgy-build#L92
-//
-// describe("compileDependenciesStep", () => {
-// 	let conan,
-// 		context,
-// 		constructorSpy,
-// 		invokeSpy;
-//
-// 	class Lambda {
-// 		constructor(params) {
-// 			constructorSpy(params);
-// 		}
-//
-// 		invoke(params, callback) {
-// 			invokeSpy(params, callback);
-// 		}
-// 	}
-//
-// 	beforeEach(() => {
-// 		context = {
-// 			parameters: {
-// 				name: "test Lambda"
-// 			},
-// 			dependencies: {
-// 				aws: {
-// 					Lambda
-// 				}
-// 			}
-// 		};
-//
-// 		conan = { config:
-// 			{ "region": "us-east-1" }
-// 		};
-// 	});
-//
-// 	it("should be a function", () => {
-// 		(typeof compileDependenciesStep).should.equal("function");
-// 	});
-//
-// 	describe("(calling thaumaturgy lambda)", () => {
-// 		beforeEach(done => {
-// 			compileDependenciesStep(conan, context, () => {
-// 				done();
-// 			});
-// 		});
-//
-// 		it("should invoke the thaumaturgy lambda function");
-//
-// 		describe("(parameters)", () => {
-// 			it("should send the correct parameters to the Lambda constructor");
-// 			it("should send the correct parameters to the Lambda invoke");
-// 		});
-//
-// 		describe("(response)", () => {
-// 			it("should set the result path folder in the result");
-// 			it("should create the specified path");
-// 			it("should use a tmp directory");
-// 			it("should uncompress the zip file");
-// 		});
-//
-// 		describe("(error)", () => {
-// 			it("should return the error");
-// 		});
-// 	});
-// });
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _conanJs = require("../../../../conan.js");
+
+var _conanJs2 = _interopRequireDefault(_conanJs);
+
+var _stepsCompileDependenciesStepJs = require("../../steps/compileDependenciesStep.js");
+
+var _stepsCompileDependenciesStepJs2 = _interopRequireDefault(_stepsCompileDependenciesStepJs);
+
+var _sinon = require("sinon");
+
+var _sinon2 = _interopRequireDefault(_sinon);
+
+describe(".compileDependenciesStep(conan, context, stepDone)", function () {
+	var conan = undefined,
+	    context = undefined,
+	    stepDone = undefined,
+	    lambdaResponseError = undefined,
+	    lambdaResponseData = undefined,
+	    s3ResponseError = undefined,
+	    s3ResponseData = undefined,
+	    stepReturnError = undefined,
+	    stepReturnData = undefined,
+	    payload = undefined;
+
+	var mockLambda = {
+		invoke: _sinon2["default"].spy(function (params, callback) {
+			callback(lambdaResponseError, lambdaResponseData);
+		})
+	};
+
+	var mockGetObjectStream = {};
+
+	var mockS3 = {
+		getObject: _sinon2["default"].spy(function (params) {
+			return mockGetObjectStream;
+		})
+	};
+
+	var MockAWS = {
+		S3: _sinon2["default"].spy(function () {
+			return mockS3;
+		}),
+		Lambda: _sinon2["default"].spy(function () {
+			return mockLambda;
+		})
+	};
+
+	beforeEach(function (done) {
+		conan = new _conanJs2["default"]({
+			region: "us-east-1"
+		});
+
+		payload = {
+			packages: { "dovima": "^1.0.0" },
+			bucket: "some-bucket-here",
+			key: "something.zip"
+		};
+
+		context = {
+			parameters: payload,
+			dependencies: { AWS: MockAWS },
+			results: {}
+		};
+
+		// "Lambda Found" response by default
+		lambdaResponseData = {};
+		lambdaResponseError = null;
+
+		stepDone = function (afterStepCallback) {
+			return function (error, data) {
+				stepReturnError = error;
+				stepReturnData = data;
+				afterStepCallback();
+			};
+		};
+
+		(0, _stepsCompileDependenciesStepJs2["default"])(conan, context, stepDone(done));
+	});
+
+	it("should be a function", function () {
+		(typeof _stepsCompileDependenciesStepJs2["default"]).should.equal("function");
+	});
+
+	it("should set the designated region on the lambda client", function () {
+		MockAWS.Lambda.calledWith({
+			region: conan.config.region
+		}).should.be["true"];
+	});
+
+	it("should set the designated region on the s3 client", function () {
+		MockAWS.S3.calledWith({
+			region: conan.config.region
+		}).should.be["true"];
+	});
+
+	it("should call AWS with the designated lambda parameters", function () {
+		mockLambda.invoke.firstCall.args[0].should.eql({
+			FunctionName: "Thaumaturgy",
+			InvocationType: "RequestResponse",
+			LogType: "Tail",
+			Payload: JSON.stringify(payload)
+		});
+	});
+
+	it("should call AWS with the designated S3 parameters", function () {
+		mockS3.getObject.firstCall.args[0].should.eql({
+			Bucket: payload.bucket,
+			Key: payload.key
+		});
+	});
+
+	it("should return the dependency zip files read stream", function () {
+		stepReturnData.should.eql({
+			dependencyZipStream: mockGetObjectStream
+		});
+	});
+});

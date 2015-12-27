@@ -1,5 +1,3 @@
-"use strict";
-
 // import Conan from "../../../../conan.js";
 // import upsertLambdaStep from "../../steps/upsertLambdaStep.js";
 // import sinon from "sinon";

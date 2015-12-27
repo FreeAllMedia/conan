@@ -14,80 +14,81 @@ var _sinon = require("sinon");
 
 var _sinon2 = _interopRequireDefault(_sinon);
 
-describe(".findLambdaByNameStep(event, context, stepDone)", function () {
+describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 	var conan = undefined,
-	    conanConfig = undefined,
-	    stepParameters = undefined,
-	    awsError = undefined,
-	    awsData = undefined,
-	    stepReturnData = undefined,
-	    context = undefined;
+	    context = undefined,
+	    stepDone = undefined,
+	    awsResponseError = undefined,
+	    awsResponseData = undefined,
+	    stepReturnError = undefined,
+	    stepReturnData = undefined;
 
-	var lambdaClient = {
+	var mockLambda = {
 		getFunction: _sinon2["default"].spy(function (params, callback) {
-			callback(awsError, awsData);
+			callback(awsResponseError, awsResponseData);
 		})
 	};
 
-	var AWS = {
+	var MockAWS = {
 		Lambda: _sinon2["default"].spy(function () {
-			return lambdaClient;
+			return mockLambda;
 		})
 	};
 
-	beforeEach(function () {
-		conanConfig = {
+	beforeEach(function (done) {
+		conan = new _conanJs2["default"]({
 			region: "us-east-1"
-		};
-		conan = new _conanJs2["default"](conanConfig);
-
-		stepParameters = {
-			name: "SomeLambda"
-		};
+		});
 
 		context = {
-			parameters: stepParameters,
-			dependencies: { AWS: AWS },
+			parameters: {
+				name: "Conan"
+			},
+			dependencies: { AWS: MockAWS },
 			results: {}
 		};
 
-		awsData = null;
-		awsError = null;
+		// "Lambda Found" response by default
+		awsResponseData = {
+			Configuration: {
+				FunctionArn: "arn:aws:lambda:us-east-1:123895237541:function:SomeLambda"
+			},
+			Code: {}
+		};
+		awsResponseError = null;
+
+		stepDone = function (afterStepCallback) {
+			return function (error, data) {
+				stepReturnError = error;
+				stepReturnData = data;
+				afterStepCallback();
+			};
+		};
+
+		(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, stepDone(done));
 	});
 
 	it("should be a function", function () {
 		(typeof _stepsFindLambdaByNameStepJs2["default"]).should.equal("function");
 	});
 
+	it("should set the designated region on the lambda client", function () {
+		MockAWS.Lambda.calledWith({
+			region: conan.config.region
+		}).should.be["true"];
+	});
+
+	it("should call AWS with the designated lambda name parameter", function () {
+		mockLambda.getFunction.calledWith({
+			FunctionName: context.parameters.name
+		}).should.be["true"];
+	});
+
 	describe("(Lambda is Found)", function () {
-		beforeEach(function (done) {
-			awsData = {
-				Configuration: {
-					FunctionArn: "arn:aws:lambda:us-east-1:166191841105:function:SomeLambda"
-				}, Code: {}
-			};
-			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, data) {
-				stepReturnData = data;
-				done();
-			});
-		});
-
-		it("should set the designated region on the lambda client", function () {
-			AWS.Lambda.calledWith({
-				region: conanConfig.region
-			}).should.be["true"];
-		});
-
-		it("should call AWS with the designated function name parameter", function () {
-			lambdaClient.getFunction.calledWith({
-				FunctionName: stepParameters.name
-			}).should.be["true"];
-		});
-
 		it("should return the found lambda id", function () {
 			stepReturnData.should.eql({
 				lambda: {
-					id: awsData.Configuration.FunctionArn
+					id: awsResponseData.Configuration.FunctionArn
 				}
 			});
 		});
@@ -95,30 +96,27 @@ describe(".findLambdaByNameStep(event, context, stepDone)", function () {
 
 	describe("(Lambda is not Found)", function () {
 		beforeEach(function (done) {
-			awsError = { statusCode: 404 };
-			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, data) {
-				stepReturnData = data;
-				done();
-			});
+			awsResponseError = { statusCode: 404 };
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, stepDone(done));
 		});
 
 		it("should return the lambda id as null", function () {
-			stepReturnData.should.eql({
-				lambda: {
-					id: null
-				}
-			});
+			var expectedData = { lambda: { id: null } };
+			stepReturnData.should.eql(expectedData);
 		});
 	});
 
 	describe("(Unknown Error is Returned)", function () {
-		it("should return an error which stops the step runner", function (done) {
-			var errorMessage = "AWS returned status code 401";
-			awsError = { statusCode: 401, message: errorMessage };
-			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error) {
-				error.message.should.eql(errorMessage);
-				done();
-			});
+		var errorMessage = undefined;
+
+		beforeEach(function (done) {
+			errorMessage = "AWS returned status code 401";
+			awsResponseError = { statusCode: 401, message: errorMessage };
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, stepDone(done));
+		});
+
+		it("should return an error which stops the step runner", function () {
+			stepReturnError.message.should.eql(errorMessage);
 		});
 	});
 });

@@ -59,11 +59,9 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 
 	describe("(steps)", function () {
 		it("should add a find lambda by name step", function () {
-			var matchedStep = conan.steps.all.filter(function (step) {
-				return step.handler.name === "findLambdaByNameStep";
-			})[0];
+			var step = conan.steps.findByName("findLambdaByNameStep");
 
-			matchedStep.parameters.should.eql({
+			step.parameters.should.eql({
 				name: name,
 				filePath: filePath,
 				handler: handler
