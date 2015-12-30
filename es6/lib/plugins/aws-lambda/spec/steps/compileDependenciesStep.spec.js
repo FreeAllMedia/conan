@@ -1,6 +1,12 @@
 import Conan from "../../../../conan.js";
 import compileDependenciesStep from "../../steps/compileDependenciesStep.js";
 import sinon from "sinon";
+import fs from "fs";
+import path from "path";
+import temp from "temp";
+import unzip from "unzip2";
+
+temp.track();
 
 describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 	let conan,
@@ -24,11 +30,15 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 		})
 	};
 
-	const mockGetObjectStream = {};
+	const mockS3GetObjectRequest = {
+		createReadStream: () => {
+			return fs.createReadStream(__dirname + "/fixtures/dependencies.zip");
+		}
+	};
 
 	const mockS3 = {
 		getObject: sinon.spy((params) => {
-			return mockGetObjectStream;
+			return mockS3GetObjectRequest;
 		})
 	};
 
@@ -47,30 +57,37 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 		});
 
 		payload = {
-			packages: { "dovima": "^1.0.0" },
+			packages: { "async": "1.0.0" },
 			bucket: "some-bucket-here",
-			key: "something.zip"
+			key: "accountCreate.dependencies.zip"
 		};
 
-		context = {
-			parameters: payload,
-			dependencies: { AWS: MockAWS },
-			results: {}
-		};
-
-		// "Lambda Found" response by default
-		lambdaResponseData = {};
-		lambdaResponseError = null;
-
-		stepDone = (afterStepCallback) => {
-			return (error, data) => {
-				stepReturnError = error;
-				stepReturnData = data;
-				afterStepCallback();
+		temp.mkdir("compileDependencies", (error, temporaryDirectoryPath) => {
+			context = {
+				temporaryDirectoryPath: temporaryDirectoryPath,
+				parameters: payload,
+				dependencies: { AWS: MockAWS },
+				results: {}
 			};
-		};
 
-		compileDependenciesStep(conan, context, stepDone(done));
+			// "Lambda Found" response by default
+			lambdaResponseData = {};
+			lambdaResponseError = null;
+
+			stepDone = (afterStepCallback) => {
+				return (error, data) => {
+					stepReturnError = error;
+					stepReturnData = data;
+					afterStepCallback();
+				};
+			};
+
+			compileDependenciesStep(conan, context, stepDone(done));
+		});
+	});
+
+	afterEach(done => {
+		temp.cleanup(done);
 	});
 
 	it("should be a function", () => {
@@ -105,9 +122,42 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 		});
 	});
 
-	it("should return the dependency zip files read stream", () => {
-		stepReturnData.should.eql({
-			dependencyZipStream: mockGetObjectStream
-		});
-	})
+	it("should have all dependency files within the dependency zip", done => {
+		let zipFilePaths = [];
+
+		fs.createReadStream(stepReturnData.dependencyZipFilePath)
+			.pipe(unzip.Parse())
+			.on("entry", (entry) => {
+				zipFilePaths.push(entry.path);
+			})
+			.on("close", () => {
+				const asyncFilePaths = [
+					"async/.jshintrc",
+					"async/.travis.yml",
+					"async/CHANGELOG.md",
+					"async/LICENSE",
+					"async/README.md",
+					"async/bower.json",
+					"async/component.json",
+					"async/lib/",
+					"async/lib/async.js",
+					"async/package.json",
+					"async/support/",
+					"async/support/sync-package-managers.js"
+				];
+
+				zipFilePaths.should.have.members(asyncFilePaths);
+
+				done();
+			});
+	});
+
+	it("should return the dependency zip file's file path", () => {
+		fs.existsSync(stepReturnData.dependencyZipFilePath).should.be.true;
+	});
+
+	it("should name the dependency zip file according to the lambda name", () => {
+		const dependencyZipFileName = path.basename(stepReturnData.dependencyZipFilePath);
+		dependencyZipFileName.should.eql("accountCreate.dependencies.zip");
+	});
 });

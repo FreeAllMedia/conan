@@ -9,17 +9,13 @@ export default function findRoleByNameStep(conan, context, stepDone) {
 	}, (error, responseData) => {
 		if (error && error.statusCode === 404) {
 			stepDone(null, {
-				role: {
-					id: null
-				}
+				roleArn: null
 			});
 		} else if (error) {
 			stepDone(error);
 		} else {
 			stepDone(null, {
-				role: {
-					id: responseData.Role.Arn
-				}
+				roleArn: responseData.Role.Arn
 			});
 		}
 	});

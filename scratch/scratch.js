@@ -1,9 +1,28 @@
 function accountCreate(event, context) {
-	var tfa = require('2fa');
-	var counter = Math.floor(Date.now() / 1000 / 30);
-	var code = tfa.generateCode(event.key, counter);
-	return context.success(code);
+	const account = new Account(event);
+	account.save(() => {
+		context.successful(account.id);
+	});
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -103,11 +122,11 @@ conan.use(AwsLambda, AwsApi);
 
 const conan = new Conan();
 
-conan.lambda("AssetShow", "/assets/show");
-conan.lambda("AssetCreate", "/assets/create");
-conan.lambda("AssetUpdate", "/assets/update");
-conan.lambda("AssetDelete", "/assets/delete");
-conan.lambda("AssetList", "/assets/list");
+conan.lambda("AssetShow", 	"/assets/show.js");
+conan.lambda("AssetCreate", "/assets/create.js");
+conan.lambda("AssetUpdate", "/assets/update.js");
+conan.lambda("AssetDelete", "/assets/delete.js");
+conan.lambda("AssetList", 	"/assets/list.js");
 
 conan.deploy(callback);
 
@@ -190,12 +209,13 @@ conan
     .stage("test")
       .get("/accounts/{id}")
         .cast("id", "integer")
-
         .path("id", "identifiers")
         .header("Access-Token", "credentials")
         .header("Api-Key", "credentials")
         .queryString("page", "search")
-        .lambda("AccountList", "/secret/account/list.handler")
+        .lambda("AccountList");
+
+conan.deploy();
 
 
         conanContext.getConfig("cors", "defaultValue");

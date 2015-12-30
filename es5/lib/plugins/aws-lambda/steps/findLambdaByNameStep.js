@@ -16,17 +16,13 @@ function findLambdaByNameStep(conan, context, stepDone) {
 	}, function (error, responseData) {
 		if (error && error.statusCode === 404) {
 			stepDone(null, {
-				lambda: {
-					id: null
-				}
+				lambdaArn: null
 			});
 		} else if (error) {
 			stepDone(error);
 		} else {
 			stepDone(null, {
-				lambda: {
-					id: responseData.Configuration.FunctionArn
-				}
+				lambdaArn: responseData.Configuration.FunctionArn
 			});
 		}
 	});

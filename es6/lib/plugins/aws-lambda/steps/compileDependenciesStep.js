@@ -1,3 +1,6 @@
+import temp from "temp";
+import fs from "fs";
+
 export default function compileDependenciesStep(conan, context, stepDone) {
 	const AWS = context.dependencies.AWS;
 
@@ -17,13 +20,21 @@ export default function compileDependenciesStep(conan, context, stepDone) {
 	};
 
 	lambda.invoke(parameters, (error, data) => {
-		const dependencyZipStream = s3.getObject({
+		const dependencyZipReadStream = s3.getObject({
 			Bucket: context.parameters.bucket,
 			Key: context.parameters.key,
+		}).createReadStream();
+
+		const dependencyZipFileName = context.parameters.key;
+		const dependencyZipFilePath = `${context.temporaryDirectoryPath}/${dependencyZipFileName}`;
+		const dependencyZipWriteStream = fs.createWriteStream(dependencyZipFilePath);
+
+		dependencyZipWriteStream.on("close", () => {
+			stepDone(null, {
+				dependencyZipFilePath: dependencyZipFilePath
+			});
 		});
 
-		stepDone(null, {
-			dependencyZipStream: dependencyZipStream
-		});
+		dependencyZipReadStream.pipe(dependencyZipWriteStream);
 	});
 }

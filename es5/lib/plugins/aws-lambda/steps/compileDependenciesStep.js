@@ -5,6 +5,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = compileDependenciesStep;
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _temp = require("temp");
+
+var _temp2 = _interopRequireDefault(_temp);
+
+var _fs = require("fs");
+
+var _fs2 = _interopRequireDefault(_fs);
+
 function compileDependenciesStep(conan, context, stepDone) {
 	var AWS = context.dependencies.AWS;
 
@@ -24,14 +34,22 @@ function compileDependenciesStep(conan, context, stepDone) {
 	};
 
 	lambda.invoke(parameters, function (error, data) {
-		var dependencyZipStream = s3.getObject({
+		var dependencyZipReadStream = s3.getObject({
 			Bucket: context.parameters.bucket,
 			Key: context.parameters.key
+		}).createReadStream();
+
+		var dependencyZipFileName = context.parameters.key;
+		var dependencyZipFilePath = context.temporaryDirectoryPath + "/" + dependencyZipFileName;
+		var dependencyZipWriteStream = _fs2["default"].createWriteStream(dependencyZipFilePath);
+
+		dependencyZipWriteStream.on("close", function () {
+			stepDone(null, {
+				dependencyZipFilePath: dependencyZipFilePath
+			});
 		});
 
-		stepDone(null, {
-			dependencyZipStream: dependencyZipStream
-		});
+		dependencyZipReadStream.pipe(dependencyZipWriteStream);
 	});
 }
 

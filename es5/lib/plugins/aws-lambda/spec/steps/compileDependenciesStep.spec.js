@@ -14,6 +14,24 @@ var _sinon = require("sinon");
 
 var _sinon2 = _interopRequireDefault(_sinon);
 
+var _fs = require("fs");
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _path = require("path");
+
+var _path2 = _interopRequireDefault(_path);
+
+var _temp = require("temp");
+
+var _temp2 = _interopRequireDefault(_temp);
+
+var _unzip2 = require("unzip2");
+
+var _unzip22 = _interopRequireDefault(_unzip2);
+
+_temp2["default"].track();
+
 describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 	var conan = undefined,
 	    context = undefined,
@@ -32,11 +50,15 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 		})
 	};
 
-	var mockGetObjectStream = {};
+	var mockS3GetObjectRequest = {
+		createReadStream: function createReadStream() {
+			return _fs2["default"].createReadStream(__dirname + "/fixtures/dependencies.zip");
+		}
+	};
 
 	var mockS3 = {
 		getObject: _sinon2["default"].spy(function (params) {
-			return mockGetObjectStream;
+			return mockS3GetObjectRequest;
 		})
 	};
 
@@ -55,30 +77,37 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 		});
 
 		payload = {
-			packages: { "dovima": "^1.0.0" },
+			packages: { "async": "1.0.0" },
 			bucket: "some-bucket-here",
-			key: "something.zip"
+			key: "accountCreate.dependencies.zip"
 		};
 
-		context = {
-			parameters: payload,
-			dependencies: { AWS: MockAWS },
-			results: {}
-		};
-
-		// "Lambda Found" response by default
-		lambdaResponseData = {};
-		lambdaResponseError = null;
-
-		stepDone = function (afterStepCallback) {
-			return function (error, data) {
-				stepReturnError = error;
-				stepReturnData = data;
-				afterStepCallback();
+		_temp2["default"].mkdir("compileDependencies", function (error, temporaryDirectoryPath) {
+			context = {
+				temporaryDirectoryPath: temporaryDirectoryPath,
+				parameters: payload,
+				dependencies: { AWS: MockAWS },
+				results: {}
 			};
-		};
 
-		(0, _stepsCompileDependenciesStepJs2["default"])(conan, context, stepDone(done));
+			// "Lambda Found" response by default
+			lambdaResponseData = {};
+			lambdaResponseError = null;
+
+			stepDone = function (afterStepCallback) {
+				return function (error, data) {
+					stepReturnError = error;
+					stepReturnData = data;
+					afterStepCallback();
+				};
+			};
+
+			(0, _stepsCompileDependenciesStepJs2["default"])(conan, context, stepDone(done));
+		});
+	});
+
+	afterEach(function (done) {
+		_temp2["default"].cleanup(done);
 	});
 
 	it("should be a function", function () {
@@ -113,9 +142,26 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 		});
 	});
 
-	it("should return the dependency zip files read stream", function () {
-		stepReturnData.should.eql({
-			dependencyZipStream: mockGetObjectStream
+	it("should have all dependency files within the dependency zip", function (done) {
+		var zipFilePaths = [];
+
+		_fs2["default"].createReadStream(stepReturnData.dependencyZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
+			zipFilePaths.push(entry.path);
+		}).on("close", function () {
+			var asyncFilePaths = ["async/.jshintrc", "async/.travis.yml", "async/CHANGELOG.md", "async/LICENSE", "async/README.md", "async/bower.json", "async/component.json", "async/lib/", "async/lib/async.js", "async/package.json", "async/support/", "async/support/sync-package-managers.js"];
+
+			zipFilePaths.should.have.members(asyncFilePaths);
+
+			done();
 		});
+	});
+
+	it("should return the dependency zip file's file path", function () {
+		_fs2["default"].existsSync(stepReturnData.dependencyZipFilePath).should.be["true"];
+	});
+
+	it("should name the dependency zip file according to the lambda name", function () {
+		var dependencyZipFileName = _path2["default"].basename(stepReturnData.dependencyZipFilePath);
+		dependencyZipFileName.should.eql("accountCreate.dependencies.zip");
 	});
 });

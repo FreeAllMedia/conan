@@ -87,9 +87,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 	describe("(Lambda is Found)", function () {
 		it("should return the found lambda id", function () {
 			stepReturnData.should.eql({
-				lambda: {
-					id: awsResponseData.Configuration.FunctionArn
-				}
+				lambdaArn: awsResponseData.Configuration.FunctionArn
 			});
 		});
 	});
@@ -100,8 +98,8 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, stepDone(done));
 		});
 
-		it("should return the lambda id as null", function () {
-			var expectedData = { lambda: { id: null } };
+		it("should return the lambda arn as null", function () {
+			var expectedData = { lambdaArn: null };
 			stepReturnData.should.eql(expectedData);
 		});
 	});

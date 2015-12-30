@@ -86,9 +86,7 @@ describe(".findRoleByNameStep(conan, context, stepDone)", function () {
 	describe("(Role is Found)", function () {
 		it("should return the found role id", function () {
 			stepReturnData.should.eql({
-				role: {
-					id: awsResponseData.Role.Arn
-				}
+				roleArn: awsResponseData.Role.Arn
 			});
 		});
 	});
@@ -100,7 +98,7 @@ describe(".findRoleByNameStep(conan, context, stepDone)", function () {
 		});
 
 		it("should return the lambda id as null", function () {
-			var expectedData = { role: { id: null } };
+			var expectedData = { roleArn: null };
 			stepReturnData.should.eql(expectedData);
 		});
 	});

@@ -2,6 +2,8 @@ import ConanSteps from "../../../lib/components/conanSteps.js";
 import Conan from "../../../lib/conan.js";
 
 import sinon from "sinon";
+import temp from "temp";
+import fs from "fs";
 
 describe("conanSteps.start(callback)", () => {
 	let conan,
@@ -9,18 +11,25 @@ describe("conanSteps.start(callback)", () => {
 			stepOne,
 			stepOneParameters,
 			stepTwo,
-			stepTwoParameters;
+			stepTwoParameters,
 
-	beforeEach(() => {
+			temporaryFilePath;
+
+	beforeEach(done => {
 		conan = new Conan();
 		steps = new ConanSteps(conan);
 
-		stepOne = sinon.spy((parentConan, context, done) => {
-			done(null, {apiId: 15});
+		steps.dependency("sinon", sinon);
+
+		stepOne = sinon.spy((parentConan, context, stepDone) => {
+			temporaryFilePath = `${context.temporaryDirectoryPath}/temp.file`;
+			fs.writeFile(temporaryFilePath, "Hello!", () => {
+				stepDone(null, {apiId: 15});
+			});
 		});
 
-		stepTwo = sinon.spy((parentConan, context, done) => {
-			done(null, {stageId: 8});
+		stepTwo = sinon.spy((parentConan, context, stepDone) => {
+			stepDone(null, {stageId: 8});
 		});
 
 		stepOneParameters = {"apiName": "test-dev"};
@@ -28,49 +37,59 @@ describe("conanSteps.start(callback)", () => {
 
 		stepTwoParameters = {"stageName": "production"};
 		steps.add(stepTwo, stepTwoParameters);
+
+		steps.start(done);
 	});
 
-	it("should run all step functions in order", done => {
-		steps.start((error) => {
-			sinon.assert.callOrder(stepOne, stepTwo);
-			done(error);
+	it("should run all step functions in order", () => {
+		sinon.assert.callOrder(stepOne, stepTwo);
+	});
+
+	it("should pass conan as the first argument to each step", () => {
+		stepOne.firstCall.args[0].should.eql(conan);
+	});
+
+	it("should pass the step parameters through the context", () => {
+		stepOne.firstCall.args[1].parameters.should.eql(stepOneParameters);
+	});
+
+	it("should pass the step dependencies through the context", () => {
+		stepOne.firstCall.args[1].dependencies.should.eql({
+			sinon: sinon
 		});
 	});
 
-	it("should pass conan as the first argument to each step", done => {
-		steps.start((error) => {
-			stepOne.firstCall.args[0].should.eql(conan);
-			done(error);
+	it("should pass the step a temp directory path through the context", () => {
+		stepOne.firstCall.args[1].temporaryDirectoryPath.should.include("conanSteps");
+	});
+
+	it("should pass the step results through the context", () => {
+		stepTwo.firstCall.args[1].results.should.eql({
+			apiId: 15
 		});
 	});
 
-	it("should pass the step context as the second argument to each step", done => {
-		steps.start((error) => {
-			stepOne.firstCall.args[1].should.eql({
-				dependencies: {},
-				parameters: stepOneParameters,
-				results: {}
+	it("should pass step callback as the last argument to each step", () => {
+		(typeof stepOne.firstCall.args[2]).should.equal("function");
+	});
+
+	describe("(Temp Directory)", () => {
+		it("should create the temp directory", done => {
+			const stepThree = sinon.spy((parentConan, context, stepDone) => {
+				fs.existsSync(context.temporaryDirectoryPath).should.be.true;
+				stepDone();
 			});
-			done(error);
-		});
-	});
-	it("should pass step callback as the last argument to each step", done => {
-		steps.start((error) => {
-			(typeof stepOne.firstCall.args[2]).should.equal("function");
-			done(error);
-		});
-	});
-
-	it("should pass results to each next step", done => {
-		steps.start((error) => {
-			stepTwo.firstCall.args[1].should.eql({
-				dependencies: {},
-				parameters: stepTwoParameters,
-				results: {
-					apiId: 15
-				}
+			steps.add(stepThree, {});
+			steps.start(() => {
+				done();
 			});
-			done(error);
 		});
+
+		// it("should track and remove all temp files after all steps have finished", done => {
+		// 	fs.exists(temporaryFilePath, tempfileExists => {
+		// 		tempfileExists.should.be.false;
+		// 		done();
+		// 	});
+		// });
 	});
 });
