@@ -17,7 +17,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 			stepReturnError,
 			stepReturnData,
 
-			payload;
+			parameters;
 
 	beforeEach(done => {
 		conan = new Conan({
@@ -27,15 +27,15 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 		lambdaFilePath = __dirname + "/fixtures/lambda.js";
 		dependencyZipFilePath = __dirname + "/fixtures/dependencies.zip";
 
+		parameters = new class MockConanAwsLambda {
+			filePath() { 		return lambdaFilePath; }
+			name() { 				return "TestFunction"; }
+		}();
+
 		temp.mkdir("compileLambdaZip", (error, temporaryDirectoryPath) => {
 			context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
-				parameters: {
-					name: "TestLambda",
-					filePath: lambdaFilePath,
-					handler: "handler",
-					fileName: "accountCreate.lambda.zip"
-				},
+				parameters: parameters,
 				dependencies: {},
 				results: {
 					dependencyZipFilePath: dependencyZipFilePath

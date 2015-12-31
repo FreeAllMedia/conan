@@ -1,6 +1,10 @@
 "use strict";
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _conanJs = require("../../../../conan.js");
 
@@ -21,7 +25,8 @@ describe(".findRoleByNameStep(conan, context, stepDone)", function () {
 	    awsResponseError = undefined,
 	    awsResponseData = undefined,
 	    stepReturnError = undefined,
-	    stepReturnData = undefined;
+	    stepReturnData = undefined,
+	    parameters = undefined;
 
 	var mockIam = {
 		getRole: _sinon2["default"].spy(function (params, callback) {
@@ -40,10 +45,23 @@ describe(".findRoleByNameStep(conan, context, stepDone)", function () {
 			region: "us-east-1"
 		});
 
+		parameters = new ((function () {
+			function MockConanAwsLambda() {
+				_classCallCheck(this, MockConanAwsLambda);
+			}
+
+			_createClass(MockConanAwsLambda, [{
+				key: "name",
+				value: function name() {
+					return "TestFunction";
+				}
+			}]);
+
+			return MockConanAwsLambda;
+		})())();
+
 		context = {
-			parameters: {
-				name: "Conan"
-			},
+			parameters: parameters,
 			dependencies: { AWS: MockAWS },
 			results: {}
 		};
@@ -79,7 +97,7 @@ describe(".findRoleByNameStep(conan, context, stepDone)", function () {
 
 	it("should call AWS with the designated role name parameter", function () {
 		mockIam.getRole.calledWith({
-			RoleName: context.parameters.name
+			RoleName: context.parameters.name()
 		}).should.be["true"];
 	});
 

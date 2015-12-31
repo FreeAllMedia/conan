@@ -9,8 +9,11 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 
 			awsResponseError,
 			awsResponseData,
+
 			stepReturnError,
-			stepReturnData;
+			stepReturnData,
+
+			parameters;
 
 	const mockLambda = {
 		getFunction: sinon.spy((params, callback) => {
@@ -29,10 +32,12 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 			region: "us-east-1"
 		});
 
+		parameters = new class MockConanAwsLambda {
+			name() { return "TestFunction"; }
+		}();
+
 		context = {
-			parameters: {
-				name: "Conan"
-			},
+			parameters: parameters,
 			dependencies: { AWS: MockAWS },
 			results: {}
 		};
@@ -69,7 +74,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 
 	it("should call AWS with the designated lambda name parameter", () => {
 		mockLambda.getFunction.calledWith({
-			FunctionName: context.parameters.name
+			FunctionName: context.parameters.name()
 		}).should.be.true;
 	});
 

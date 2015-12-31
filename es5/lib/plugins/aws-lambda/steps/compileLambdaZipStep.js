@@ -27,10 +27,16 @@ var _unzip2 = require("unzip2");
 
 var _unzip22 = _interopRequireDefault(_unzip2);
 
+var _jargon = require("jargon");
+
+var _jargon2 = _interopRequireDefault(_jargon);
+
 function compileLambdaZipStep(conan, context, stepDone) {
+	var conanAwsLambda = context.parameters;
+
 	var dependencyZipFilePath = context.results.dependencyZipFilePath;
 
-	var lambdaFilepath = context.parameters.filePath;
+	var lambdaFilepath = conanAwsLambda.filePath();
 	var lambdaFilename = _path2["default"].basename(lambdaFilepath);
 	var lambdaReadStream = _fs2["default"].createReadStream(lambdaFilepath);
 
@@ -43,7 +49,8 @@ function compileLambdaZipStep(conan, context, stepDone) {
 			lambdaZip.append(entry, { name: entry.path });
 		}
 	}).on("close", function () {
-		var lambdaZipFilePath = context.temporaryDirectoryPath + "/" + context.parameters.fileName;
+		var lambdaZipFileName = (0, _jargon2["default"])(conanAwsLambda.name()).snake.toString();
+		var lambdaZipFilePath = context.temporaryDirectoryPath + "/" + lambdaZipFileName + ".zip";
 		var lambdaZipWriteStream = _fs2["default"].createWriteStream(lambdaZipFilePath);
 
 		lambdaZipWriteStream.on("close", function () {

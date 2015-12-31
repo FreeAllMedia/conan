@@ -5,7 +5,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = upsertLambdaStep;
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _fs = require("fs");
+
+var _fs2 = _interopRequireDefault(_fs);
+
 function upsertLambdaStep(conan, context, stepDone) {
+	var conanAwsLambda = context.parameters;
 	var AWS = context.dependencies.AWS;
 	var lambda = AWS.Lambda({ region: conan.config.region });
 
@@ -13,7 +20,7 @@ function upsertLambdaStep(conan, context, stepDone) {
 	var lambdaIsNew = lambdaArn === undefined;
 
 	if (lambdaIsNew) {
-		lambda.createFunction(context.parameters, function (createFunctionError, data) {
+		lambda.createFunction(conanAwsLambda, function (createFunctionError, data) {
 			if (createFunctionError) {
 				throw createFunctionError;
 			}
@@ -23,21 +30,21 @@ function upsertLambdaStep(conan, context, stepDone) {
 		});
 	} else {
 		var updateConfigurationParameters = {
-			FunctionName: context.parameters.FunctionName,
-			Handler: context.parameters.Handler,
-			Role: context.parameters.Role,
-			Description: context.parameters.Description,
-			MemorySize: context.parameters.MemorySize,
-			Timeout: context.parameters.Timeout
+			FunctionName: conanAwsLambda.name(),
+			Handler: conanAwsLambda.handler(),
+			Role: conanAwsLambda.role(),
+			Description: conanAwsLambda.description(),
+			MemorySize: conanAwsLambda.memorySize(),
+			Timeout: conanAwsLambda.timeout()
 		};
 		lambda.updateFunctionConfiguration(updateConfigurationParameters, function (updateConfigurationError) {
 			if (updateConfigurationError) {
 				throw updateConfigurationError;
 			}
 			var updateCodeParameters = {
-				ZipFile: context.parameters.Code.ZipFile,
-				FunctionName: context.parameters.FunctionName,
-				Publish: context.parameters.Publish
+				ZipFile: _fs2["default"].readFileSync(context.results.lambdaZipFilePath),
+				FunctionName: conanAwsLambda.name(),
+				Publish: conanAwsLambda.publish()
 			};
 			lambda.updateFunctionCode(updateCodeParameters, function (updateCodeError, data) {
 				if (updateCodeError) {

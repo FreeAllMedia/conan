@@ -12,7 +12,7 @@ function findRoleByNameStep(conan, context, stepDone) {
 	});
 
 	iam.getRole({
-		"RoleName": context.parameters.name
+		"RoleName": context.parameters.name()
 	}, function (error, responseData) {
 		if (error && error.statusCode === 404) {
 			stepDone(null, {

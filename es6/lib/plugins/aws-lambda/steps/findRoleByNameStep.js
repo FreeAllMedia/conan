@@ -5,7 +5,7 @@ export default function findRoleByNameStep(conan, context, stepDone) {
 	});
 
 	iam.getRole({
-		"RoleName": context.parameters.name
+		"RoleName": context.parameters.name()
 	}, (error, responseData) => {
 		if (error && error.statusCode === 404) {
 			stepDone(null, {

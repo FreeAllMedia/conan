@@ -30,16 +30,20 @@ function compileDependenciesStep(conan, context, stepDone) {
 		FunctionName: "Thaumaturgy",
 		InvocationType: "RequestResponse",
 		LogType: "Tail",
-		Payload: JSON.stringify(context.parameters)
+		Payload: JSON.stringify({
+			packages: context.parameters.packages(),
+			bucket: context.parameters.bucket(),
+			key: context.parameters.key()
+		})
 	};
 
 	lambda.invoke(parameters, function (error, data) {
 		var dependencyZipReadStream = s3.getObject({
-			Bucket: context.parameters.bucket,
-			Key: context.parameters.key
+			Bucket: context.parameters.bucket(),
+			Key: context.parameters.key()
 		}).createReadStream();
 
-		var dependencyZipFileName = context.parameters.key;
+		var dependencyZipFileName = context.parameters.key();
 		var dependencyZipFilePath = context.temporaryDirectoryPath + "/" + dependencyZipFileName;
 		var dependencyZipWriteStream = _fs2["default"].createWriteStream(dependencyZipFilePath);
 

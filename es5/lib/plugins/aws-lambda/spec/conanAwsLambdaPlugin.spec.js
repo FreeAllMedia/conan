@@ -58,7 +58,7 @@ describe("ConanAwsLambdaPlugin(conan)", function () {
 		});
 
 		it("should add the AWS dependency", function () {
-			dependencySpy.calledWith("aws", _awsSdk2["default"]).should.be["true"];
+			dependencySpy.calledWith("AWS", _awsSdk2["default"]).should.be["true"];
 		});
 	});
 

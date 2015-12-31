@@ -22,8 +22,21 @@ var _stepsFindLambdaByNameStepJs = require("../steps/findLambdaByNameStep.js");
 
 var _stepsFindLambdaByNameStepJs2 = _interopRequireDefault(_stepsFindLambdaByNameStepJs);
 
-// import upsertLambdaByNameStep from "../steps/upsertLambdaByNameStep.js";
-// import compileDependenciesStep from "../steps/compileDependenciesStep.js";
+var _stepsFindRoleByNameStepJs = require("../steps/findRoleByNameStep.js");
+
+var _stepsFindRoleByNameStepJs2 = _interopRequireDefault(_stepsFindRoleByNameStepJs);
+
+var _stepsCompileDependenciesStepJs = require("../steps/compileDependenciesStep.js");
+
+var _stepsCompileDependenciesStepJs2 = _interopRequireDefault(_stepsCompileDependenciesStepJs);
+
+var _stepsCompileLambdaZipStepJs = require("../steps/compileLambdaZipStep.js");
+
+var _stepsCompileLambdaZipStepJs2 = _interopRequireDefault(_stepsCompileLambdaZipStepJs);
+
+var _stepsUpsertLambdaStepJs = require("../steps/upsertLambdaStep.js");
+
+var _stepsUpsertLambdaStepJs2 = _interopRequireDefault(_stepsUpsertLambdaStepJs);
 
 var ConanAwsLambda = (function (_ConanComponent) {
 	_inherits(ConanAwsLambda, _ConanComponent);
@@ -39,7 +52,7 @@ var ConanAwsLambda = (function (_ConanComponent) {
 		value: function initialize(conan, name, filePath, handler) {
 			this.conan = conan;
 
-			this.parameters("name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish");
+			this.parameters("name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish", "key", "bucket", "packages");
 
 			this.name(name);
 			this.filePath(filePath);
@@ -48,7 +61,11 @@ var ConanAwsLambda = (function (_ConanComponent) {
 			// attach steps to conan
 			var parameters = this.parameters();
 
-			this.conan.steps.add(_stepsFindLambdaByNameStepJs2["default"], parameters);
+			this.conan.steps.add(_stepsFindLambdaByNameStepJs2["default"], this);
+			this.conan.steps.add(_stepsFindRoleByNameStepJs2["default"], this);
+			this.conan.steps.add(_stepsCompileDependenciesStepJs2["default"], this);
+			this.conan.steps.add(_stepsCompileLambdaZipStepJs2["default"], this);
+			this.conan.steps.add(_stepsUpsertLambdaStepJs2["default"], this);
 
 			// thaumaturgy compilation, download and extraction
 			// this.conan.steps.add(compileDependenciesStep, parameters);

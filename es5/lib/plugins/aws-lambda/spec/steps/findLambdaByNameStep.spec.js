@@ -1,6 +1,10 @@
 "use strict";
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _conanJs = require("../../../../conan.js");
 
@@ -21,7 +25,8 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 	    awsResponseError = undefined,
 	    awsResponseData = undefined,
 	    stepReturnError = undefined,
-	    stepReturnData = undefined;
+	    stepReturnData = undefined,
+	    parameters = undefined;
 
 	var mockLambda = {
 		getFunction: _sinon2["default"].spy(function (params, callback) {
@@ -40,10 +45,23 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 			region: "us-east-1"
 		});
 
+		parameters = new ((function () {
+			function MockConanAwsLambda() {
+				_classCallCheck(this, MockConanAwsLambda);
+			}
+
+			_createClass(MockConanAwsLambda, [{
+				key: "name",
+				value: function name() {
+					return "TestFunction";
+				}
+			}]);
+
+			return MockConanAwsLambda;
+		})())();
+
 		context = {
-			parameters: {
-				name: "Conan"
-			},
+			parameters: parameters,
 			dependencies: { AWS: MockAWS },
 			results: {}
 		};
@@ -80,7 +98,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 
 	it("should call AWS with the designated lambda name parameter", function () {
 		mockLambda.getFunction.calledWith({
-			FunctionName: context.parameters.name
+			FunctionName: context.parameters.name()
 		}).should.be["true"];
 	});
 

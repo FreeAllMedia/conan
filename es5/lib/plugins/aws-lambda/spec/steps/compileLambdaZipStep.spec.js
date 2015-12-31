@@ -1,6 +1,10 @@
 "use strict";
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _conanJs = require("../../../../conan.js");
 
@@ -35,7 +39,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 	    lambdaZipFilePath = undefined,
 	    stepReturnError = undefined,
 	    stepReturnData = undefined,
-	    payload = undefined;
+	    parameters = undefined;
 
 	beforeEach(function (done) {
 		conan = new _conanJs2["default"]({
@@ -45,15 +49,30 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 		lambdaFilePath = __dirname + "/fixtures/lambda.js";
 		dependencyZipFilePath = __dirname + "/fixtures/dependencies.zip";
 
+		parameters = new ((function () {
+			function MockConanAwsLambda() {
+				_classCallCheck(this, MockConanAwsLambda);
+			}
+
+			_createClass(MockConanAwsLambda, [{
+				key: "filePath",
+				value: function filePath() {
+					return lambdaFilePath;
+				}
+			}, {
+				key: "name",
+				value: function name() {
+					return "TestFunction";
+				}
+			}]);
+
+			return MockConanAwsLambda;
+		})())();
+
 		_temp2["default"].mkdir("compileLambdaZip", function (error, temporaryDirectoryPath) {
 			context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
-				parameters: {
-					name: "TestLambda",
-					filePath: lambdaFilePath,
-					handler: "handler",
-					fileName: "accountCreate.lambda.zip"
-				},
+				parameters: parameters,
 				dependencies: {},
 				results: {
 					dependencyZipFilePath: dependencyZipFilePath

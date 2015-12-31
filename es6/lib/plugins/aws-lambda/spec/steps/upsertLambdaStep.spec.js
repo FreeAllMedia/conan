@@ -25,7 +25,9 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 			stepReturnError,
 			stepReturnData,
 
-			parameters;
+			parameters,
+			lambdaZipFilePath,
+			lambdaFilePath;
 
 	const mockLambda = {
 		createFunction: sinon.spy((params, callback) => {
@@ -50,23 +52,21 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 			region: "us-east-1"
 		});
 
-		const roleArn = "arn:aws:lambda:us-east-1:123895237541:role:SomeRole";
-		const lambdaZipFilePath = __dirname + "/fixtures/lambda.zip";
 		const lambdaArn = "arn:aws:lambda:us-east-1:123895237541:function:SomeLambda";
+		const roleArn = "arn:aws:lambda:us-east-1:123895237541:role:SomeRole";
 
-		parameters = {
-			Code: {
-				ZipFile: fileSystem.readFileSync(lambdaZipFilePath)
-			},
-			FunctionName: "TestFunction",
-			Handler: "lambda.handler",
-			Role: roleArn,
-			Runtime: "nodejs",
-			Description: "This is my Lambda!",
-			MemorySize: 128,
-			Publish: true,
-			Timeout: 3
-		};
+		lambdaFilePath = __dirname + "/fixtures/lambda.js";
+		lambdaZipFilePath = __dirname + "/fixtures/lambda.zip";
+
+		parameters = new class MockConanAwsLambda {
+			name() { 				return "TestFunction"; }
+			handler() { 		return "handler"; }
+			role() { 				return roleArn; }
+			description() { return "This is my Lambda!"; }
+			memorySize() { 	return 128; }
+			publish() { 		return true; }
+			timeout() { 		return 3; }
+		}();
 
 		context = {
 			parameters: parameters,
@@ -121,21 +121,21 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 	describe("(When Lambda is NOT New)", () => {
 		it("should call AWS to update the lambda configuration with the designated parameters", () => {
 			const updateConfigurationParameters = {
-				FunctionName: parameters.FunctionName,
-				Handler: parameters.Handler,
-				Role: parameters.Role,
-				Description: parameters.Description,
-				MemorySize: parameters.MemorySize,
-				Timeout: parameters.Timeout
+				FunctionName: parameters.name(),
+				Handler: parameters.handler(),
+				Role: parameters.role(),
+				Description: parameters.description(),
+				MemorySize: parameters.memorySize(),
+				Timeout: parameters.timeout()
 			};
 			mockLambda.updateFunctionConfiguration.firstCall.args[0].should.eql(updateConfigurationParameters);
 		});
 
 		it("should call AWS to update the lambda with the designated code", () => {
 			const updateCodeParameters = {
-				ZipFile: parameters.Code.ZipFile,
-				FunctionName: parameters.FunctionName,
-				Publish: parameters.Publish
+				ZipFile: fileSystem.readFileSync(lambdaZipFilePath),
+				FunctionName: parameters.name(),
+				Publish: parameters.publish()
 			};
 			mockLambda.updateFunctionCode.firstCall.args[0].should.eql(updateCodeParameters);
 		});

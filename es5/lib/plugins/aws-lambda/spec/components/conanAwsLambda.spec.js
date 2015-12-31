@@ -43,7 +43,7 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 	});
 
 	describe("(parameters)", function () {
-		["name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish"].forEach(function (parameterName) {
+		["name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish", "packages", "bucket", "key"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function describeComponentParameter() {
@@ -60,12 +60,27 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 	describe("(steps)", function () {
 		it("should add a find lambda by name step", function () {
 			var step = conan.steps.findByName("findLambdaByNameStep");
+			step.parameters.should.eql(lambda);
+		});
 
-			step.parameters.should.eql({
-				name: name,
-				filePath: filePath,
-				handler: handler
-			});
+		it("should add a find role by name step", function () {
+			var step = conan.steps.findByName("findRoleByNameStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add a compile dependencies step", function () {
+			var step = conan.steps.findByName("compileDependenciesStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add compile lambda zip step", function () {
+			var step = conan.steps.findByName("compileLambdaZipStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add an upsert lambda step step", function () {
+			var step = conan.steps.findByName("upsertLambdaStep");
+			step.parameters.should.eql(lambda);
 		});
 	});
 });

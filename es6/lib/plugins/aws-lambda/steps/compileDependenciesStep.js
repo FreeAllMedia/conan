@@ -16,16 +16,20 @@ export default function compileDependenciesStep(conan, context, stepDone) {
 		FunctionName: "Thaumaturgy",
 		InvocationType: "RequestResponse",
 		LogType: "Tail",
-		Payload: JSON.stringify(context.parameters)
+		Payload: JSON.stringify({
+			packages: context.parameters.packages(),
+			bucket: context.parameters.bucket(),
+			key: context.parameters.key()
+		})
 	};
 
 	lambda.invoke(parameters, (error, data) => {
 		const dependencyZipReadStream = s3.getObject({
-			Bucket: context.parameters.bucket,
-			Key: context.parameters.key,
+			Bucket: context.parameters.bucket(),
+			Key: context.parameters.key(),
 		}).createReadStream();
 
-		const dependencyZipFileName = context.parameters.key;
+		const dependencyZipFileName = context.parameters.key();
 		const dependencyZipFilePath = `${context.temporaryDirectoryPath}/${dependencyZipFileName}`;
 		const dependencyZipWriteStream = fs.createWriteStream(dependencyZipFilePath);
 

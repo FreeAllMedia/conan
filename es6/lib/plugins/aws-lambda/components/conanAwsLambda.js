@@ -1,7 +1,9 @@
 import ConanComponent from "../../../components/conanComponent.js";
 import findLambdaByNameStep from "../steps/findLambdaByNameStep.js";
-// import upsertLambdaByNameStep from "../steps/upsertLambdaByNameStep.js";
-// import compileDependenciesStep from "../steps/compileDependenciesStep.js";
+import findRoleByNameStep from "../steps/findRoleByNameStep.js";
+import compileDependenciesStep from "../steps/compileDependenciesStep.js";
+import compileLambdaZipStep from "../steps/compileLambdaZipStep.js";
+import upsertLambdaStep from "../steps/upsertLambdaStep.js";
 
 export default class ConanAwsLambda extends ConanComponent {
 	initialize(conan, name, filePath, handler) {
@@ -16,7 +18,10 @@ export default class ConanAwsLambda extends ConanComponent {
 			"description",
 			"memorySize",
 			"timeout",
-			"publish"
+			"publish",
+			"key",
+			"bucket",
+			"packages"
 		);
 
 		this.name(name);
@@ -26,7 +31,11 @@ export default class ConanAwsLambda extends ConanComponent {
 		// attach steps to conan
 		const parameters = this.parameters();
 
-		this.conan.steps.add(findLambdaByNameStep, parameters);
+		this.conan.steps.add(findLambdaByNameStep, this);
+		this.conan.steps.add(findRoleByNameStep, this);
+		this.conan.steps.add(compileDependenciesStep, this);
+		this.conan.steps.add(compileLambdaZipStep, this);
+		this.conan.steps.add(upsertLambdaStep, this);
 
 
 		// thaumaturgy compilation, download and extraction

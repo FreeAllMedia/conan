@@ -9,8 +9,11 @@ describe(".findRoleByNameStep(conan, context, stepDone)", () => {
 
 			awsResponseError,
 			awsResponseData,
+
 			stepReturnError,
-			stepReturnData;
+			stepReturnData,
+
+			parameters;
 
 	const mockIam = {
 		getRole: sinon.spy((params, callback) => {
@@ -29,10 +32,12 @@ describe(".findRoleByNameStep(conan, context, stepDone)", () => {
 			region: "us-east-1"
 		});
 
+		parameters = new class MockConanAwsLambda {
+			name() { return "TestFunction"; }
+		}();
+
 		context = {
-			parameters: {
-				name: "Conan"
-			},
+			parameters: parameters,
 			dependencies: { AWS: MockAWS },
 			results: {}
 		};
@@ -68,7 +73,7 @@ describe(".findRoleByNameStep(conan, context, stepDone)", () => {
 
 	it("should call AWS with the designated role name parameter", () => {
 		mockIam.getRole.calledWith({
-			RoleName: context.parameters.name
+			RoleName: context.parameters.name()
 		}).should.be.true;
 	});
 

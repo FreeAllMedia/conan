@@ -40,7 +40,7 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 		});
 
 		it("should add the AWS dependency", () => {
-			dependencySpy.calledWith("aws", AWS).should.be.true;
+			dependencySpy.calledWith("AWS", AWS).should.be.true;
 		});
 	});
 

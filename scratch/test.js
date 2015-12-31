@@ -11,6 +11,56 @@ const unzip = require('unzip2');
 const through = require('through');
 const yauzl = require("yauzl");
 
+
+
+
+
+const Conan = require("../es5/lib/conan.js");
+const ConanAwsLambdaPlugin = require("../es5/lib/plugins/aws-lambda/conanAwsLambdaPlugin.js");
+
+const conan = new Conan({
+	region: "us-east-1"
+});
+
+conan.use(ConanAwsLambdaPlugin);
+
+conan
+	.lambda("TestLambda", "./lambda.js", "handler");
+
+conan.deploy(() => {
+	console.log("Deployment complete.");
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * compileDependenciesStep
  */
@@ -111,26 +161,26 @@ const yauzl = require("yauzl");
 
 
 
-
-
-var params = {
-  Code: {
-    ZipFile: fs.readFileSync(__dirname + "/lambda.zip")
-  },
-  FunctionName: "TestFunction", /* required */
-  Handler: "lambda.handler", /* required */
-  Role: 'bogus-role', /* required */
-  Runtime: 'nodejs', /* required */
-  Description: 'STRING_VALUE',
-  MemorySize: 128,
-  Publish: true,
-  Timeout: 3
-};
-
-lambda.createFunction(params, function(err, data) {
-  if (err) console.log(err, err.stack); // an error occurred
-  else     console.log(data);           // successful response
-});
+//
+//
+// var params = {
+//   Code: {
+//     ZipFile: fs.readFileSync(__dirname + "/lambda.zip")
+//   },
+//   FunctionName: "TestFunction", /* required */
+//   Handler: "lambda.handler", /* required */
+//   Role: 'bogus-role', /* required */
+//   Runtime: 'nodejs', /* required */
+//   Description: 'STRING_VALUE',
+//   MemorySize: 128,
+//   Publish: true,
+//   Timeout: 3
+// };
+//
+// lambda.createFunction(params, function(err, data) {
+//   if (err) console.log(err, err.stack); // an error occurred
+//   else     console.log(data);           // successful response
+// });
 
 // iam.getRole({
 // 	RoleName: "Bob"

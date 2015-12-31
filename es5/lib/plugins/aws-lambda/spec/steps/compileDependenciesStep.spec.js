@@ -42,9 +42,9 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 	    s3ResponseData = undefined,
 	    stepReturnError = undefined,
 	    stepReturnData = undefined,
-	    payload = undefined;
+	    parameters = undefined;
 
-	var mockLambda = {
+	var mockAwsLambda = {
 		invoke: _sinon2["default"].spy(function (params, callback) {
 			callback(lambdaResponseError, lambdaResponseData);
 		})
@@ -67,7 +67,7 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 			return mockS3;
 		}),
 		Lambda: _sinon2["default"].spy(function () {
-			return mockLambda;
+			return mockAwsLambda;
 		})
 	};
 
@@ -76,16 +76,22 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 			region: "us-east-1"
 		});
 
-		payload = {
-			packages: { "async": "1.0.0" },
-			bucket: "some-bucket-here",
-			key: "accountCreate.dependencies.zip"
+		parameters = {
+			packages: function packages() {
+				return { "async": "1.0.0" };
+			},
+			bucket: function bucket() {
+				return "some-bucket-here";
+			},
+			key: function key() {
+				return "accountCreate.dependencies.zip";
+			}
 		};
 
 		_temp2["default"].mkdir("compileDependencies", function (error, temporaryDirectoryPath) {
 			context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
-				parameters: payload,
+				parameters: parameters,
 				dependencies: { AWS: MockAWS },
 				results: {}
 			};
@@ -127,18 +133,22 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 	});
 
 	it("should call AWS with the designated lambda parameters", function () {
-		mockLambda.invoke.firstCall.args[0].should.eql({
+		mockAwsLambda.invoke.firstCall.args[0].should.eql({
 			FunctionName: "Thaumaturgy",
 			InvocationType: "RequestResponse",
 			LogType: "Tail",
-			Payload: JSON.stringify(payload)
+			Payload: JSON.stringify({
+				packages: parameters.packages(),
+				bucket: parameters.bucket(),
+				key: parameters.key()
+			})
 		});
 	});
 
 	it("should call AWS with the designated S3 parameters", function () {
 		mockS3.getObject.firstCall.args[0].should.eql({
-			Bucket: payload.bucket,
-			Key: payload.key
+			Bucket: parameters.bucket(),
+			Key: parameters.key()
 		});
 	});
 

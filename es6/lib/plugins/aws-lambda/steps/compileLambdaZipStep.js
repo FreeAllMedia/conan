@@ -3,11 +3,14 @@ import stream from "stream";
 import path from "path";
 import fs from "fs";
 import unzip from "unzip2";
+import inflect from "jargon";
 
 export default function compileLambdaZipStep(conan, context, stepDone) {
+	const conanAwsLambda = context.parameters;
+
 	const dependencyZipFilePath = context.results.dependencyZipFilePath;
 
-	const lambdaFilepath = context.parameters.filePath;
+	const lambdaFilepath = conanAwsLambda.filePath();
 	const lambdaFilename = path.basename(lambdaFilepath);
 	const lambdaReadStream = fs.createReadStream(lambdaFilepath);
 
@@ -23,7 +26,8 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 			}
 		})
 		.on("close", () => {
-			const lambdaZipFilePath = `${context.temporaryDirectoryPath}/${context.parameters.fileName}`;
+			const lambdaZipFileName = inflect(conanAwsLambda.name()).snake.toString();
+			const lambdaZipFilePath = `${context.temporaryDirectoryPath}/${lambdaZipFileName}.zip`;
 			const lambdaZipWriteStream = fs.createWriteStream(lambdaZipFilePath);
 
 			lambdaZipWriteStream.on("close", () => {

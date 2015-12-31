@@ -22,9 +22,9 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 			stepReturnError,
 			stepReturnData,
 
-			payload;
+			parameters;
 
-	const mockLambda = {
+	const mockAwsLambda = {
 		invoke: sinon.spy((params, callback) => {
 			callback(lambdaResponseError, lambdaResponseData);
 		})
@@ -47,7 +47,7 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 			return mockS3;
 		}),
 		Lambda: sinon.spy(() => {
-			return mockLambda;
+			return mockAwsLambda;
 		})
 	};
 
@@ -56,16 +56,16 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 			region: "us-east-1"
 		});
 
-		payload = {
-			packages: { "async": "1.0.0" },
-			bucket: "some-bucket-here",
-			key: "accountCreate.dependencies.zip"
+		parameters = {
+			packages: () => { return { "async": "1.0.0" }; },
+			bucket: () => { return "some-bucket-here"; },
+			key: () => { return "accountCreate.dependencies.zip"; }
 		};
 
 		temp.mkdir("compileDependencies", (error, temporaryDirectoryPath) => {
 			context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
-				parameters: payload,
+				parameters: parameters,
 				dependencies: { AWS: MockAWS },
 				results: {}
 			};
@@ -107,18 +107,22 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 	});
 
 	it("should call AWS with the designated lambda parameters", () => {
-		mockLambda.invoke.firstCall.args[0].should.eql({
+		mockAwsLambda.invoke.firstCall.args[0].should.eql({
 			FunctionName: "Thaumaturgy",
 			InvocationType: "RequestResponse",
 			LogType: "Tail",
-			Payload: JSON.stringify(payload)
+			Payload: JSON.stringify({
+				packages: parameters.packages(),
+				bucket: parameters.bucket(),
+				key: parameters.key()
+			})
 		});
 	});
 
 	it("should call AWS with the designated S3 parameters", () => {
 		mockS3.getObject.firstCall.args[0].should.eql({
-			Bucket: payload.bucket,
-			Key: payload.key
+			Bucket: parameters.bucket(),
+			Key: parameters.key()
 		});
 	});
 
