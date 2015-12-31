@@ -3,7 +3,7 @@ import privateData from "incognito";
 export default class ConanSteps {
 	constructor(parent) {
 		const _ = privateData(this);
-		_.dependencies = {};
+		_.libraries = {};
 		_.parent = parent;
 		_.steps = [];
 	}
@@ -36,7 +36,7 @@ export default class ConanSteps {
 		return require("./conanSteps/conanSteps.all.js").call(this);
 	}
 
-	dependency(name, value) {
-		return require("./conanSteps/conanSteps.dependency.js").call(this, name, value);
+	library(name, value) {
+		return require("./conanSteps/conanSteps.library.js").call(this, name, value);
 	}
 }

@@ -19,7 +19,7 @@ describe("conanSteps.start(callback)", () => {
 		conan = new Conan();
 		steps = new ConanSteps(conan);
 
-		steps.dependency("sinon", sinon);
+		steps.library("sinon", sinon);
 
 		stepOne = sinon.spy((parentConan, context, stepDone) => {
 			temporaryFilePath = `${context.temporaryDirectoryPath}/temp.file`;
@@ -53,8 +53,8 @@ describe("conanSteps.start(callback)", () => {
 		stepOne.firstCall.args[1].parameters.should.eql(stepOneParameters);
 	});
 
-	it("should pass the step dependencies through the context", () => {
-		stepOne.firstCall.args[1].dependencies.should.eql({
+	it("should pass the step libraries through the context", () => {
+		stepOne.firstCall.args[1].libraries.should.eql({
 			sinon: sinon
 		});
 	});

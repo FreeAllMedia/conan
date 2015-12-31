@@ -11,9 +11,7 @@ const unzip = require('unzip2');
 const through = require('through');
 const yauzl = require("yauzl");
 
-
-
-
+//-------
 
 const Conan = require("../es5/lib/conan.js");
 const ConanAwsLambdaPlugin = require("../es5/lib/plugins/aws-lambda/conanAwsLambdaPlugin.js");
@@ -24,17 +22,25 @@ const conan = new Conan({
 
 conan.use(ConanAwsLambdaPlugin);
 
-conan
-	.lambda("TestLambda", "./lambda.js", "handler");
+const lambdaName = "TestLambda";
+const lambdaFilePath = __dirname + "/lambda.js";
+const lambdaHandlerName = "handler";
+
+import AWS from "aws-sdk";
+
+const lambda = conan.lambda(lambdaName, lambdaFilePath,	lambdaHandlerName);
+lambda
+	.libraries("AWS", AWS)
+	.dependencies([
+		"./**/*.js",
+		"./**/*.json"
+	]);
 
 conan.deploy(() => {
 	console.log("Deployment complete.");
 });
 
-
-
-
-
+//-------
 
 
 

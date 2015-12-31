@@ -35,7 +35,7 @@ describe("conanSteps.start(callback)", function () {
 		conan = new _libConanJs2["default"]();
 		steps = new _libComponentsConanStepsJs2["default"](conan);
 
-		steps.dependency("sinon", _sinon2["default"]);
+		steps.library("sinon", _sinon2["default"]);
 
 		stepOne = _sinon2["default"].spy(function (parentConan, context, stepDone) {
 			temporaryFilePath = context.temporaryDirectoryPath + "/temp.file";
@@ -69,8 +69,8 @@ describe("conanSteps.start(callback)", function () {
 		stepOne.firstCall.args[1].parameters.should.eql(stepOneParameters);
 	});
 
-	it("should pass the step dependencies through the context", function () {
-		stepOne.firstCall.args[1].dependencies.should.eql({
+	it("should pass the step libraries through the context", function () {
+		stepOne.firstCall.args[1].libraries.should.eql({
 			sinon: _sinon2["default"]
 		});
 	});

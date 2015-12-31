@@ -34,6 +34,10 @@ var _unzip2 = require("unzip2");
 
 var _unzip22 = _interopRequireDefault(_unzip2);
 
+var _jargon = require("jargon");
+
+var _jargon2 = _interopRequireDefault(_jargon);
+
 _temp2["default"].track();
 
 describe(".upsertLambdaStep(conan, context, stepDone)", function () {
@@ -128,7 +132,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 
 		context = {
 			parameters: parameters,
-			dependencies: { AWS: MockAWS },
+			libraries: { AWS: MockAWS },
 			results: {
 				lambdaZipFilePath: lambdaZipFilePath,
 				roleArn: roleArn,
@@ -178,6 +182,8 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 
 	describe("(When Lambda is NOT New)", function () {
 		it("should call AWS to update the lambda configuration with the designated parameters", function () {
+			var lambdaFileName = (0, _jargon2["default"])(parameters.name()).camel.toString();
+			var handler = lambdaFileName + "." + parameters.handler();
 			var updateConfigurationParameters = {
 				FunctionName: parameters.name(),
 				Handler: parameters.handler(),

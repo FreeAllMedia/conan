@@ -2,7 +2,7 @@ import temp from "temp";
 import fs from "fs";
 
 export default function compileDependenciesStep(conan, context, stepDone) {
-	const AWS = context.dependencies.AWS;
+	const AWS = context.libraries.AWS;
 
 	const lambda = new AWS.Lambda({
 		region: conan.config.region

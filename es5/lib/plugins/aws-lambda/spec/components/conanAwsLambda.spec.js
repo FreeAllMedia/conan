@@ -43,7 +43,7 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 	});
 
 	describe("(parameters)", function () {
-		["name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish", "packages", "bucket", "key"].forEach(function (parameterName) {
+		["name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish", "packages", "bucket", "key", "dependencies"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function describeComponentParameter() {

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = findRoleByNameStep;
 
 function findRoleByNameStep(conan, context, stepDone) {
-	var AWS = context.dependencies.AWS;
+	var AWS = context.libraries.AWS;
 	var iam = new AWS.IAM({
 		region: conan.config.region
 	});

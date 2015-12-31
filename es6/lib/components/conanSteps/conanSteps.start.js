@@ -10,9 +10,10 @@ export default function start(callback) {
 
 	temp.mkdir("conanSteps", (error, temporaryDirectoryPath) => {
 		Async.mapSeries(_.steps, (step, done) => {
+
 			const context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
-				dependencies: _.dependencies,
+				libraries: _.libraries,
 				parameters: step.parameters,
 				results: Object.assign({}, accumulatedResults)
 			};
@@ -21,6 +22,7 @@ export default function start(callback) {
 				Object.assign(accumulatedResults, stepResult);
 				done(stepError, stepResult);
 			});
+
 		}, () => {
 			temp.cleanup(callback);
 		});

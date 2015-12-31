@@ -38,6 +38,10 @@ var _stepsUpsertLambdaStepJs = require("../steps/upsertLambdaStep.js");
 
 var _stepsUpsertLambdaStepJs2 = _interopRequireDefault(_stepsUpsertLambdaStepJs);
 
+var _incognito = require("incognito");
+
+var _incognito2 = _interopRequireDefault(_incognito);
+
 var ConanAwsLambda = (function (_ConanComponent) {
 	_inherits(ConanAwsLambda, _ConanComponent);
 
@@ -52,7 +56,7 @@ var ConanAwsLambda = (function (_ConanComponent) {
 		value: function initialize(conan, name, filePath, handler) {
 			this.conan = conan;
 
-			this.parameters("name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish", "key", "bucket", "packages");
+			this.parameters("name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish", "key", "bucket", "packages", "dependencies");
 
 			this.name(name);
 			this.filePath(filePath);

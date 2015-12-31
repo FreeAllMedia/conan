@@ -1,5 +1,5 @@
 export default function findLambdaByNameStep(conan, context, stepDone) {
-	const AWS = context.dependencies.AWS;
+	const AWS = context.libraries.AWS;
 	const lambda = AWS.Lambda({
 		region: conan.config.region
 	});

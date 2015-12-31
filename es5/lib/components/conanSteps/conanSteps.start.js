@@ -27,9 +27,10 @@ function start(callback) {
 
 	_temp2["default"].mkdir("conanSteps", function (error, temporaryDirectoryPath) {
 		_flowsync2["default"].mapSeries(_.steps, function (step, done) {
+
 			var context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
-				dependencies: _.dependencies,
+				libraries: _.libraries,
 				parameters: step.parameters,
 				results: Object.assign({}, accumulatedResults)
 			};

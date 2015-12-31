@@ -1,10 +1,21 @@
-function accountCreate(event, context) {
-	const account = new Account(event);
-	account.save(() => {
-		context.successful(account.id);
+// highScore.js
+import someFile from "./someFile.js";
+
+export default function handler(event, context) {
+	const highScore = new HighScore(event);
+	highScore.save(() => {
+		context.successful({id: highScore.id});
 	});
 }
 
+// ----
+export default function handler(event, context) {
+	const character = new Character({id: event.characterId});
+	character.move(event.move);
+	character.save(() => {
+		context.successful({id: highScore.id});
+	});
+}
 
 
 

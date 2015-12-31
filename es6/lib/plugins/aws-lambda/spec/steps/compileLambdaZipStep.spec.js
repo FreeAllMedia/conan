@@ -1,7 +1,7 @@
 import Conan from "../../../../conan.js";
 import compileLambdaZipStep from "../../steps/compileLambdaZipStep.js";
 import sinon from "sinon";
-import fs from "fs";
+import fileSystem from "fs";
 import unzip from "unzip";
 import temp from "temp";
 
@@ -11,7 +11,9 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 			stepDone,
 
 			lambdaFilePath,
-			dependencyZipFilePath,
+			dependencyFilePath,
+
+			packageZipFilePath,
 			lambdaZipFilePath,
 
 			stepReturnError,
@@ -25,20 +27,21 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 		});
 
 		lambdaFilePath = __dirname + "/fixtures/lambda.js";
-		dependencyZipFilePath = __dirname + "/fixtures/dependencies.zip";
+		packageZipFilePath = __dirname + "/fixtures/packages.zip";
 
 		parameters = new class MockConanAwsLambda {
-			filePath() { 		return lambdaFilePath; }
-			name() { 				return "TestFunction"; }
+			filePath() {	return lambdaFilePath; }
+			name() 		 {	return "TestFunction"; }
+			packages() { 	return [__dirname + "/fixtures/*.js"]; }
 		}();
 
 		temp.mkdir("compileLambdaZip", (error, temporaryDirectoryPath) => {
 			context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
 				parameters: parameters,
-				dependencies: {},
+				libraries: {},
 				results: {
-					dependencyZipFilePath: dependencyZipFilePath
+					packageZipFilePath: packageZipFilePath
 				}
 			};
 
@@ -59,9 +62,9 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 	});
 
 	it("should insert the correct data for the designated lambda into the zip file", done => {
-		const lambdaFileData = fs.readFileSync(lambdaFilePath);
+		const lambdaFileData = fileSystem.readFileSync(lambdaFilePath);
 
-		fs.createReadStream(stepReturnData.lambdaZipFilePath)
+		fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
 			.pipe(unzip.Parse())
 			.on("entry", (entry) => {
 				if (entry.path === "lambda.js") {
@@ -76,10 +79,28 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 			});
 	});
 
-	it("should insert the lambda file and its dependencies into the zip file", done => {
+	it("should insert the correct data for the designated packages into the zip file", done => {
+		const lambdaFileData = fileSystem.readFileSync(lambdaFilePath);
+
+		fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
+			.pipe(unzip.Parse())
+			.on("entry", (entry) => {
+				if (entry.path === "lambda.js") {
+					const Writable = require('stream').Writable;
+					const ws = Writable({ objectMode: true });
+					ws._write = (chunk, enc, next) => {
+							chunk.should.eql(lambdaFileData);
+							done();
+					};
+					entry.pipe(ws);
+				}
+			});
+	});0
+
+	it("should insert the lambda file and its packages into the zip file", done => {
 		let zipFilePaths = [];
 
-		fs.createReadStream(stepReturnData.lambdaZipFilePath)
+		fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
 			.pipe(unzip.Parse())
 			.on("entry", (entry) => {
 				zipFilePaths.push(entry.path);
@@ -87,16 +108,17 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 			.on("close", () => {
 				const asyncFilePaths = [
 					"lambda.js",
-					"async/.jshintrc",
-					"async/.travis.yml",
-					"async/CHANGELOG.md",
-					"async/LICENSE",
-					"async/README.md",
-					"async/bower.json",
-					"async/component.json",
-					"async/lib/async.js",
-					"async/package.json",
-					"async/support/sync-package-managers.js"
+					"save.js",
+					"node_modules/async/.jshintrc",
+					"node_modules/async/.travis.yml",
+					"node_modules/async/CHANGELOG.md",
+					"node_modules/async/LICENSE",
+					"node_modules/async/README.md",
+					"node_modules/async/bower.json",
+					"node_modules/async/component.json",
+					"node_modules/async/lib/async.js",
+					"node_modules/async/package.json",
+					"node_modules/async/support/sync-package-managers.js"
 				];
 
 				zipFilePaths.should.have.members(asyncFilePaths);
@@ -106,6 +128,6 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 	});
 
 	it("should return the lambda zip file path", () => {
-		fs.existsSync(stepReturnData.lambdaZipFilePath).should.be.true;
+		fileSystem.existsSync(stepReturnData.lambdaZipFilePath).should.be.true;
 	});
 });

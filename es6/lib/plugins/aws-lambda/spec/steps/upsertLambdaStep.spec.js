@@ -5,6 +5,7 @@ import fileSystem from "fs";
 import path from "path";
 import temp from "temp";
 import unzip from "unzip2";
+import inflect from "jargon";
 
 temp.track();
 
@@ -70,7 +71,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 		context = {
 			parameters: parameters,
-			dependencies: { AWS: MockAWS },
+			libraries: { AWS: MockAWS },
 			results: {
 				lambdaZipFilePath: lambdaZipFilePath,
 				roleArn: roleArn,
@@ -120,6 +121,8 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 	describe("(When Lambda is NOT New)", () => {
 		it("should call AWS to update the lambda configuration with the designated parameters", () => {
+			const lambdaFileName = inflect(parameters.name()).camel.toString();
+			const handler = `${lambdaFileName}.${parameters.handler()}`;
 			const updateConfigurationParameters = {
 				FunctionName: parameters.name(),
 				Handler: parameters.handler(),

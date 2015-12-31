@@ -38,7 +38,7 @@ describe(".findRoleByNameStep(conan, context, stepDone)", () => {
 
 		context = {
 			parameters: parameters,
-			dependencies: { AWS: MockAWS },
+			libraries: { AWS: MockAWS },
 			results: {}
 		};
 

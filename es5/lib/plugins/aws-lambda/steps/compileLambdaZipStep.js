@@ -46,7 +46,7 @@ function compileLambdaZipStep(conan, context, stepDone) {
 	_fs2["default"].createReadStream(dependencyZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
 		var isDirectory = entry.path.slice(-1) === "/";
 		if (!isDirectory) {
-			lambdaZip.append(entry, { name: entry.path });
+			lambdaZip.append(entry, { name: "node_modules/" + entry.path });
 		}
 	}).on("close", function () {
 		var lambdaZipFileName = (0, _jargon2["default"])(conanAwsLambda.name()).snake.toString();

@@ -92,7 +92,7 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 			context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
 				parameters: parameters,
-				dependencies: { AWS: MockAWS },
+				libraries: { AWS: MockAWS },
 				results: {}
 			};
 

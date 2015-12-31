@@ -16,7 +16,7 @@ var _fs = require("fs");
 var _fs2 = _interopRequireDefault(_fs);
 
 function compileDependenciesStep(conan, context, stepDone) {
-	var AWS = context.dependencies.AWS;
+	var AWS = context.libraries.AWS;
 
 	var lambda = new AWS.Lambda({
 		region: conan.config.region

@@ -8,21 +8,21 @@ var _libComponentsConanStepsJs = require("../../../lib/components/conanSteps.js"
 
 var _libComponentsConanStepsJs2 = _interopRequireDefault(_libComponentsConanStepsJs);
 
-describe("conanSteps.dependency(name, value)", function () {
+describe("conanSteps.library(name, value)", function () {
 	var conanSteps = undefined;
 
 	beforeEach(function () {
 		conanSteps = new _libComponentsConanStepsJs2["default"]();
 	});
 
-	it("should add dependency to each step's context", function (testDone) {
+	it("should add library to each step's context", function (testDone) {
 		var FakeAWS = function FakeAWS() {
 			_classCallCheck(this, FakeAWS);
 		};
 
-		conanSteps.dependency("AWS", FakeAWS);
+		conanSteps.library("AWS", FakeAWS);
 		function stepExample(conan, context, done) {
-			context.dependencies.AWS.should.eql(FakeAWS);
+			context.libraries.AWS.should.eql(FakeAWS);
 			done();
 		}
 		conanSteps.add(stepExample);

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = findLambdaByNameStep;
 
 function findLambdaByNameStep(conan, context, stepDone) {
-	var AWS = context.dependencies.AWS;
+	var AWS = context.libraries.AWS;
 	var lambda = AWS.Lambda({
 		region: conan.config.region
 	});

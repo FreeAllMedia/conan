@@ -5,7 +5,7 @@ export default class ConanAwsLambdaPlugin {
 	constructor (conan) {
 		conan.lambda = this.lambda;
 		conan.lambdas = {};
-		conan.steps.dependency("AWS", AWS);
+		conan.steps.library("AWS", AWS);
 	}
 
 	lambda(name, filePath, handlerName) {

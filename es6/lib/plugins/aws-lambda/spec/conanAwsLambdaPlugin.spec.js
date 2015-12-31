@@ -21,15 +21,16 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 	});
 
 	describe("(AWS)", () => {
-		let dependencySpy;
+		let librarySpy;
 		let fakeConan;
 
 		before(done => {
-			dependencySpy = sinon.spy();
+			librarySpy = sinon.spy();
+
 			fakeConan = {
 				steps: {
-					dependency: (name, value) => {
-						dependencySpy(name, value);
+					library: (name, value) => {
+						librarySpy(name, value);
 						done();
 					}
 				}
@@ -39,8 +40,8 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 			new ConanAwsLambdaPlugin(fakeConan);
 		});
 
-		it("should add the AWS dependency", () => {
-			dependencySpy.calledWith("AWS", AWS).should.be.true;
+		it("should add the AWS library", () => {
+			librarySpy.calledWith("AWS", AWS).should.be.true;
 		});
 	});
 

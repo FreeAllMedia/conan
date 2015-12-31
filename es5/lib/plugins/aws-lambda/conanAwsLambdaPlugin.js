@@ -24,7 +24,7 @@ var ConanAwsLambdaPlugin = (function () {
 
 		conan.lambda = this.lambda;
 		conan.lambdas = {};
-		conan.steps.dependency("AWS", _awsSdk2["default"]);
+		conan.steps.library("AWS", _awsSdk2["default"]);
 	}
 
 	_createClass(ConanAwsLambdaPlugin, [{

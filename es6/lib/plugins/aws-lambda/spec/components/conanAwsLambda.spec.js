@@ -40,7 +40,8 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", () => {
 			"publish",
 			"packages",
 			"bucket",
-			"key"
+			"key",
+			"dependencies"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
 

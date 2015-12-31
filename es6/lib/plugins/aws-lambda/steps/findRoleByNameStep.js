@@ -1,5 +1,5 @@
 export default function findRoleByNameStep(conan, context, stepDone) {
-	const AWS = context.dependencies.AWS;
+	const AWS = context.libraries.AWS;
 	const iam = new AWS.IAM({
 		region: conan.config.region
 	});

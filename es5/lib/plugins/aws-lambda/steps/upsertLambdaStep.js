@@ -13,7 +13,7 @@ var _fs2 = _interopRequireDefault(_fs);
 
 function upsertLambdaStep(conan, context, stepDone) {
 	var conanAwsLambda = context.parameters;
-	var AWS = context.dependencies.AWS;
+	var AWS = context.libraries.AWS;
 	var lambda = AWS.Lambda({ region: conan.config.region });
 
 	var lambdaArn = context.results.lambdaArn;

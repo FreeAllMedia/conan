@@ -39,15 +39,16 @@ describe("ConanAwsLambdaPlugin(conan)", function () {
 	});
 
 	describe("(AWS)", function () {
-		var dependencySpy = undefined;
+		var librarySpy = undefined;
 		var fakeConan = undefined;
 
 		before(function (done) {
-			dependencySpy = _sinon2["default"].spy();
+			librarySpy = _sinon2["default"].spy();
+
 			fakeConan = {
 				steps: {
-					dependency: function dependency(name, value) {
-						dependencySpy(name, value);
+					library: function library(name, value) {
+						librarySpy(name, value);
 						done();
 					}
 				}
@@ -57,8 +58,8 @@ describe("ConanAwsLambdaPlugin(conan)", function () {
 			new _conanAwsLambdaPluginJs2["default"](fakeConan);
 		});
 
-		it("should add the AWS dependency", function () {
-			dependencySpy.calledWith("AWS", _awsSdk2["default"]).should.be["true"];
+		it("should add the AWS library", function () {
+			librarySpy.calledWith("AWS", _awsSdk2["default"]).should.be["true"];
 		});
 	});
 
