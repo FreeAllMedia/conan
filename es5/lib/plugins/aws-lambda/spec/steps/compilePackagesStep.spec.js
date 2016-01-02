@@ -6,9 +6,9 @@ var _conanJs = require("../../../../conan.js");
 
 var _conanJs2 = _interopRequireDefault(_conanJs);
 
-var _stepsCompileDependenciesStepJs = require("../../steps/compileDependenciesStep.js");
+var _stepsCompilePackagesStepJs = require("../../steps/compilePackagesStep.js");
 
-var _stepsCompileDependenciesStepJs2 = _interopRequireDefault(_stepsCompileDependenciesStepJs);
+var _stepsCompilePackagesStepJs2 = _interopRequireDefault(_stepsCompilePackagesStepJs);
 
 var _sinon = require("sinon");
 
@@ -32,7 +32,7 @@ var _unzip22 = _interopRequireDefault(_unzip2);
 
 _temp2["default"].track();
 
-describe(".compileDependenciesStep(conan, context, stepDone)", function () {
+describe(".compilePackagesStep(conan, context, stepDone)", function () {
 	var conan = undefined,
 	    context = undefined,
 	    stepDone = undefined,
@@ -88,7 +88,7 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 			}
 		};
 
-		_temp2["default"].mkdir("compileDependencies", function (error, temporaryDirectoryPath) {
+		_temp2["default"].mkdir("compilePackages", function (error, temporaryDirectoryPath) {
 			context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
 				parameters: parameters,
@@ -108,7 +108,7 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 				};
 			};
 
-			(0, _stepsCompileDependenciesStepJs2["default"])(conan, context, stepDone(done));
+			(0, _stepsCompilePackagesStepJs2["default"])(conan, context, stepDone(done));
 		});
 	});
 
@@ -117,7 +117,7 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 	});
 
 	it("should be a function", function () {
-		(typeof _stepsCompileDependenciesStepJs2["default"]).should.equal("function");
+		(typeof _stepsCompilePackagesStepJs2["default"]).should.equal("function");
 	});
 
 	it("should set the designated region on the lambda client", function () {
@@ -152,10 +152,10 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 		});
 	});
 
-	it("should have all dependency files within the dependency zip", function (done) {
+	it("should have all package files within the package zip", function (done) {
 		var zipFilePaths = [];
 
-		_fs2["default"].createReadStream(stepReturnData.dependencyZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
+		_fs2["default"].createReadStream(stepReturnData.packageZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
 			zipFilePaths.push(entry.path);
 		}).on("close", function () {
 			var asyncFilePaths = ["async/.jshintrc", "async/.travis.yml", "async/CHANGELOG.md", "async/LICENSE", "async/README.md", "async/bower.json", "async/component.json", "async/lib/", "async/lib/async.js", "async/package.json", "async/support/", "async/support/sync-package-managers.js"];
@@ -166,12 +166,12 @@ describe(".compileDependenciesStep(conan, context, stepDone)", function () {
 		});
 	});
 
-	it("should return the dependency zip file's file path", function () {
-		_fs2["default"].existsSync(stepReturnData.dependencyZipFilePath).should.be["true"];
+	it("should return the package zip file's file path", function () {
+		_fs2["default"].existsSync(stepReturnData.packageZipFilePath).should.be["true"];
 	});
 
-	it("should name the dependency zip file according to the lambda name", function () {
-		var dependencyZipFileName = _path2["default"].basename(stepReturnData.dependencyZipFilePath);
-		dependencyZipFileName.should.eql("accountCreate.dependencies.zip");
+	it("should name the package zip file according to the lambda name", function () {
+		var packageZipFileName = _path2["default"].basename(stepReturnData.packageZipFilePath);
+		packageZipFileName.should.eql("accountCreate.dependencies.zip");
 	});
 });

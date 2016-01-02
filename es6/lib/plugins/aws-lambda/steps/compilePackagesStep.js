@@ -1,7 +1,7 @@
 import temp from "temp";
 import fs from "fs";
 
-export default function compileDependenciesStep(conan, context, stepDone) {
+export default function compilePackagesStep(conan, context, stepDone) {
 	const AWS = context.libraries.AWS;
 
 	const lambda = new AWS.Lambda({
@@ -24,21 +24,21 @@ export default function compileDependenciesStep(conan, context, stepDone) {
 	};
 
 	lambda.invoke(parameters, (error, data) => {
-		const dependencyZipReadStream = s3.getObject({
+		const packageZipReadStream = s3.getObject({
 			Bucket: context.parameters.bucket(),
 			Key: context.parameters.key(),
 		}).createReadStream();
 
-		const dependencyZipFileName = context.parameters.key();
-		const dependencyZipFilePath = `${context.temporaryDirectoryPath}/${dependencyZipFileName}`;
-		const dependencyZipWriteStream = fs.createWriteStream(dependencyZipFilePath);
+		const packageZipFileName = context.parameters.key();
+		const packageZipFilePath = `${context.temporaryDirectoryPath}/${packageZipFileName}`;
+		const packageZipWriteStream = fs.createWriteStream(packageZipFilePath);
 
-		dependencyZipWriteStream.on("close", () => {
+		packageZipWriteStream.on("close", () => {
 			stepDone(null, {
-				dependencyZipFilePath: dependencyZipFilePath
+				packageZipFilePath: packageZipFilePath
 			});
 		});
 
-		dependencyZipReadStream.pipe(dependencyZipWriteStream);
+		packageZipReadStream.pipe(packageZipWriteStream);
 	});
 }

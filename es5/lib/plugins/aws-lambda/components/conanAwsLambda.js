@@ -26,9 +26,9 @@ var _stepsFindRoleByNameStepJs = require("../steps/findRoleByNameStep.js");
 
 var _stepsFindRoleByNameStepJs2 = _interopRequireDefault(_stepsFindRoleByNameStepJs);
 
-var _stepsCompileDependenciesStepJs = require("../steps/compileDependenciesStep.js");
+var _stepsCompilePackagesStepJs = require("../steps/compilePackagesStep.js");
 
-var _stepsCompileDependenciesStepJs2 = _interopRequireDefault(_stepsCompileDependenciesStepJs);
+var _stepsCompilePackagesStepJs2 = _interopRequireDefault(_stepsCompilePackagesStepJs);
 
 var _stepsCompileLambdaZipStepJs = require("../steps/compileLambdaZipStep.js");
 
@@ -63,21 +63,11 @@ var ConanAwsLambda = (function (_ConanComponent) {
 			this.handler(handler);
 
 			// attach steps to conan
-			var parameters = this.parameters();
-
 			this.conan.steps.add(_stepsFindLambdaByNameStepJs2["default"], this);
 			this.conan.steps.add(_stepsFindRoleByNameStepJs2["default"], this);
-			this.conan.steps.add(_stepsCompileDependenciesStepJs2["default"], this);
+			this.conan.steps.add(_stepsCompilePackagesStepJs2["default"], this);
 			this.conan.steps.add(_stepsCompileLambdaZipStepJs2["default"], this);
 			this.conan.steps.add(_stepsUpsertLambdaStepJs2["default"], this);
-
-			// thaumaturgy compilation, download and extraction
-			// this.conan.steps.add(compileDependenciesStep, parameters);
-			// tmp folder build with necessary code & zip creation
-			// upload zip to s3
-			// find lambda
-			// create/update lambda
-			//this.conan.steps.add(upsertLambdaByNameStep, parameters);
 		}
 	}]);
 

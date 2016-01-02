@@ -14,10 +14,6 @@ var _stepsCompileLambdaZipStepJs = require("../../steps/compileLambdaZipStep.js"
 
 var _stepsCompileLambdaZipStepJs2 = _interopRequireDefault(_stepsCompileLambdaZipStepJs);
 
-var _sinon = require("sinon");
-
-var _sinon2 = _interopRequireDefault(_sinon);
-
 var _fs = require("fs");
 
 var _fs2 = _interopRequireDefault(_fs);
@@ -35,10 +31,8 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 	    context = undefined,
 	    stepDone = undefined,
 	    lambdaFilePath = undefined,
-	    dependencyFilePath = undefined,
+	    dependencyFilePaths = undefined,
 	    packageZipFilePath = undefined,
-	    lambdaZipFilePath = undefined,
-	    stepReturnError = undefined,
 	    stepReturnData = undefined,
 	    parameters = undefined;
 
@@ -47,6 +41,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 			region: "us-east-1"
 		});
 
+		dependencyFilePaths = __dirname + "/fixtures/save.js";
 		lambdaFilePath = __dirname + "/fixtures/lambda.js";
 		packageZipFilePath = __dirname + "/fixtures/packages.zip";
 
@@ -66,9 +61,9 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 					return "TestFunction";
 				}
 			}, {
-				key: "packages",
-				value: function packages() {
-					return [__dirname + "/fixtures/*.js"];
+				key: "dependencies",
+				value: function dependencies() {
+					return dependencyFilePaths;
 				}
 			}]);
 
@@ -86,8 +81,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 			};
 
 			stepDone = function (callback) {
-				return function (error, data) {
-					stepReturnError = error;
+				return function (callbackError, data) {
 					stepReturnData = data;
 					callback();
 				};
@@ -101,53 +95,72 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 		(typeof _stepsCompileLambdaZipStepJs2["default"]).should.equal("function");
 	});
 
-	it("should insert the correct data for the designated lambda into the zip file", function (done) {
-		var lambdaFileData = _fs2["default"].readFileSync(lambdaFilePath);
-
-		_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip2["default"].Parse()).on("entry", function (entry) {
-			if (entry.path === "lambda.js") {
-				var Writable = require('stream').Writable;
-				var ws = Writable({ objectMode: true });
-				ws._write = function (chunk, enc, next) {
-					chunk.should.eql(lambdaFileData);
-					done();
-				};
-				entry.pipe(ws);
-			}
-		});
-	});
-
-	it("should insert the correct data for the designated packages into the zip file", function (done) {
-		var lambdaFileData = _fs2["default"].readFileSync(lambdaFilePath);
-
-		_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip2["default"].Parse()).on("entry", function (entry) {
-			if (entry.path === "lambda.js") {
-				var Writable = require('stream').Writable;
-				var ws = Writable({ objectMode: true });
-				ws._write = function (chunk, enc, next) {
-					chunk.should.eql(lambdaFileData);
-					done();
-				};
-				entry.pipe(ws);
-			}
-		});
-	});0;
-
-	it("should insert the lambda file and its packages into the zip file", function (done) {
-		var zipFilePaths = [];
-
-		_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip2["default"].Parse()).on("entry", function (entry) {
-			zipFilePaths.push(entry.path);
-		}).on("close", function () {
-			var asyncFilePaths = ["lambda.js", "save.js", "node_modules/async/.jshintrc", "node_modules/async/.travis.yml", "node_modules/async/CHANGELOG.md", "node_modules/async/LICENSE", "node_modules/async/README.md", "node_modules/async/bower.json", "node_modules/async/component.json", "node_modules/async/lib/async.js", "node_modules/async/package.json", "node_modules/async/support/sync-package-managers.js"];
-
-			zipFilePaths.should.have.members(asyncFilePaths);
-
-			done();
-		});
-	});
-
 	it("should return the lambda zip file path", function () {
 		_fs2["default"].existsSync(stepReturnData.lambdaZipFilePath).should.be["true"];
+	});
+
+	describe("(One dependency file)", function () {
+		beforeEach(function (done) {
+			// Testing that glob matching works.
+			// If glob matching works normal paths will, too.
+			dependencyFilePaths = __dirname + "/**/s*e.js";
+			(0, _stepsCompileLambdaZipStepJs2["default"])(conan, context, stepDone(done));
+		});
+
+		it("should insert the lambda file, the dependency, and its packages into the zip file", function (done) {
+			/* eslint-disable new-cap */
+			var zipFilePaths = [];
+
+			_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip2["default"].Parse()).on("entry", function (entry) {
+				zipFilePaths.push(entry.path);
+			}).on("close", function () {
+				var expectedFilePaths = ["lambda.js", "save.js", "node_modules/async/.jshintrc", "node_modules/async/.travis.yml", "node_modules/async/CHANGELOG.md", "node_modules/async/LICENSE", "node_modules/async/README.md", "node_modules/async/bower.json", "node_modules/async/component.json", "node_modules/async/lib/async.js", "node_modules/async/package.json", "node_modules/async/support/sync-package-managers.js"];
+
+				zipFilePaths.should.have.members(expectedFilePaths);
+
+				done();
+			});
+		});
+
+		it("should insert the correct data for the designated lambda into the zip file", function (done) {
+			/* eslint-disable new-cap */
+			var lambdaFileData = _fs2["default"].readFileSync(lambdaFilePath);
+
+			_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip2["default"].Parse()).on("entry", function (entry) {
+				if (entry.path === "lambda.js") {
+					var Writable = require("stream").Writable;
+					var writableStream = Writable({ objectMode: true });
+					writableStream._write = function (chunk) {
+						chunk.should.eql(lambdaFileData);
+						done();
+					};
+					entry.pipe(writableStream);
+				}
+			});
+		});
+	});
+
+	describe("(Multiple dependency file)", function () {
+		beforeEach(function (done) {
+			// Testing that glob matching works.
+			// If glob matching works normal paths will, too.
+			dependencyFilePaths = [__dirname + "/**/s*e.js", __dirname + "/**/d*y.js"];
+
+			(0, _stepsCompileLambdaZipStepJs2["default"])(conan, context, stepDone(done));
+		});
+
+		it("should insert the lambda file, the dependency, and its packages into the zip file", function (done) {
+			var zipFilePaths = [];
+
+			_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip2["default"].Parse()).on("entry", function (entry) {
+				zipFilePaths.push(entry.path);
+			}).on("close", function () {
+				var expectedFilePaths = ["lambda.js", "save.js", "destroy.js", "node_modules/async/.jshintrc", "node_modules/async/.travis.yml", "node_modules/async/CHANGELOG.md", "node_modules/async/LICENSE", "node_modules/async/README.md", "node_modules/async/bower.json", "node_modules/async/component.json", "node_modules/async/lib/async.js", "node_modules/async/package.json", "node_modules/async/support/sync-package-managers.js"];
+
+				zipFilePaths.should.have.members(expectedFilePaths);
+
+				done();
+			});
+		});
 	});
 });

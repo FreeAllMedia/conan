@@ -1,5 +1,5 @@
 import Conan from "../../../../conan.js";
-import compileDependenciesStep from "../../steps/compileDependenciesStep.js";
+import compilePackagesStep from "../../steps/compilePackagesStep.js";
 import sinon from "sinon";
 import fs from "fs";
 import path from "path";
@@ -8,7 +8,7 @@ import unzip from "unzip2";
 
 temp.track();
 
-describe(".compileDependenciesStep(conan, context, stepDone)", () => {
+describe(".compilePackagesStep(conan, context, stepDone)", () => {
 	let conan,
 			context,
 			stepDone,
@@ -32,7 +32,7 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 
 	const mockS3GetObjectRequest = {
 		createReadStream: () => {
-			return fs.createReadStream(__dirname + "/fixtures/dependencies.zip");
+			return fs.createReadStream(__dirname + "/fixtures/packages.zip");
 		}
 	};
 
@@ -62,7 +62,7 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 			key: () => { return "accountCreate.dependencies.zip"; }
 		};
 
-		temp.mkdir("compileDependencies", (error, temporaryDirectoryPath) => {
+		temp.mkdir("compilePackages", (error, temporaryDirectoryPath) => {
 			context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
 				parameters: parameters,
@@ -82,7 +82,7 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 				};
 			};
 
-			compileDependenciesStep(conan, context, stepDone(done));
+			compilePackagesStep(conan, context, stepDone(done));
 		});
 	});
 
@@ -91,7 +91,7 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 	});
 
 	it("should be a function", () => {
-		(typeof compileDependenciesStep).should.equal("function");
+		(typeof compilePackagesStep).should.equal("function");
 	});
 
 	it("should set the designated region on the lambda client", () => {
@@ -126,10 +126,10 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 		});
 	});
 
-	it("should have all dependency files within the dependency zip", done => {
+	it("should have all package files within the package zip", done => {
 		let zipFilePaths = [];
 
-		fs.createReadStream(stepReturnData.dependencyZipFilePath)
+		fs.createReadStream(stepReturnData.packageZipFilePath)
 			.pipe(unzip.Parse())
 			.on("entry", (entry) => {
 				zipFilePaths.push(entry.path);
@@ -156,12 +156,12 @@ describe(".compileDependenciesStep(conan, context, stepDone)", () => {
 			});
 	});
 
-	it("should return the dependency zip file's file path", () => {
-		fs.existsSync(stepReturnData.dependencyZipFilePath).should.be.true;
+	it("should return the package zip file's file path", () => {
+		fs.existsSync(stepReturnData.packageZipFilePath).should.be.true;
 	});
 
-	it("should name the dependency zip file according to the lambda name", () => {
-		const dependencyZipFileName = path.basename(stepReturnData.dependencyZipFilePath);
-		dependencyZipFileName.should.eql("accountCreate.dependencies.zip");
+	it("should name the package zip file according to the lambda name", () => {
+		const packageZipFileName = path.basename(stepReturnData.packageZipFilePath);
+		packageZipFileName.should.eql("accountCreate.dependencies.zip");
 	});
 });

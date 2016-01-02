@@ -68,8 +68,8 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 			step.parameters.should.eql(lambda);
 		});
 
-		it("should add a compile dependencies step", function () {
-			var step = conan.steps.findByName("compileDependenciesStep");
+		it("should add a compile packages step", function () {
+			var step = conan.steps.findByName("compilePackagesStep");
 			step.parameters.should.eql(lambda);
 		});
 

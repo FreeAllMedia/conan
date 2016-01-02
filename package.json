@@ -25,8 +25,10 @@
     "aws-sdk": "^2.2.24",
     "dovima": "^0.3.2",
     "flowsync": "^0.1.11",
+    "glob": "^6.0.3",
     "incognito": "^0.1.4",
-    "jargon": "^0.1.22"
+    "jargon": "^0.1.22",
+		"unzip": "^0.1.11"
   },
   "devDependencies": {
     "archiver": "^0.21.0",
@@ -44,7 +46,6 @@
     "mocha": "^2.2.5",
     "sinon": "^1.17.2",
     "stream-buffers": "^3.0.0",
-    "superstack": "0.0.4",
-    "unzip": "^0.1.11"
+    "superstack": "0.0.4"
   }
 }
