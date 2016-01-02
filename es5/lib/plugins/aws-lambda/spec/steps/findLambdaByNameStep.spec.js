@@ -26,7 +26,8 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 	    awsResponseData = undefined,
 	    stepReturnError = undefined,
 	    stepReturnData = undefined,
-	    parameters = undefined;
+	    parameters = undefined,
+	    mockLambdaSpy = undefined;
 
 	var mockLambda = {
 		getFunction: _sinon2["default"].spy(function (params, callback) {
@@ -34,10 +35,15 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 		})
 	};
 
+	var MockLambda = function MockLambda(config) {
+		_classCallCheck(this, MockLambda);
+
+		mockLambdaSpy(config);
+		return mockLambda;
+	};
+
 	var MockAWS = {
-		Lambda: _sinon2["default"].spy(function () {
-			return mockLambda;
-		})
+		Lambda: MockLambda
 	};
 
 	beforeEach(function (done) {
@@ -75,6 +81,8 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 		};
 		awsResponseError = null;
 
+		mockLambdaSpy = _sinon2["default"].spy();
+
 		stepDone = function (afterStepCallback) {
 			return function (error, data) {
 				stepReturnError = error;
@@ -91,7 +99,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 	});
 
 	it("should set the designated region on the lambda client", function () {
-		MockAWS.Lambda.calledWith({
+		mockLambdaSpy.calledWith({
 			region: conan.config.region
 		}).should.be["true"];
 	});
