@@ -8,6 +8,11 @@ var _libConanJs = require("../lib/conan.js");
 var _libConanJs2 = _interopRequireDefault(_libConanJs);
 
 describe("Conan(config)", function () {
+	it("should pass itself to ConanSteps", function () {
+		var conan = new _libConanJs2["default"]();
+		conan.steps.parent.should.eql(conan);
+	});
+
 	describe("(Instantiating with a config object)", function () {
 		it("should not throw an error", function () {
 			(function () {

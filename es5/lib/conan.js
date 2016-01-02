@@ -29,7 +29,7 @@ var Conan = (function () {
 		_classCallCheck(this, Conan);
 
 		this.config = config || {};
-		this.steps = new _componentsConanStepsJs2["default"]();
+		this.steps = new _componentsConanStepsJs2["default"](this);
 		this.plugins = [];
 	}
 

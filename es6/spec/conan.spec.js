@@ -2,6 +2,11 @@
 import Conan from "../lib/conan.js";
 
 describe("Conan(config)", () => {
+	it("should pass itself to ConanSteps", () => {
+		const conan = new Conan();
+		conan.steps.parent.should.eql(conan);
+	});
+
 	describe("(Instantiating with a config object)", () => {
 		it("should not throw an error", () => {
 			() => {

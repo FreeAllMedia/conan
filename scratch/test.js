@@ -4,12 +4,10 @@ const s3 = new AWS.S3({region: "us-east-1"});
 const iam = new AWS.IAM({region: "us-east-1"});
 
 const fs = require("fs");
-const AdmZip = require("adm-zip");
 const archiver = require('archiver');
 const streamBuffers = require('stream-buffers');
 const unzip = require('unzip2');
 const through = require('through');
-const yauzl = require("yauzl");
 
 //-------
 
@@ -26,15 +24,11 @@ const lambdaName = "TestLambda";
 const lambdaFilePath = __dirname + "/lambda.js";
 const lambdaHandlerName = "handler";
 
-import AWS from "aws-sdk";
-
-const lambda = conan.lambda(lambdaName, lambdaFilePath,	lambdaHandlerName);
-lambda
-	.libraries("AWS", AWS)
-	.dependencies([
-		"./**/*.js",
-		"./**/*.json"
-	]);
+conan.lambda(lambdaName, lambdaFilePath,	lambdaHandlerName)
+	.packages({
+		"async": "1.0.0"
+	})
+	.dependencies("./**/*.js");
 
 conan.deploy(() => {
 	console.log("Deployment complete.");

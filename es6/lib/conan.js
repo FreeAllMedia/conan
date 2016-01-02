@@ -11,7 +11,7 @@ export default class Conan {
 	 */
 	constructor(config) {
 		this.config = config || {};
-		this.steps = new ConanSteps();
+		this.steps = new ConanSteps(this);
 		this.plugins = [];
 	}
 
