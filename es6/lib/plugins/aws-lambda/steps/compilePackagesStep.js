@@ -1,7 +1,9 @@
-import temp from "temp";
-import fs from "fs";
+import fileSystem from "fs";
+import inflect from "jargon";
 
 export default function compilePackagesStep(conan, context, stepDone) {
+	const conanAwsLambda = context.parameters;
+
 	const AWS = context.libraries.AWS;
 
 	const lambda = new AWS.Lambda({
@@ -12,26 +14,28 @@ export default function compilePackagesStep(conan, context, stepDone) {
 		region: conan.config.region
 	});
 
+	const lambdaName = conanAwsLambda.name();
+	const packageZipFileName = `${inflect(lambdaName).camel.toString()}.packages.zip`;
+
 	const parameters = {
 		FunctionName: "Thaumaturgy",
 		InvocationType: "RequestResponse",
 		LogType: "Tail",
 		Payload: JSON.stringify({
 			packages: context.parameters.packages(),
-			bucket: context.parameters.bucket(),
-			key: context.parameters.key()
+			bucket: conan.config.bucket,
+			key: packageZipFileName
 		})
 	};
 
 	lambda.invoke(parameters, (error, data) => {
 		const packageZipReadStream = s3.getObject({
-			Bucket: context.parameters.bucket(),
-			Key: context.parameters.key(),
+			Bucket: conan.config.bucket,
+			Key: packageZipFileName
 		}).createReadStream();
 
-		const packageZipFileName = context.parameters.key();
 		const packageZipFilePath = `${context.temporaryDirectoryPath}/${packageZipFileName}`;
-		const packageZipWriteStream = fs.createWriteStream(packageZipFilePath);
+		const packageZipWriteStream = fileSystem.createWriteStream(packageZipFilePath);
 
 		packageZipWriteStream.on("close", () => {
 			stepDone(null, {

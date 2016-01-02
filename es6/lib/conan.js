@@ -20,6 +20,7 @@ export default class Conan {
 	}
 
 	deploy(callback) {
+		console.log(".deploy()");
 		this.steps.start(callback);
 	}
 

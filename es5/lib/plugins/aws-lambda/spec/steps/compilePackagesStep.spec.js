@@ -1,6 +1,10 @@
 "use strict";
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _conanJs = require("../../../../conan.js");
 
@@ -30,6 +34,10 @@ var _unzip2 = require("unzip2");
 
 var _unzip22 = _interopRequireDefault(_unzip2);
 
+var _jargon = require("jargon");
+
+var _jargon2 = _interopRequireDefault(_jargon);
+
 _temp2["default"].track();
 
 describe(".compilePackagesStep(conan, context, stepDone)", function () {
@@ -42,13 +50,10 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 	    s3ResponseData = undefined,
 	    stepReturnError = undefined,
 	    stepReturnData = undefined,
-	    parameters = undefined;
-
-	var mockAwsLambda = {
-		invoke: _sinon2["default"].spy(function (params, callback) {
-			callback(lambdaResponseError, lambdaResponseData);
-		})
-	};
+	    parameters = undefined,
+	    mockLambdaSpy = undefined,
+	    mockS3Spy = undefined,
+	    packageZipFileName = undefined;
 
 	var mockS3GetObjectRequest = {
 		createReadStream: function createReadStream() {
@@ -57,36 +62,68 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 	};
 
 	var mockS3 = {
-		getObject: _sinon2["default"].spy(function (params) {
+		getObject: _sinon2["default"].spy(function () {
 			return mockS3GetObjectRequest;
 		})
 	};
 
-	var MockAWS = {
-		S3: _sinon2["default"].spy(function () {
-			return mockS3;
-		}),
-		Lambda: _sinon2["default"].spy(function () {
-			return mockAwsLambda;
+	var MockS3 = function MockS3(config) {
+		_classCallCheck(this, MockS3);
+
+		mockS3Spy(config);
+		return mockS3;
+	};
+
+	var mockLambda = {
+		invoke: _sinon2["default"].spy(function (params, callback) {
+			callback(lambdaResponseError, lambdaResponseData);
 		})
+	};
+
+	var MockLambda = function MockLambda(config) {
+		_classCallCheck(this, MockLambda);
+
+		mockLambdaSpy(config);
+		return mockLambda;
+	};
+
+	var MockAWS = {
+		S3: MockS3,
+		Lambda: MockLambda
 	};
 
 	beforeEach(function (done) {
 		conan = new _conanJs2["default"]({
-			region: "us-east-1"
+			region: "us-east-1",
+			bucket: "some-bucket-here"
 		});
 
-		parameters = {
-			packages: function packages() {
-				return { "async": "1.0.0" };
-			},
-			bucket: function bucket() {
-				return "some-bucket-here";
-			},
-			key: function key() {
-				return "accountCreate.dependencies.zip";
+		var lambdaName = "TestFunction";
+
+		packageZipFileName = (0, _jargon2["default"])(lambdaName).camel.toString() + ".packages.zip";
+
+		parameters = new ((function () {
+			function MockConanAwsLambda() {
+				_classCallCheck(this, MockConanAwsLambda);
 			}
-		};
+
+			_createClass(MockConanAwsLambda, [{
+				key: "name",
+				value: function name() {
+					return lambdaName;
+				}
+			}, {
+				key: "packages",
+				value: function packages() {
+					return { "async": "1.0.0" };
+				}
+			}]);
+
+			return MockConanAwsLambda;
+		})())();
+
+		mockLambdaSpy = _sinon2["default"].spy();
+		mockS3Spy = _sinon2["default"].spy();
 
 		_temp2["default"].mkdir("compilePackages", function (error, temporaryDirectoryPath) {
 			context = {
@@ -101,8 +138,8 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 			lambdaResponseError = null;
 
 			stepDone = function (afterStepCallback) {
-				return function (error, data) {
-					stepReturnError = error;
+				return function (callbackError, data) {
+					stepReturnError = callbackError;
 					stepReturnData = data;
 					afterStepCallback();
 				};
@@ -121,38 +158,39 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 	});
 
 	it("should set the designated region on the lambda client", function () {
-		MockAWS.Lambda.calledWith({
+		mockLambdaSpy.calledWith({
 			region: conan.config.region
 		}).should.be["true"];
 	});
 
 	it("should set the designated region on the s3 client", function () {
-		MockAWS.S3.calledWith({
+		mockS3Spy.calledWith({
 			region: conan.config.region
 		}).should.be["true"];
 	});
 
 	it("should call AWS with the designated lambda parameters", function () {
-		mockAwsLambda.invoke.firstCall.args[0].should.eql({
+		mockLambda.invoke.firstCall.args[0].should.eql({
 			FunctionName: "Thaumaturgy",
 			InvocationType: "RequestResponse",
 			LogType: "Tail",
 			Payload: JSON.stringify({
 				packages: parameters.packages(),
-				bucket: parameters.bucket(),
-				key: parameters.key()
+				bucket: conan.config.bucket,
+				key: packageZipFileName
 			})
 		});
 	});
 
 	it("should call AWS with the designated S3 parameters", function () {
 		mockS3.getObject.firstCall.args[0].should.eql({
-			Bucket: parameters.bucket(),
-			Key: parameters.key()
+			Bucket: conan.config.bucket,
+			Key: packageZipFileName
 		});
 	});
 
 	it("should have all package files within the package zip", function (done) {
+		/* eslint-disable new-cap */
 		var zipFilePaths = [];
 
 		_fs2["default"].createReadStream(stepReturnData.packageZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
@@ -171,7 +209,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 	});
 
 	it("should name the package zip file according to the lambda name", function () {
-		var packageZipFileName = _path2["default"].basename(stepReturnData.packageZipFilePath);
-		packageZipFileName.should.eql("accountCreate.dependencies.zip");
+		var returnedPackageZipFileName = _path2["default"].basename(stepReturnData.packageZipFilePath);
+		returnedPackageZipFileName.should.eql(packageZipFileName);
 	});
 });

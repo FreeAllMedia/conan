@@ -41,6 +41,7 @@ var Conan = (function () {
 	}, {
 		key: "deploy",
 		value: function deploy(callback) {
+			console.log(".deploy()");
 			this.steps.start(callback);
 		}
 	}, {

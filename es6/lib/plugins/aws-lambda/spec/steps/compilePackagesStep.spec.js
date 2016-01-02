@@ -1,10 +1,11 @@
 import Conan from "../../../../conan.js";
 import compilePackagesStep from "../../steps/compilePackagesStep.js";
 import sinon from "sinon";
-import fs from "fs";
+import fileSystem from "fs";
 import path from "path";
 import temp from "temp";
 import unzip from "unzip2";
+import inflect from "jargon";
 
 temp.track();
 
@@ -22,45 +23,67 @@ describe(".compilePackagesStep(conan, context, stepDone)", () => {
 			stepReturnError,
 			stepReturnData,
 
-			parameters;
+			parameters,
 
-	const mockAwsLambda = {
+			mockLambdaSpy,
+			mockS3Spy,
+
+			packageZipFileName;
+
+	const mockS3GetObjectRequest = {
+		createReadStream: () => {
+			return fileSystem.createReadStream(__dirname + "/fixtures/packages.zip");
+		}
+	};
+
+	const mockS3 = {
+		getObject: sinon.spy(() => {
+			return mockS3GetObjectRequest;
+		})
+	};
+
+	class MockS3 {
+		constructor(config) {
+			mockS3Spy(config);
+			return mockS3;
+		}
+	}
+
+	const mockLambda = {
 		invoke: sinon.spy((params, callback) => {
 			callback(lambdaResponseError, lambdaResponseData);
 		})
 	};
 
-	const mockS3GetObjectRequest = {
-		createReadStream: () => {
-			return fs.createReadStream(__dirname + "/fixtures/packages.zip");
+	class MockLambda {
+		constructor(config) {
+			mockLambdaSpy(config);
+			return mockLambda;
 		}
-	};
-
-	const mockS3 = {
-		getObject: sinon.spy((params) => {
-			return mockS3GetObjectRequest;
-		})
-	};
+	}
 
 	const MockAWS = {
-		S3: sinon.spy(() => {
-			return mockS3;
-		}),
-		Lambda: sinon.spy(() => {
-			return mockAwsLambda;
-		})
+		S3: MockS3,
+		Lambda: MockLambda
 	};
 
 	beforeEach(done => {
 		conan = new Conan({
-			region: "us-east-1"
+			region: "us-east-1",
+			bucket: "some-bucket-here"
 		});
 
-		parameters = {
-			packages: () => { return { "async": "1.0.0" }; },
-			bucket: () => { return "some-bucket-here"; },
-			key: () => { return "accountCreate.dependencies.zip"; }
-		};
+		const lambdaName = "TestFunction";
+
+		packageZipFileName = `${inflect(lambdaName).camel.toString()}.packages.zip`;
+
+		parameters = new class MockConanAwsLambda {
+			name() { return lambdaName; }
+			packages() { return { "async": "1.0.0" }; }
+		}();
+
+		mockLambdaSpy = sinon.spy();
+		mockS3Spy = sinon.spy();
 
 		temp.mkdir("compilePackages", (error, temporaryDirectoryPath) => {
 			context = {
@@ -75,8 +98,8 @@ describe(".compilePackagesStep(conan, context, stepDone)", () => {
 			lambdaResponseError = null;
 
 			stepDone = (afterStepCallback) => {
-				return (error, data) => {
-					stepReturnError = error;
+				return (callbackError, data) => {
+					stepReturnError = callbackError;
 					stepReturnData = data;
 					afterStepCallback();
 				};
@@ -95,41 +118,42 @@ describe(".compilePackagesStep(conan, context, stepDone)", () => {
 	});
 
 	it("should set the designated region on the lambda client", () => {
-		MockAWS.Lambda.calledWith({
+		mockLambdaSpy.calledWith({
 			region: conan.config.region
 		}).should.be.true;
 	});
 
 	it("should set the designated region on the s3 client", () => {
-		MockAWS.S3.calledWith({
+		mockS3Spy.calledWith({
 			region: conan.config.region
 		}).should.be.true;
 	});
 
 	it("should call AWS with the designated lambda parameters", () => {
-		mockAwsLambda.invoke.firstCall.args[0].should.eql({
+		mockLambda.invoke.firstCall.args[0].should.eql({
 			FunctionName: "Thaumaturgy",
 			InvocationType: "RequestResponse",
 			LogType: "Tail",
 			Payload: JSON.stringify({
 				packages: parameters.packages(),
-				bucket: parameters.bucket(),
-				key: parameters.key()
+				bucket: conan.config.bucket,
+				key: packageZipFileName
 			})
 		});
 	});
 
 	it("should call AWS with the designated S3 parameters", () => {
 		mockS3.getObject.firstCall.args[0].should.eql({
-			Bucket: parameters.bucket(),
-			Key: parameters.key()
+			Bucket: conan.config.bucket,
+			Key: packageZipFileName
 		});
 	});
 
 	it("should have all package files within the package zip", done => {
+		/* eslint-disable new-cap */
 		let zipFilePaths = [];
 
-		fs.createReadStream(stepReturnData.packageZipFilePath)
+		fileSystem.createReadStream(stepReturnData.packageZipFilePath)
 			.pipe(unzip.Parse())
 			.on("entry", (entry) => {
 				zipFilePaths.push(entry.path);
@@ -157,11 +181,11 @@ describe(".compilePackagesStep(conan, context, stepDone)", () => {
 	});
 
 	it("should return the package zip file's file path", () => {
-		fs.existsSync(stepReturnData.packageZipFilePath).should.be.true;
+		fileSystem.existsSync(stepReturnData.packageZipFilePath).should.be.true;
 	});
 
 	it("should name the package zip file according to the lambda name", () => {
-		const packageZipFileName = path.basename(stepReturnData.packageZipFilePath);
-		packageZipFileName.should.eql("accountCreate.dependencies.zip");
+		const returnedPackageZipFileName = path.basename(stepReturnData.packageZipFilePath);
+		returnedPackageZipFileName.should.eql(packageZipFileName);
 	});
 });

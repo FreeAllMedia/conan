@@ -38,10 +38,6 @@ var _stepsUpsertLambdaStepJs = require("../steps/upsertLambdaStep.js");
 
 var _stepsUpsertLambdaStepJs2 = _interopRequireDefault(_stepsUpsertLambdaStepJs);
 
-var _incognito = require("incognito");
-
-var _incognito2 = _interopRequireDefault(_incognito);
-
 var ConanAwsLambda = (function (_ConanComponent) {
 	_inherits(ConanAwsLambda, _ConanComponent);
 

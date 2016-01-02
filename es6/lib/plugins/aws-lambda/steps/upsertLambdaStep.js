@@ -3,7 +3,7 @@ import fileSystem from "fs";
 export default function upsertLambdaStep(conan, context, stepDone) {
 	const conanAwsLambda = context.parameters;
 	const AWS = context.libraries.AWS;
-	const lambda = AWS.Lambda({region: conan.config.region})
+	const lambda = AWS.Lambda({region: conan.config.region});
 
 	const lambdaArn = context.results.lambdaArn;
 	const lambdaIsNew = lambdaArn === undefined;

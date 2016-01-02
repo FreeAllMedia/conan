@@ -28,8 +28,10 @@ conan.lambda(lambdaName, lambdaFilePath,	lambdaHandlerName)
 	.packages({
 		"async": "1.0.0"
 	})
-	.dependencies("./**/*.js");
+	.dependencies("./**/*.js")
+	.key("aasdasd.zip");
 
+console.log("Beginning deployment.");
 conan.deploy(() => {
 	console.log("Deployment complete.");
 });

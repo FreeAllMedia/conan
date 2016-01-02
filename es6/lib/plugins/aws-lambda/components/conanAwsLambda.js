@@ -5,8 +5,6 @@ import compilePackagesStep from "../steps/compilePackagesStep.js";
 import compileLambdaZipStep from "../steps/compileLambdaZipStep.js";
 import upsertLambdaStep from "../steps/upsertLambdaStep.js";
 
-import privateData from "incognito";
-
 export default class ConanAwsLambda extends ConanComponent {
 	initialize(conan, name, filePath, handler) {
 		this.conan = conan;
