@@ -43,7 +43,7 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 	});
 
 	describe("(parameters)", function () {
-		["name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish", "packages", "bucket", "key", "dependencies"].forEach(function (parameterName) {
+		["name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish", "packages", "bucket", "dependencies"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function describeComponentParameter() {
@@ -55,6 +55,13 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 				});
 			});
 		});
+	});
+
+	describe("(default values)", function () {
+		it("should set the handler to 'handler' by default");
+		it("should set the runtime to 'nodejs' by default");
+		it("should set the memorySize to '128' by default");
+		it("should set the timeout to '3' by default");
 	});
 
 	describe("(steps)", function () {

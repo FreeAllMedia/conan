@@ -19,9 +19,9 @@ var _fs = require("fs");
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _unzip = require("unzip");
+var _unzip2 = require("unzip2");
 
-var _unzip2 = _interopRequireDefault(_unzip);
+var _unzip22 = _interopRequireDefault(_unzip2);
 
 var _jargon = require("jargon");
 
@@ -69,7 +69,7 @@ function compileLambdaZipStep(conan, context, stepDone) {
 
 	//lambdaZip.append();
 
-	_fs2["default"].createReadStream(packageZipFilePath).pipe(_unzip2["default"].Parse()).on("entry", function (entry) {
+	_fs2["default"].createReadStream(packageZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
 		var isDirectory = entry.path.slice(-1) === "/";
 		if (!isDirectory) {
 			lambdaZip.append(entry, { name: "node_modules/" + entry.path });

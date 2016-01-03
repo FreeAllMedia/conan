@@ -1,7 +1,7 @@
 import Conan from "../../../../conan.js";
 import compileLambdaZipStep from "../../steps/compileLambdaZipStep.js";
 import fileSystem from "fs";
-import unzip from "unzip";
+import unzip from "unzip2";
 import temp from "temp";
 
 describe(".compileLambdaZipStep(conan, context, stepDone)", () => {

@@ -1,16 +1,4 @@
-const AWS = require("aws-sdk");
-const lambda = new AWS.Lambda({region: "us-east-1"});
-const s3 = new AWS.S3({region: "us-east-1"});
-const iam = new AWS.IAM({region: "us-east-1"});
-
-const fs = require("fs");
-const archiver = require('archiver');
-const streamBuffers = require('stream-buffers');
-const unzip = require('unzip');
-const through = require('through');
-
 //-------
-
 const Conan = require("../es5/lib/conan.js");
 const ConanAwsLambdaPlugin = require("../es5/lib/plugins/aws-lambda/conanAwsLambdaPlugin.js");
 
@@ -21,16 +9,24 @@ const conan = new Conan({
 
 conan.use(ConanAwsLambdaPlugin);
 
-const lambdaName = "TestLambda";
-const lambdaFilePath = __dirname + "/lambda.js";
-const lambdaHandlerName = "handler";
+const packageJson = require("../package.json");
 
-conan.lambda(lambdaName, lambdaFilePath,	lambdaHandlerName)
-	.packages({
-		"async": "1.0.0"
-	})
-	.dependencies("./**/*.js")
-	.key("aasdasd.zip");
+conan.lambda(
+	"SuperLambda",
+	__dirname + "/lambda.js"
+)
+	.packages(packageJson.dependencies)
+	.dependencies(__dirname + "/itWorks.js")
+	.role("AWSLambda");
+
+// conan.lambda(
+// 	"PythonLambda",
+// 	__dirname + "/lambda.py",
+// 	"handler"
+// )
+// 	.dependencies("/pip/*")
+// 	.runtime("python2.7")
+// 	.role("AWSLambda");
 
 console.log("Beginning deployment.");
 conan.deploy(() => {

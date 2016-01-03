@@ -4,7 +4,7 @@ import sinon from "sinon";
 import fileSystem from "fs";
 import path from "path";
 import temp from "temp";
-import unzip from "unzip";
+import unzip from "unzip2";
 import inflect from "jargon";
 
 temp.track();

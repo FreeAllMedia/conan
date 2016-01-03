@@ -1,7 +1,7 @@
 import archiver from "archiver";
 import path from "path";
 import fileSystem from "fs";
-import unzip from "unzip";
+import unzip from "unzip2";
 import inflect from "jargon";
 import glob from "glob";
 

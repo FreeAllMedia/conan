@@ -11,12 +11,17 @@ var _fs = require("fs");
 
 var _fs2 = _interopRequireDefault(_fs);
 
+var _path = require("path");
+
+var _path2 = _interopRequireDefault(_path);
+
 function upsertLambdaStep(conan, context, stepDone) {
 	var conanAwsLambda = context.parameters;
 	var AWS = context.libraries.AWS;
 	var lambda = new AWS.Lambda({ region: conan.config.region });
 
 	var lambdaArn = context.results.lambdaArn;
+	var roleArn = context.results.roleArn;
 
 	var lambdaIsNew = lambdaArn === null;
 
@@ -26,7 +31,7 @@ function upsertLambdaStep(conan, context, stepDone) {
 		var createFunctionParameters = {
 			FunctionName: conanAwsLambda.name(),
 			Handler: conanAwsLambda.handler(),
-			Role: conanAwsLambda.role(),
+			Role: roleArn,
 			Description: conanAwsLambda.description(),
 			MemorySize: conanAwsLambda.memorySize(),
 			Timeout: conanAwsLambda.timeout(),
@@ -45,10 +50,13 @@ function upsertLambdaStep(conan, context, stepDone) {
 			});
 		});
 	} else {
+		var fileName = _path2["default"].parse(conanAwsLambda.filePath()).name;
+		var handlerString = fileName + "." + conanAwsLambda.handler();
+
 		var updateConfigurationParameters = {
 			FunctionName: conanAwsLambda.name(),
-			Handler: conanAwsLambda.handler(),
-			Role: conanAwsLambda.role(),
+			Handler: handlerString,
+			Role: roleArn,
 			Description: conanAwsLambda.description(),
 			MemorySize: conanAwsLambda.memorySize(),
 			Timeout: conanAwsLambda.timeout()

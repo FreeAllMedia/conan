@@ -19,7 +19,6 @@ export default class ConanAwsLambda extends ConanComponent {
 			"memorySize",
 			"timeout",
 			"publish",
-			"key",
 			"bucket",
 			"packages",
 			"dependencies"

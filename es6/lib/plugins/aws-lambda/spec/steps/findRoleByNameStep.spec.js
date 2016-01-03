@@ -33,7 +33,7 @@ describe(".findRoleByNameStep(conan, context, stepDone)", () => {
 		});
 
 		parameters = new class MockConanAwsLambda {
-			name() { return "TestFunction"; }
+			role() { return "TestFunction"; }
 		}();
 
 		context = {
@@ -73,7 +73,7 @@ describe(".findRoleByNameStep(conan, context, stepDone)", () => {
 
 	it("should call AWS with the designated role name parameter", () => {
 		mockIam.getRole.calledWith({
-			RoleName: context.parameters.name()
+			RoleName: context.parameters.role()
 		}).should.be.true;
 	});
 

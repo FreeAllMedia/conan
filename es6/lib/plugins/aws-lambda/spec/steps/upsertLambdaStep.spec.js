@@ -3,6 +3,8 @@ import upsertLambdaStep from "../../steps/upsertLambdaStep.js";
 import sinon from "sinon";
 import fileSystem from "fs";
 import temp from "temp";
+import path from "path";
+import inflect from "jargon";
 
 temp.track();
 
@@ -26,6 +28,9 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 			parameters,
 			lambdaZipFilePath,
 			lambdaFilePath,
+
+			roleArn,
+			lambdaArn,
 
 			mockLambdaSpy,
 
@@ -60,8 +65,8 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 			region: "us-east-1"
 		});
 
-		const lambdaArn = "arn:aws:lambda:us-east-1:123895237541:function:SomeLambda";
-		const roleArn = "arn:aws:lambda:us-east-1:123895237541:role:SomeRole";
+		lambdaArn = "arn:aws:lambda:us-east-1:123895237541:function:SomeLambda";
+		roleArn = "arn:aws:lambda:us-east-1:123895237541:role:SomeRole";
 
 		lambdaFilePath = __dirname + "/fixtures/lambda.js";
 		lambdaZipFilePath = __dirname + "/fixtures/lambda.zip";
@@ -69,12 +74,12 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 		parameters = new class MockConanAwsLambda {
 			name() { 				return "TestFunction"; }
 			handler() { 		return "handler"; }
-			role() { 				return roleArn; }
 			description() { return "This is my Lambda!"; }
 			memorySize() { 	return 128; }
 			publish() { 		return true; }
 			timeout() { 		return 3; }
 			runtime() {			return "nodejs"; }
+			filePath() {		return lambdaFilePath; }
 		}();
 
 		context = {
@@ -131,10 +136,13 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 	describe("(When Lambda is NOT New)", () => {
 		it("should call AWS to update the lambda configuration with the designated parameters", () => {
+			const fileName = path.parse(parameters.filePath()).name;
+			const handlerString = `${fileName}.${parameters.handler()}`;
+
 			const updateConfigurationParameters = {
 				FunctionName: parameters.name(),
-				Handler: parameters.handler(),
-				Role: parameters.role(),
+				Handler: handlerString,
+				Role: roleArn,
 				Description: parameters.description(),
 				MemorySize: parameters.memorySize(),
 				Timeout: parameters.timeout()
@@ -203,7 +211,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 			const expectedCreateFunctionParameters = {
 				FunctionName: parameters.name(),
 				Handler: parameters.handler(),
-				Role: parameters.role(),
+				Role: roleArn,
 				Description: parameters.description(),
 				MemorySize: parameters.memorySize(),
 				Timeout: parameters.timeout(),

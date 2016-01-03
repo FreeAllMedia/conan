@@ -137,7 +137,7 @@ conan.lambda("AssetShow", 	"/assets/show.js");
 conan.lambda("AssetCreate", "/assets/create.js");
 conan.lambda("AssetUpdate", "/assets/update.js");
 conan.lambda("AssetDelete", "/assets/delete.js");
-conan.lambda("AssetList", 	"/assets/list.js");
+conan.lambda("AssetList", 	"/assets/list.py");
 
 conan.deploy(callback);
 

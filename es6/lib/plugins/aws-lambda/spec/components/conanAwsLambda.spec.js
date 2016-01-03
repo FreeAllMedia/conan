@@ -40,7 +40,6 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", () => {
 			"publish",
 			"packages",
 			"bucket",
-			"key",
 			"dependencies"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
@@ -54,6 +53,13 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", () => {
 				});
 			});
 		});
+	});
+
+	describe("(default values)", () => {
+		it("should set the handler to 'handler' by default");
+		it("should set the runtime to 'nodejs' by default");
+		it("should set the memorySize to '128' by default");
+		it("should set the timeout to '3' by default");
 	});
 
 	describe("(steps)", () => {

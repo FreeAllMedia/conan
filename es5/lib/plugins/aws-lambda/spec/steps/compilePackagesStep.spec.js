@@ -30,9 +30,9 @@ var _temp = require("temp");
 
 var _temp2 = _interopRequireDefault(_temp);
 
-var _unzip = require("unzip");
+var _unzip2 = require("unzip2");
 
-var _unzip2 = _interopRequireDefault(_unzip);
+var _unzip22 = _interopRequireDefault(_unzip2);
 
 var _jargon = require("jargon");
 
@@ -193,7 +193,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 		/* eslint-disable new-cap */
 		var zipFilePaths = [];
 
-		_fs2["default"].createReadStream(stepReturnData.packageZipFilePath).pipe(_unzip2["default"].Parse()).on("entry", function (entry) {
+		_fs2["default"].createReadStream(stepReturnData.packageZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
 			zipFilePaths.push(entry.path);
 		}).on("close", function () {
 			var asyncFilePaths = ["async/.jshintrc", "async/.travis.yml", "async/CHANGELOG.md", "async/LICENSE", "async/README.md", "async/bower.json", "async/component.json", "async/lib/", "async/lib/async.js", "async/package.json", "async/support/", "async/support/sync-package-managers.js"];

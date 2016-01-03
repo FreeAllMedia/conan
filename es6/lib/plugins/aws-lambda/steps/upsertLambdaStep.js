@@ -1,4 +1,5 @@
 import fileSystem from "fs";
+import path from "path";
 
 export default function upsertLambdaStep(conan, context, stepDone) {
 	const conanAwsLambda = context.parameters;
@@ -6,6 +7,7 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 	const lambda = new AWS.Lambda({region: conan.config.region});
 
 	const lambdaArn = context.results.lambdaArn;
+	const roleArn = context.results.roleArn;
 
 	const lambdaIsNew = lambdaArn === null;
 
@@ -15,7 +17,7 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 		const createFunctionParameters = {
 			FunctionName: conanAwsLambda.name(),
 			Handler: conanAwsLambda.handler(),
-			Role: conanAwsLambda.role(),
+			Role: roleArn,
 			Description: conanAwsLambda.description(),
 			MemorySize: conanAwsLambda.memorySize(),
 			Timeout: conanAwsLambda.timeout(),
@@ -34,10 +36,13 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 			});
 		});
 	} else {
+		const fileName = path.parse(conanAwsLambda.filePath()).name;
+		const handlerString = `${fileName}.${conanAwsLambda.handler()}`;
+
 		const updateConfigurationParameters = {
 			FunctionName: conanAwsLambda.name(),
-			Handler: conanAwsLambda.handler(),
-			Role: conanAwsLambda.role(),
+			Handler: handlerString,
+			Role: roleArn,
 			Description: conanAwsLambda.description(),
 			MemorySize: conanAwsLambda.memorySize(),
 			Timeout: conanAwsLambda.timeout()

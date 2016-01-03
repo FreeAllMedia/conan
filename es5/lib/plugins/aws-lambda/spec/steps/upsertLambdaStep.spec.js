@@ -26,6 +26,14 @@ var _temp = require("temp");
 
 var _temp2 = _interopRequireDefault(_temp);
 
+var _path = require("path");
+
+var _path2 = _interopRequireDefault(_path);
+
+var _jargon = require("jargon");
+
+var _jargon2 = _interopRequireDefault(_jargon);
+
 _temp2["default"].track();
 
 describe(".upsertLambdaStep(conan, context, stepDone)", function () {
@@ -43,6 +51,8 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 	    parameters = undefined,
 	    lambdaZipFilePath = undefined,
 	    lambdaFilePath = undefined,
+	    roleArn = undefined,
+	    lambdaArn = undefined,
 	    mockLambdaSpy = undefined,
 	    createFunctionParameters = undefined;
 
@@ -75,8 +85,8 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 			region: "us-east-1"
 		});
 
-		var lambdaArn = "arn:aws:lambda:us-east-1:123895237541:function:SomeLambda";
-		var roleArn = "arn:aws:lambda:us-east-1:123895237541:role:SomeRole";
+		lambdaArn = "arn:aws:lambda:us-east-1:123895237541:function:SomeLambda";
+		roleArn = "arn:aws:lambda:us-east-1:123895237541:role:SomeRole";
 
 		lambdaFilePath = __dirname + "/fixtures/lambda.js";
 		lambdaZipFilePath = __dirname + "/fixtures/lambda.zip";
@@ -95,11 +105,6 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 				key: "handler",
 				value: function handler() {
 					return "handler";
-				}
-			}, {
-				key: "role",
-				value: function role() {
-					return roleArn;
 				}
 			}, {
 				key: "description",
@@ -125,6 +130,11 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 				key: "runtime",
 				value: function runtime() {
 					return "nodejs";
+				}
+			}, {
+				key: "filePath",
+				value: function filePath() {
+					return lambdaFilePath;
 				}
 			}]);
 
@@ -185,10 +195,13 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 
 	describe("(When Lambda is NOT New)", function () {
 		it("should call AWS to update the lambda configuration with the designated parameters", function () {
+			var fileName = _path2["default"].parse(parameters.filePath()).name;
+			var handlerString = fileName + "." + parameters.handler();
+
 			var updateConfigurationParameters = {
 				FunctionName: parameters.name(),
-				Handler: parameters.handler(),
-				Role: parameters.role(),
+				Handler: handlerString,
+				Role: roleArn,
 				Description: parameters.description(),
 				MemorySize: parameters.memorySize(),
 				Timeout: parameters.timeout()
@@ -257,7 +270,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 			var expectedCreateFunctionParameters = {
 				FunctionName: parameters.name(),
 				Handler: parameters.handler(),
-				Role: parameters.role(),
+				Role: roleArn,
 				Description: parameters.description(),
 				MemorySize: parameters.memorySize(),
 				Timeout: parameters.timeout(),

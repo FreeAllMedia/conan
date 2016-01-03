@@ -18,9 +18,9 @@ var _fs = require("fs");
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _unzip = require("unzip");
+var _unzip2 = require("unzip2");
 
-var _unzip2 = _interopRequireDefault(_unzip);
+var _unzip22 = _interopRequireDefault(_unzip2);
 
 var _temp = require("temp");
 
@@ -111,7 +111,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 			/* eslint-disable new-cap */
 			var zipFilePaths = [];
 
-			_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip2["default"].Parse()).on("entry", function (entry) {
+			_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
 				zipFilePaths.push(entry.path);
 			}).on("close", function () {
 				var expectedFilePaths = ["lambda.js", "save.js", "node_modules/async/.jshintrc", "node_modules/async/.travis.yml", "node_modules/async/CHANGELOG.md", "node_modules/async/LICENSE", "node_modules/async/README.md", "node_modules/async/bower.json", "node_modules/async/component.json", "node_modules/async/lib/async.js", "node_modules/async/package.json", "node_modules/async/support/sync-package-managers.js"];
@@ -126,7 +126,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 			/* eslint-disable new-cap */
 			var lambdaFileData = _fs2["default"].readFileSync(lambdaFilePath);
 
-			_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip2["default"].Parse()).on("entry", function (entry) {
+			_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
 				if (entry.path === "lambda.js") {
 					var Writable = require("stream").Writable;
 					var writableStream = Writable({ objectMode: true });
@@ -152,7 +152,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 		it("should insert the lambda file, the dependency, and its packages into the zip file", function (done) {
 			var zipFilePaths = [];
 
-			_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip2["default"].Parse()).on("entry", function (entry) {
+			_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
 				zipFilePaths.push(entry.path);
 			}).on("close", function () {
 				var expectedFilePaths = ["lambda.js", "save.js", "destroy.js", "node_modules/async/.jshintrc", "node_modules/async/.travis.yml", "node_modules/async/CHANGELOG.md", "node_modules/async/LICENSE", "node_modules/async/README.md", "node_modules/async/bower.json", "node_modules/async/component.json", "node_modules/async/lib/async.js", "node_modules/async/package.json", "node_modules/async/support/sync-package-managers.js"];

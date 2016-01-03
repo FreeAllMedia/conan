@@ -1,10 +1,13 @@
-// const AWS = require("aws-sdk");
-// const s3 = new AWS.S3({region: "us-east-1"});
-const fileSystem = require("fs");
+const AWS = require("aws-sdk");
+const iam = new AWS.IAM({region: "us-east-1"});
 
-const fileBuffer = fileSystem.readFileSync("./es6/lib/plugins/aws-lambda/spec/steps/fixtures/lambda.zip");
 
-console.log("WTF M8?");
+iam.getRole({
+	RoleName: "AWSLambda"
+}, (error, roleData) => {
+	if (error) { throw error; }
+	console.log(roleData);
+});
 
 //
 // const packageZipReadStream = s3.getObject({

@@ -28,7 +28,7 @@
     "incognito": "^0.1.4",
     "jargon": "^0.1.22",
     "temp": "^0.8.3",
-    "unzip": "^0.1.11"
+    "unzip2": "^0.2.5"
   },
   "devDependencies": {
     "archiver": "^0.21.0",
