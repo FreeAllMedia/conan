@@ -28,6 +28,11 @@ export default class ConanAwsLambda extends ConanComponent {
 		this.filePath(filePath);
 		this.handler(handler);
 
+		this.handler("handler");
+		this.runtime("nodejs");
+		this.memorySize(128);
+		this.timeout(3);
+
 		// attach steps to conan
 		this.conan.steps.add(findLambdaByNameStep, this);
 		this.conan.steps.add(findRoleByNameStep, this);

@@ -56,10 +56,19 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", () => {
 	});
 
 	describe("(default values)", () => {
-		it("should set the handler to 'handler' by default");
-		it("should set the runtime to 'nodejs' by default");
-		it("should set the memorySize to '128' by default");
-		it("should set the timeout to '3' by default");
+		it("should set the handler to 'handler' by default", () => {
+			lambda = new ConanAwsLambda(conan, name, filePath);
+			lambda.handler().should.eql("handler");
+		});
+		it("should set the runtime to 'nodejs' by default", () => {
+			lambda.runtime().should.eql("nodejs");
+		});
+		it("should set the memorySize to '128' by default", () => {
+			lambda.memorySize().should.eql(128);
+		});
+		it("should set the timeout to '3' by default", () => {
+			lambda.timeout().should.eql(3);
+		});
 	});
 
 	describe("(steps)", () => {

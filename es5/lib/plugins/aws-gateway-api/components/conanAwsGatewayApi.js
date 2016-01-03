@@ -18,62 +18,30 @@ var _componentsConanComponentJs = require("../../../components/conanComponent.js
 
 var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
 
-var _stepsFindLambdaByNameStepJs = require("../steps/findLambdaByNameStep.js");
+var ConanAwsGatewayApi = (function (_ConanComponent) {
+	_inherits(ConanAwsGatewayApi, _ConanComponent);
 
-var _stepsFindLambdaByNameStepJs2 = _interopRequireDefault(_stepsFindLambdaByNameStepJs);
+	function ConanAwsGatewayApi() {
+		_classCallCheck(this, ConanAwsGatewayApi);
 
-var _stepsFindRoleByNameStepJs = require("../steps/findRoleByNameStep.js");
-
-var _stepsFindRoleByNameStepJs2 = _interopRequireDefault(_stepsFindRoleByNameStepJs);
-
-var _stepsCompilePackagesStepJs = require("../steps/compilePackagesStep.js");
-
-var _stepsCompilePackagesStepJs2 = _interopRequireDefault(_stepsCompilePackagesStepJs);
-
-var _stepsCompileLambdaZipStepJs = require("../steps/compileLambdaZipStep.js");
-
-var _stepsCompileLambdaZipStepJs2 = _interopRequireDefault(_stepsCompileLambdaZipStepJs);
-
-var _stepsUpsertLambdaStepJs = require("../steps/upsertLambdaStep.js");
-
-var _stepsUpsertLambdaStepJs2 = _interopRequireDefault(_stepsUpsertLambdaStepJs);
-
-var ConanAwsLambda = (function (_ConanComponent) {
-	_inherits(ConanAwsLambda, _ConanComponent);
-
-	function ConanAwsLambda() {
-		_classCallCheck(this, ConanAwsLambda);
-
-		_get(Object.getPrototypeOf(ConanAwsLambda.prototype), "constructor", this).apply(this, arguments);
+		_get(Object.getPrototypeOf(ConanAwsGatewayApi.prototype), "constructor", this).apply(this, arguments);
 	}
 
-	_createClass(ConanAwsLambda, [{
+	_createClass(ConanAwsGatewayApi, [{
 		key: "initialize",
-		value: function initialize(conan, name, filePath, handler) {
+		value: function initialize(conan, name) {
 			this.conan = conan;
 
-			this.parameters("name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish", "bucket", "packages", "dependencies");
+			this.parameters("name");
 
 			this.name(name);
-			this.filePath(filePath);
-			this.handler(handler);
 
-			this.handler("handler");
-			this.runtime("nodejs");
-			this.memorySize(128);
-			this.timeout(3);
-
-			// attach steps to conan
-			this.conan.steps.add(_stepsFindLambdaByNameStepJs2["default"], this);
-			this.conan.steps.add(_stepsFindRoleByNameStepJs2["default"], this);
-			this.conan.steps.add(_stepsCompilePackagesStepJs2["default"], this);
-			this.conan.steps.add(_stepsCompileLambdaZipStepJs2["default"], this);
-			this.conan.steps.add(_stepsUpsertLambdaStepJs2["default"], this);
+			// this.conan.steps.add(upsertLambdaStep, this);
 		}
 	}]);
 
-	return ConanAwsLambda;
+	return ConanAwsGatewayApi;
 })(_componentsConanComponentJs2["default"]);
 
-exports["default"] = ConanAwsLambda;
+exports["default"] = ConanAwsGatewayApi;
 module.exports = exports["default"];

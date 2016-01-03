@@ -1,4 +1,4 @@
-//-------
+const packageJson = require("../package.json");
 const Conan = require("../es5/lib/conan.js");
 const ConanAwsLambdaPlugin = require("../es5/lib/plugins/aws-lambda/conanAwsLambdaPlugin.js");
 
@@ -9,26 +9,16 @@ const conan = new Conan({
 
 conan.use(ConanAwsLambdaPlugin);
 
-const packageJson = require("../package.json");
-
 conan.lambda(
 	"SuperLambda",
 	__dirname + "/lambda.js"
 )
-	.packages(packageJson.dependencies)
+	.packages({
+		temp: packageJson.dependencies.temp
+	})
 	.dependencies(__dirname + "/itWorks.js")
 	.role("AWSLambda");
 
-// conan.lambda(
-// 	"PythonLambda",
-// 	__dirname + "/lambda.py",
-// 	"handler"
-// )
-// 	.dependencies("/pip/*")
-// 	.runtime("python2.7")
-// 	.role("AWSLambda");
-
-console.log("Beginning deployment.");
 conan.deploy(() => {
 	console.log("Deployment complete.");
 });
