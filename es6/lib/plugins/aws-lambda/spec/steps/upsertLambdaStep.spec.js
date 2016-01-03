@@ -2,10 +2,7 @@ import Conan from "../../../../conan.js";
 import upsertLambdaStep from "../../steps/upsertLambdaStep.js";
 import sinon from "sinon";
 import fileSystem from "fs";
-import path from "path";
 import temp from "temp";
-import unzip from "unzip2";
-import inflect from "jargon";
 
 temp.track();
 
@@ -28,10 +25,15 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 			parameters,
 			lambdaZipFilePath,
-			lambdaFilePath;
+			lambdaFilePath,
+
+			mockLambdaSpy,
+
+			createFunctionParameters;
 
 	const mockLambda = {
 		createFunction: sinon.spy((params, callback) => {
+			createFunctionParameters = params;
 			callback(createFunctionError, createFunctionData);
 		}),
 		updateFunctionCode: sinon.spy((params, callback) => {
@@ -42,10 +44,15 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 		})
 	};
 
-	const MockAWS = {
-		Lambda: sinon.spy(() => {
+	class MockLambda {
+		constructor(config) {
+			mockLambdaSpy(config);
 			return mockLambda;
-		})
+		}
+	}
+
+	const MockAWS = {
+		Lambda: MockLambda
 	};
 
 	beforeEach(done => {
@@ -67,6 +74,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 			memorySize() { 	return 128; }
 			publish() { 		return true; }
 			timeout() { 		return 3; }
+			runtime() {			return "nodejs"; }
 		}();
 
 		context = {
@@ -94,6 +102,8 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 		};
 		createFunctionError = null;
 
+		mockLambdaSpy = sinon.spy();
+
 		stepDone = (afterStepCallback) => {
 			return (error, data) => {
 				stepReturnError = error;
@@ -114,15 +124,13 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 	});
 
 	it("should set the designated region on the lambda client", () => {
-		MockAWS.Lambda.calledWith({
+		mockLambdaSpy.calledWith({
 			region: conan.config.region
 		}).should.be.true;
 	});
 
 	describe("(When Lambda is NOT New)", () => {
 		it("should call AWS to update the lambda configuration with the designated parameters", () => {
-			const lambdaFileName = inflect(parameters.name()).camel.toString();
-			const handler = `${lambdaFileName}.${parameters.handler()}`;
 			const updateConfigurationParameters = {
 				FunctionName: parameters.name(),
 				Handler: parameters.handler(),
@@ -187,12 +195,32 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 	describe("(When Lambda is New)", () => {
 		beforeEach(done => {
-			delete context.results.lambdaArn;
+			context.results.lambdaArn = null;
 			upsertLambdaStep(conan, context, stepDone(done));
 		});
 
 		it("should call AWS with the designated lambda parameters", () => {
-			mockLambda.createFunction.firstCall.args[0].should.eql(parameters);
+			const expectedCreateFunctionParameters = {
+				FunctionName: parameters.name(),
+				Handler: parameters.handler(),
+				Role: parameters.role(),
+				Description: parameters.description(),
+				MemorySize: parameters.memorySize(),
+				Timeout: parameters.timeout(),
+				Runtime: "nodejs"
+			};
+
+			delete createFunctionParameters.Code;
+
+			createFunctionParameters.should.deep.equal(expectedCreateFunctionParameters);
+		});
+
+		it("should call AWS with the designated lambda code", () => {
+			const expectedCodeBuffer = fileSystem.readFileSync(__dirname + "/fixtures/lambda.zip");
+
+			const codeBuffer = createFunctionParameters.Code.ZipFile;
+
+			codeBuffer.should.deep.equal(expectedCodeBuffer);
 		});
 
 		describe("(Lambda is Created)", () => {

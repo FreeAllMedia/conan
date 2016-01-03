@@ -14,13 +14,29 @@ var _fs2 = _interopRequireDefault(_fs);
 function upsertLambdaStep(conan, context, stepDone) {
 	var conanAwsLambda = context.parameters;
 	var AWS = context.libraries.AWS;
-	var lambda = AWS.Lambda({ region: conan.config.region });
+	var lambda = new AWS.Lambda({ region: conan.config.region });
 
 	var lambdaArn = context.results.lambdaArn;
-	var lambdaIsNew = lambdaArn === undefined;
+
+	var lambdaIsNew = lambdaArn === null;
+
+	var lambdaZipBuffer = _fs2["default"].readFileSync(context.results.lambdaZipFilePath);
 
 	if (lambdaIsNew) {
-		lambda.createFunction(conanAwsLambda, function (createFunctionError, data) {
+		var createFunctionParameters = {
+			FunctionName: conanAwsLambda.name(),
+			Handler: conanAwsLambda.handler(),
+			Role: conanAwsLambda.role(),
+			Description: conanAwsLambda.description(),
+			MemorySize: conanAwsLambda.memorySize(),
+			Timeout: conanAwsLambda.timeout(),
+			Runtime: conanAwsLambda.runtime(),
+			Code: {
+				ZipFile: lambdaZipBuffer
+			}
+		};
+
+		lambda.createFunction(createFunctionParameters, function (createFunctionError, data) {
 			if (createFunctionError) {
 				throw createFunctionError;
 			}
@@ -42,7 +58,7 @@ function upsertLambdaStep(conan, context, stepDone) {
 				throw updateConfigurationError;
 			}
 			var updateCodeParameters = {
-				ZipFile: _fs2["default"].readFileSync(context.results.lambdaZipFilePath),
+				ZipFile: lambdaZipBuffer,
 				FunctionName: conanAwsLambda.name(),
 				Publish: conanAwsLambda.publish()
 			};

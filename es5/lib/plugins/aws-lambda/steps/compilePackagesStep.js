@@ -42,13 +42,14 @@ function compilePackagesStep(conan, context, stepDone) {
 		})
 	};
 
-	lambda.invoke(parameters, function (error, data) {
+	lambda.invoke(parameters, function (error) {
 		var packageZipReadStream = s3.getObject({
 			Bucket: conan.config.bucket,
 			Key: packageZipFileName
 		}).createReadStream();
 
 		var packageZipFilePath = context.temporaryDirectoryPath + "/" + packageZipFileName;
+
 		var packageZipWriteStream = _fs2["default"].createWriteStream(packageZipFilePath);
 
 		packageZipWriteStream.on("close", function () {

@@ -22,21 +22,9 @@ var _fs = require("fs");
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _path = require("path");
-
-var _path2 = _interopRequireDefault(_path);
-
 var _temp = require("temp");
 
 var _temp2 = _interopRequireDefault(_temp);
-
-var _unzip2 = require("unzip2");
-
-var _unzip22 = _interopRequireDefault(_unzip2);
-
-var _jargon = require("jargon");
-
-var _jargon2 = _interopRequireDefault(_jargon);
 
 _temp2["default"].track();
 
@@ -54,10 +42,13 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 	    stepReturnData = undefined,
 	    parameters = undefined,
 	    lambdaZipFilePath = undefined,
-	    lambdaFilePath = undefined;
+	    lambdaFilePath = undefined,
+	    mockLambdaSpy = undefined,
+	    createFunctionParameters = undefined;
 
 	var mockLambda = {
 		createFunction: _sinon2["default"].spy(function (params, callback) {
+			createFunctionParameters = params;
 			callback(createFunctionError, createFunctionData);
 		}),
 		updateFunctionCode: _sinon2["default"].spy(function (params, callback) {
@@ -68,10 +59,15 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 		})
 	};
 
+	var MockLambda = function MockLambda(config) {
+		_classCallCheck(this, MockLambda);
+
+		mockLambdaSpy(config);
+		return mockLambda;
+	};
+
 	var MockAWS = {
-		Lambda: _sinon2["default"].spy(function () {
-			return mockLambda;
-		})
+		Lambda: MockLambda
 	};
 
 	beforeEach(function (done) {
@@ -125,6 +121,11 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 				value: function timeout() {
 					return 3;
 				}
+			}, {
+				key: "runtime",
+				value: function runtime() {
+					return "nodejs";
+				}
 			}]);
 
 			return MockConanAwsLambda;
@@ -155,6 +156,8 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 		};
 		createFunctionError = null;
 
+		mockLambdaSpy = _sinon2["default"].spy();
+
 		stepDone = function (afterStepCallback) {
 			return function (error, data) {
 				stepReturnError = error;
@@ -175,15 +178,13 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 	});
 
 	it("should set the designated region on the lambda client", function () {
-		MockAWS.Lambda.calledWith({
+		mockLambdaSpy.calledWith({
 			region: conan.config.region
 		}).should.be["true"];
 	});
 
 	describe("(When Lambda is NOT New)", function () {
 		it("should call AWS to update the lambda configuration with the designated parameters", function () {
-			var lambdaFileName = (0, _jargon2["default"])(parameters.name()).camel.toString();
-			var handler = lambdaFileName + "." + parameters.handler();
 			var updateConfigurationParameters = {
 				FunctionName: parameters.name(),
 				Handler: parameters.handler(),
@@ -248,12 +249,32 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 
 	describe("(When Lambda is New)", function () {
 		beforeEach(function (done) {
-			delete context.results.lambdaArn;
+			context.results.lambdaArn = null;
 			(0, _stepsUpsertLambdaStepJs2["default"])(conan, context, stepDone(done));
 		});
 
 		it("should call AWS with the designated lambda parameters", function () {
-			mockLambda.createFunction.firstCall.args[0].should.eql(parameters);
+			var expectedCreateFunctionParameters = {
+				FunctionName: parameters.name(),
+				Handler: parameters.handler(),
+				Role: parameters.role(),
+				Description: parameters.description(),
+				MemorySize: parameters.memorySize(),
+				Timeout: parameters.timeout(),
+				Runtime: "nodejs"
+			};
+
+			delete createFunctionParameters.Code;
+
+			createFunctionParameters.should.deep.equal(expectedCreateFunctionParameters);
+		});
+
+		it("should call AWS with the designated lambda code", function () {
+			var expectedCodeBuffer = _fs2["default"].readFileSync(__dirname + "/fixtures/lambda.zip");
+
+			var codeBuffer = createFunctionParameters.Code.ZipFile;
+
+			codeBuffer.should.deep.equal(expectedCodeBuffer);
 		});
 
 		describe("(Lambda is Created)", function () {

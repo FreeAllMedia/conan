@@ -3,13 +3,29 @@ import fileSystem from "fs";
 export default function upsertLambdaStep(conan, context, stepDone) {
 	const conanAwsLambda = context.parameters;
 	const AWS = context.libraries.AWS;
-	const lambda = AWS.Lambda({region: conan.config.region});
+	const lambda = new AWS.Lambda({region: conan.config.region});
 
 	const lambdaArn = context.results.lambdaArn;
-	const lambdaIsNew = lambdaArn === undefined;
+
+	const lambdaIsNew = lambdaArn === null;
+
+	const lambdaZipBuffer = fileSystem.readFileSync(context.results.lambdaZipFilePath);
 
 	if (lambdaIsNew) {
-		lambda.createFunction(conanAwsLambda, (createFunctionError, data) => {
+		const createFunctionParameters = {
+			FunctionName: conanAwsLambda.name(),
+			Handler: conanAwsLambda.handler(),
+			Role: conanAwsLambda.role(),
+			Description: conanAwsLambda.description(),
+			MemorySize: conanAwsLambda.memorySize(),
+			Timeout: conanAwsLambda.timeout(),
+			Runtime: conanAwsLambda.runtime(),
+			Code: {
+				ZipFile: lambdaZipBuffer
+			}
+		};
+
+		lambda.createFunction(createFunctionParameters, (createFunctionError, data) => {
 			if (createFunctionError) {
 				throw createFunctionError;
 			}
@@ -29,7 +45,7 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 		lambda.updateFunctionConfiguration(updateConfigurationParameters, (updateConfigurationError) => {
 			if (updateConfigurationError) { throw updateConfigurationError; }
 			const updateCodeParameters = {
-				ZipFile: fileSystem.readFileSync(context.results.lambdaZipFilePath),
+				ZipFile: lambdaZipBuffer,
 				FunctionName: conanAwsLambda.name(),
 				Publish: conanAwsLambda.publish()
 			};

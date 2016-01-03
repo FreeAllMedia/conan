@@ -6,7 +6,7 @@ const iam = new AWS.IAM({region: "us-east-1"});
 const fs = require("fs");
 const archiver = require('archiver');
 const streamBuffers = require('stream-buffers');
-const unzip = require('unzip2');
+const unzip = require('unzip');
 const through = require('through');
 
 //-------
@@ -15,7 +15,8 @@ const Conan = require("../es5/lib/conan.js");
 const ConanAwsLambdaPlugin = require("../es5/lib/plugins/aws-lambda/conanAwsLambdaPlugin.js");
 
 const conan = new Conan({
-	region: "us-east-1"
+	region: "us-east-1",
+	bucket: "conan.test"
 });
 
 conan.use(ConanAwsLambdaPlugin);

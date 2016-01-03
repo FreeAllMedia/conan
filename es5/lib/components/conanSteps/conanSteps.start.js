@@ -26,8 +26,8 @@ function start(callback) {
 	_temp2["default"].track();
 
 	_temp2["default"].mkdir("conanSteps", function (error, temporaryDirectoryPath) {
+
 		_flowsync2["default"].mapSeries(_.steps, function (step, done) {
-			console.log("running step: ", step.handler.name);
 			var context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
 				libraries: _.libraries,
@@ -35,14 +35,11 @@ function start(callback) {
 				results: Object.assign({}, accumulatedResults)
 			};
 
-			console.log("Calling handler.");
 			step.handler(_.parent, context, function (stepError, stepResult) {
-				console.log("Handler complete.");
 				Object.assign(accumulatedResults, stepResult);
 				done(stepError, stepResult);
 			});
 		}, function () {
-			console.log("Steps complete.");
 			_temp2["default"].cleanup(callback);
 		});
 	});
