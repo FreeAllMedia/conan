@@ -214,10 +214,79 @@ conan.config.cors = {
 conan.context.config("cors.something", 2); // returns 1
 
 
+conan = new Conan({
+	role: "AWSLambda"
+});
 
 conan
-  .api("nico-test")
-    .stage("test")
+	.lambda("AccountShow", "./lambdas/accounts/show.js")
+		.packages({knex: "1.0.4"})
+	.lambda("AccountCreate", "./lambdas/accounts/create.js")
+		.dependencies("./my_modules/**/*")
+	.lambda("AccountUpdate", "./lambdas/accounts/update.js")
+	.lambda("AccountDelete", "./lambdas/accounts/delete.js")
+	.lambda("AccountList", "./lambdas/accounts/list.js")
+
+conan
+	.lambda("PlaylistShow", "./lambdas/playlists/show.py")
+		.runtime("python2.7");
+
+conan
+	.api("Company 1"); // upsertApiStep
+		.stage("production")
+			.get("/playlists/{id}")
+				.cast("id", Number)
+				.lambda("PlaylistShow") // python
+			.get("/users/{id}")
+				.cast("id", Number)
+				.lambda("AccountShow") // nodejs
+
+conan.deploy();
+
+
+
+		.get("/playlists/{id}")
+			.cast("id", Number)
+			.lambda("PlaylistShow") // python
+		.get("/users/{id}")
+			.cast("id", Number)
+			.lambda("AccountShow") // nodejs
+
+  .api("Company1")
+		.stage("production")
+		// Account Resources
+			.get("/accounts/{id}")
+				.cast("id", Number)
+				.lambda("AccountShow")
+			.post("/accounts")
+				.lambda("AccountCreate")
+			.put("/accounts/{id}")
+				.cast("id", Number)
+				.lambda("AccountUpdate")
+			.delete("/accounts/{id}")
+				.cast("id", Number)
+				.lambda("AccountDelete")
+			.get("/accounts")
+				.lambda("AccountList")
+
+conan.deploy(() => {
+
+});
+
+
+			https://myapi.com/accounts/3
+
+
+
+
+		.stage("staging")
+		.stage("development")
+
+
+
+
+
+
       .get("/accounts/{id}")
         .cast("id", "integer")
         .path("id", "identifiers")
@@ -225,6 +294,26 @@ conan
         .header("Api-Key", "credentials")
         .queryString("page", "search")
         .lambda("AccountList");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 conan.deploy();
 
