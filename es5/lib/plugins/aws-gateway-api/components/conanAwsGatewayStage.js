@@ -18,55 +18,28 @@ var _componentsConanComponentJs = require("../../../components/conanComponent.js
 
 var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
 
-var _stepsFindApiStageByNameStepJs = require("../steps/findApiStageByNameStep.js");
+var ConanAwsGatewayStage = (function (_ConanComponent) {
+	_inherits(ConanAwsGatewayStage, _ConanComponent);
 
-var _stepsFindApiStageByNameStepJs2 = _interopRequireDefault(_stepsFindApiStageByNameStepJs);
+	function ConanAwsGatewayStage() {
+		_classCallCheck(this, ConanAwsGatewayStage);
 
-var _stepsUpdateApiStageStepJs = require("../steps/updateApiStageStep.js");
-
-var _stepsUpdateApiStageStepJs2 = _interopRequireDefault(_stepsUpdateApiStageStepJs);
-
-var _stepsCreateApiStageStepJs = require("../steps/createApiStageStep.js");
-
-var _stepsCreateApiStageStepJs2 = _interopRequireDefault(_stepsCreateApiStageStepJs);
-
-//circular dep
-
-var _conanAwsGatewayApiJs = require("./conanAwsGatewayApi.js");
-
-var _conanAwsGatewayApiJs2 = _interopRequireDefault(_conanAwsGatewayApiJs);
-
-var ConanAwsGatewayApiStage = (function (_ConanComponent) {
-	_inherits(ConanAwsGatewayApiStage, _ConanComponent);
-
-	function ConanAwsGatewayApiStage() {
-		_classCallCheck(this, ConanAwsGatewayApiStage);
-
-		_get(Object.getPrototypeOf(ConanAwsGatewayApiStage.prototype), "constructor", this).apply(this, arguments);
+		_get(Object.getPrototypeOf(ConanAwsGatewayStage.prototype), "constructor", this).apply(this, arguments);
 	}
 
-	_createClass(ConanAwsGatewayApiStage, [{
+	_createClass(ConanAwsGatewayStage, [{
 		key: "initialize",
-		value: function initialize(conan, name) {
-			this.conan = conan;
+		value: function initialize(api, name) {
+			this.api = api;
 
-			this.parameters("name", "description");
+			this.parameters("name");
 
 			this.name(name);
-
-			this.conan.steps.add(_stepsFindApiStageByNameStepJs2["default"], this);
-			this.conan.steps.add(_stepsUpdateApiStageStepJs2["default"], this);
-			this.conan.steps.add(_stepsCreateApiStageStepJs2["default"], this);
-		}
-	}, {
-		key: "api",
-		value: function api(name) {
-			return new _conanAwsGatewayApiJs2["default"](this.conan, name);
 		}
 	}]);
 
-	return ConanAwsGatewayApiStage;
+	return ConanAwsGatewayStage;
 })(_componentsConanComponentJs2["default"]);
 
-exports["default"] = ConanAwsGatewayApiStage;
+exports["default"] = ConanAwsGatewayStage;
 module.exports = exports["default"];
