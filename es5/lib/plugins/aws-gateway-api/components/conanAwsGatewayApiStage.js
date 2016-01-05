@@ -35,8 +35,6 @@ var ConanAwsGatewayApiStage = (function (_ConanComponent) {
 			this.parameters("name");
 
 			this.name(name);
-
-			// this.conan.steps.add(upsertLambdaStep, this);
 		}
 	}]);
 

@@ -9,7 +9,5 @@ export default class ConanAwsGatewayApiStage extends ConanComponent {
 		);
 
 		this.name(name);
-
-		// this.conan.steps.add(upsertLambdaStep, this);
 	}
 }

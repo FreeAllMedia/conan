@@ -14,12 +14,17 @@ var _componentsConanAwsGatewayApiJs = require("./components/conanAwsGatewayApi.j
 
 var _componentsConanAwsGatewayApiJs2 = _interopRequireDefault(_componentsConanAwsGatewayApiJs);
 
+var _awsSdk = require("aws-sdk");
+
+var _awsSdk2 = _interopRequireDefault(_awsSdk);
+
 var ConanAwsGatewayApiPlugin = (function () {
 	function ConanAwsGatewayApiPlugin(conan) {
 		_classCallCheck(this, ConanAwsGatewayApiPlugin);
 
 		conan.api = this.api;
 		conan.apis = {};
+		conan.steps.library("AWS", _awsSdk2["default"]);
 	}
 
 	_createClass(ConanAwsGatewayApiPlugin, [{

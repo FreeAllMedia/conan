@@ -14,6 +14,14 @@ var _conanAwsGatewayApiPluginJs = require("../conanAwsGatewayApiPlugin.js");
 
 var _conanAwsGatewayApiPluginJs2 = _interopRequireDefault(_conanAwsGatewayApiPluginJs);
 
+var _sinon = require("sinon");
+
+var _sinon2 = _interopRequireDefault(_sinon);
+
+var _awsSdk = require("aws-sdk");
+
+var _awsSdk2 = _interopRequireDefault(_awsSdk);
+
 describe("ConanAwsGatewayApiPlugin(conan)", function () {
 	var conan = undefined,
 	    api = undefined;
@@ -29,6 +37,31 @@ describe("ConanAwsGatewayApiPlugin(conan)", function () {
 
 	it("should setup an empty object to hold apis at conan.apis", function () {
 		conan.apis.should.eql({});
+	});
+
+	describe("(AWS)", function () {
+		var librarySpy = undefined;
+		var fakeConan = undefined;
+
+		before(function (done) {
+			librarySpy = _sinon2["default"].spy();
+
+			fakeConan = {
+				steps: {
+					library: function library(name, value) {
+						librarySpy(name, value);
+						done();
+					}
+				}
+			};
+
+			/* eslint-disable no-new */
+			new _conanAwsGatewayApiPluginJs2["default"](fakeConan);
+		});
+
+		it("should add the AWS library", function () {
+			librarySpy.calledWith("AWS", _awsSdk2["default"]).should.be["true"];
+		});
 	});
 
 	describe("conan.api(name)", function () {

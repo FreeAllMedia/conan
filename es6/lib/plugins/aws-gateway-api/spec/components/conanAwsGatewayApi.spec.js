@@ -3,7 +3,7 @@ import ConanAwsGatewayApi from "../../components/conanAwsGatewayApi.js";
 import ConanComponent from "../../../../components/conanComponent.js";
 import inflect from "jargon";
 
-describe("ConanAwsGatewayApi(conan, name, filePath, handler)", () => {
+describe("ConanAwsGatewayApi(conan, name)", () => {
 	let api;
 	let name;
 	let conan;
@@ -40,10 +40,20 @@ describe("ConanAwsGatewayApi(conan, name, filePath, handler)", () => {
 		});
 	});
 
-	// describe("(steps)", () => {
-	// 	it("should add a find api by name step", () => {
-	// 		const step = conan.steps.findByName("findLambdaByNameStep");
-	// 		step.parameters.should.eql(api);
-	// 	});
-	// });
+	describe("(steps)", () => {
+		it("should add a find api by name step", () => {
+			const step = conan.steps.findByName("findApiByNameStep");
+			step.parameters.should.eql(api);
+		});
+
+		it("should add a update api step", () => {
+			const step = conan.steps.findByName("updateApiStep");
+			step.parameters.should.eql(api);
+		});
+
+		it("should add a create api step", () => {
+			const step = conan.steps.findByName("createApiStep");
+			step.parameters.should.eql(api);
+		});
+	});
 });

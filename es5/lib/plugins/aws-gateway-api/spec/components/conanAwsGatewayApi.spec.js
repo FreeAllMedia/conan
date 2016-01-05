@@ -18,7 +18,7 @@ var _jargon = require("jargon");
 
 var _jargon2 = _interopRequireDefault(_jargon);
 
-describe("ConanAwsGatewayApi(conan, name, filePath, handler)", function () {
+describe("ConanAwsGatewayApi(conan, name)", function () {
 	var api = undefined;
 	var name = undefined;
 	var conan = undefined;
@@ -53,10 +53,20 @@ describe("ConanAwsGatewayApi(conan, name, filePath, handler)", function () {
 		});
 	});
 
-	// describe("(steps)", () => {
-	// 	it("should add a find api by name step", () => {
-	// 		const step = conan.steps.findByName("findLambdaByNameStep");
-	// 		step.parameters.should.eql(api);
-	// 	});
-	// });
+	describe("(steps)", function () {
+		it("should add a find api by name step", function () {
+			var step = conan.steps.findByName("findApiByNameStep");
+			step.parameters.should.eql(api);
+		});
+
+		it("should add a update api step", function () {
+			var step = conan.steps.findByName("updateApiStep");
+			step.parameters.should.eql(api);
+		});
+
+		it("should add a create api step", function () {
+			var step = conan.steps.findByName("createApiStep");
+			step.parameters.should.eql(api);
+		});
+	});
 });

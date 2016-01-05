@@ -1,4 +1,7 @@
 import ConanComponent from "../../../components/conanComponent.js";
+import findApiByNameStep from "../steps/findApiByNameStep.js";
+import updateApiStep from "../steps/updateApiStep.js";
+import createApiStep from "../steps/createApiStep.js";
 
 export default class ConanAwsGatewayApi extends ConanComponent {
 	initialize(conan, name) {
@@ -10,6 +13,9 @@ export default class ConanAwsGatewayApi extends ConanComponent {
 
 		this.name(name);
 
-		// this.conan.steps.add(upsertLambdaStep, this);
+		// find api by name
+		this.conan.steps.add(findApiByNameStep, this);
+		this.conan.steps.add(updateApiStep, this);
+		this.conan.steps.add(createApiStep, this);
 	}
 }
