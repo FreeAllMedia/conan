@@ -16,18 +16,19 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 
 			stepReturnData,
 
-			parameters;
+			conanAwsLambda;
 
 	beforeEach(done => {
 		conan = new Conan({
 			region: "us-east-1"
 		});
 
-		dependencyFilePaths = __dirname + "/fixtures/save.js";
-		lambdaFilePath = __dirname + "/fixtures/lambda.js";
-		packageZipFilePath = __dirname + "/fixtures/packages.zip";
+		dependencyFilePaths = undefined;
+		packageZipFilePath = undefined;
 
-		parameters = new class MockConanAwsLambda {
+		lambdaFilePath = __dirname + "/fixtures/lambda.js";
+
+		conanAwsLambda = new class MockConanAwsLambda {
 			filePath() {	return lambdaFilePath; }
 			name() 		 {	return "TestFunction"; }
 			dependencies() { return dependencyFilePaths; }
@@ -36,7 +37,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 		temp.mkdir("compileLambdaZip", (error, temporaryDirectoryPath) => {
 			context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
-				parameters: parameters,
+				parameters: conanAwsLambda,
 				libraries: {},
 				results: {
 					packageZipFilePath: packageZipFilePath
@@ -82,17 +83,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 				.on("close", () => {
 					const expectedFilePaths = [
 						"lambda.js",
-						"save.js",
-						"node_modules/async/.jshintrc",
-						"node_modules/async/.travis.yml",
-						"node_modules/async/CHANGELOG.md",
-						"node_modules/async/LICENSE",
-						"node_modules/async/README.md",
-						"node_modules/async/bower.json",
-						"node_modules/async/component.json",
-						"node_modules/async/lib/async.js",
-						"node_modules/async/package.json",
-						"node_modules/async/support/sync-package-managers.js"
+						"save.js"
 					];
 
 					zipFilePaths.should.have.members(expectedFilePaths);
@@ -145,7 +136,33 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 					const expectedFilePaths = [
 						"lambda.js",
 						"save.js",
-						"destroy.js",
+						"destroy.js"
+					];
+
+					zipFilePaths.should.have.members(expectedFilePaths);
+
+					done();
+				});
+		});
+	});
+
+	describe("(With a package zip file)", () => {
+		beforeEach(done => {
+			context.results.packageZipFilePath = __dirname + "/fixtures/packages.zip";
+			compileLambdaZipStep(conan, context, stepDone(done));
+		});
+
+		it("should insert the lambda file, the dependency, and its packages into the zip file", done => {
+			let zipFilePaths = [];
+
+			fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
+				.pipe(unzip.Parse())
+				.on("entry", (entry) => {
+					zipFilePaths.push(entry.path);
+				})
+				.on("close", () => {
+					const expectedFilePaths = [
+						"lambda.js",
 						"node_modules/async/.jshintrc",
 						"node_modules/async/.travis.yml",
 						"node_modules/async/CHANGELOG.md",

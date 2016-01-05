@@ -13,7 +13,7 @@ gulp.task("test-coverage", ["build"], (cb) => {
 		.on("finish", () => {
 			gulp.src(paths.build.sourceSpec)
 				.pipe(mocha())// --print summary|detail|none|both
-				.pipe(istanbul.writeReports({dir: `${__dirname}/../coverage`, reporters: ["summary", "detail", "none", "both"]})) // Creating the reports after tests ran
+				.pipe(istanbul.writeReports({dir: `${__dirname}/../coverage`, reporters: ["html", "text"]})) // Creating the reports after tests ran
 				// .pipe(istanbul.enforceThresholds({ thresholds: { global: 100 } })) // Enforce a coverage of 100%
 				.on("end", cb);
 		});
