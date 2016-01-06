@@ -1,6 +1,7 @@
 const packageJson = require("../package.json");
 const Conan = require("../es5/lib/conan.js");
 const ConanAwsLambdaPlugin = require("../es5/lib/plugins/aws-lambda/conanAwsLambdaPlugin.js");
+const ConanAwsGatewayApiPlugin = require("../es5/lib/plugins/aws-gateway-api/conanAwsGatewayApiPlugin.js");
 
 const conan = new Conan({
 	region: "us-east-1",
@@ -8,16 +9,23 @@ const conan = new Conan({
 });
 
 conan.use(ConanAwsLambdaPlugin);
+conan.use(ConanAwsGatewayApiPlugin);
 
 conan.lambda(
-	"SuperLambda",
+	"CrapLambda",
 	__dirname + "/lambda.js"
 )
-	.packages({
-		temp: packageJson.dependencies.temp
-	})
 	.dependencies(__dirname + "/itWorks.js")
 	.role("AWSLambda");
+
+// conan
+// 	.api("v1") // results = { apis: { "v1": { id: 9 } }
+// 		.stage("production") // results = { apis: { "v1": { id: 9, stages: { "production" => { id: 7 } } } }
+// 			.get("/accounts")  // results = {apis: { "v1": { id: 9, stages: { "production" => { id: 7, resources: { "/accounts": { get: {} }} } } } }
+// 				.lambda("AccountsList")
+// 		.stage("staging") // results = {apiId: 9, stageId: 2, resourceIds: { "/accounts": 4 }}
+// 			.get("/accounts") // results = {apiId: 9, stageId: 2, resourceIds: { "/accounts": 5 }}
+// 				.lambda("AccountsList")
 
 conan.deploy(() => {
 	console.log("Deployment complete.");

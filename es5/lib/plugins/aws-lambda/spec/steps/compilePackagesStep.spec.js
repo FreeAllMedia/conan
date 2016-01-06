@@ -50,9 +50,10 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 	    s3ResponseData = undefined,
 	    stepReturnError = undefined,
 	    stepReturnData = undefined,
-	    parameters = undefined,
+	    conanAwsLambda = undefined,
 	    mockLambdaSpy = undefined,
 	    mockS3Spy = undefined,
+	    _packages = undefined,
 	    packageZipFileName = undefined;
 
 	var mockS3GetObjectRequest = {
@@ -102,7 +103,9 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 
 		packageZipFileName = (0, _jargon2["default"])(lambdaName).camel.toString() + ".packages.zip";
 
-		parameters = new ((function () {
+		_packages = { "async": "1.0.0" };
+
+		conanAwsLambda = new ((function () {
 			function MockConanAwsLambda() {
 				_classCallCheck(this, MockConanAwsLambda);
 			}
@@ -115,7 +118,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 			}, {
 				key: "packages",
 				value: function packages() {
-					return { "async": "1.0.0" };
+					return _packages;
 				}
 			}]);
 
@@ -128,7 +131,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 		_temp2["default"].mkdir("compilePackages", function (error, temporaryDirectoryPath) {
 			context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
-				parameters: parameters,
+				parameters: conanAwsLambda,
 				libraries: { AWS: MockAWS },
 				results: {}
 			};
@@ -157,59 +160,71 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 		(typeof _stepsCompilePackagesStepJs2["default"]).should.equal("function");
 	});
 
-	it("should set the designated region on the lambda client", function () {
-		mockLambdaSpy.calledWith({
-			region: conan.config.region
-		}).should.be["true"];
-	});
+	describe("(When packages are set to be compiled)", function () {
+		it("should set the designated region on the lambda client", function () {
+			mockLambdaSpy.calledWith({
+				region: conan.config.region
+			}).should.be["true"];
+		});
 
-	it("should set the designated region on the s3 client", function () {
-		mockS3Spy.calledWith({
-			region: conan.config.region
-		}).should.be["true"];
-	});
+		it("should set the designated region on the s3 client", function () {
+			mockS3Spy.calledWith({
+				region: conan.config.region
+			}).should.be["true"];
+		});
 
-	it("should call AWS with the designated lambda parameters", function () {
-		mockLambda.invoke.firstCall.args[0].should.eql({
-			FunctionName: "Thaumaturgy",
-			InvocationType: "RequestResponse",
-			LogType: "Tail",
-			Payload: JSON.stringify({
-				packages: parameters.packages(),
-				bucket: conan.config.bucket,
-				key: packageZipFileName
-			})
+		it("should call AWS with the designated lambda parameters", function () {
+			mockLambda.invoke.firstCall.args[0].should.eql({
+				FunctionName: "Thaumaturgy",
+				InvocationType: "RequestResponse",
+				LogType: "Tail",
+				Payload: JSON.stringify({
+					packages: conanAwsLambda.packages(),
+					bucket: conan.config.bucket,
+					key: packageZipFileName
+				})
+			});
+		});
+
+		it("should call AWS with the designated S3 parameters", function () {
+			mockS3.getObject.firstCall.args[0].should.eql({
+				Bucket: conan.config.bucket,
+				Key: packageZipFileName
+			});
+		});
+
+		it("should have all package files within the package zip", function (done) {
+			/* eslint-disable new-cap */
+			var zipFilePaths = [];
+
+			_fs2["default"].createReadStream(stepReturnData.packageZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
+				zipFilePaths.push(entry.path);
+			}).on("close", function () {
+				var asyncFilePaths = ["async/.jshintrc", "async/.travis.yml", "async/CHANGELOG.md", "async/LICENSE", "async/README.md", "async/bower.json", "async/component.json", "async/lib/", "async/lib/async.js", "async/package.json", "async/support/", "async/support/sync-package-managers.js"];
+
+				zipFilePaths.should.have.members(asyncFilePaths);
+
+				done();
+			});
+		});
+
+		it("should return the package zip file's file path", function () {
+			_fs2["default"].existsSync(stepReturnData.packageZipFilePath).should.be["true"];
+		});
+
+		it("should name the package zip file according to the lambda name", function () {
+			var returnedPackageZipFileName = _path2["default"].basename(stepReturnData.packageZipFilePath);
+			returnedPackageZipFileName.should.eql(packageZipFileName);
 		});
 	});
 
-	it("should call AWS with the designated S3 parameters", function () {
-		mockS3.getObject.firstCall.args[0].should.eql({
-			Bucket: conan.config.bucket,
-			Key: packageZipFileName
+	describe("(When packages are NOT set to be compiled)", function () {
+		it("should return with the package zip file path set to null", function (done) {
+			_packages = undefined;
+			(0, _stepsCompilePackagesStepJs2["default"])(conan, context, function (error, results) {
+				(results.packageZipFilePath === null).should.be["true"];
+				done();
+			});
 		});
-	});
-
-	it("should have all package files within the package zip", function (done) {
-		/* eslint-disable new-cap */
-		var zipFilePaths = [];
-
-		_fs2["default"].createReadStream(stepReturnData.packageZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
-			zipFilePaths.push(entry.path);
-		}).on("close", function () {
-			var asyncFilePaths = ["async/.jshintrc", "async/.travis.yml", "async/CHANGELOG.md", "async/LICENSE", "async/README.md", "async/bower.json", "async/component.json", "async/lib/", "async/lib/async.js", "async/package.json", "async/support/", "async/support/sync-package-managers.js"];
-
-			zipFilePaths.should.have.members(asyncFilePaths);
-
-			done();
-		});
-	});
-
-	it("should return the package zip file's file path", function () {
-		_fs2["default"].existsSync(stepReturnData.packageZipFilePath).should.be["true"];
-	});
-
-	it("should name the package zip file according to the lambda name", function () {
-		var returnedPackageZipFileName = _path2["default"].basename(stepReturnData.packageZipFilePath);
-		returnedPackageZipFileName.should.eql(packageZipFileName);
 	});
 });
