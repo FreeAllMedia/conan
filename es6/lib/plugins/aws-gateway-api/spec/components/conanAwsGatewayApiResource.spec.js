@@ -1,40 +1,40 @@
 import Conan from "../../../../conan.js";
-import ConanAwsGatewayApi from "../../components/conanAwsGatewayApi.js";
-import ConanAwsGatewayApiStage from "../../components/conanAwsGatewayApiStage.js";
 import ConanAwsGatewayApiResource from "../../components/conanAwsGatewayApiResource.js";
 import ConanComponent from "../../../../components/conanComponent.js";
 import inflect from "jargon";
 
-describe("ConanAwsGatewayApiStage(conan, name)", () => {
-	let stage;
-	let name;
+describe("ConanAwsGatewayApiResource(conan)", () => {
+	let apiResource;
+	let path;
+	let method;
 	let conan;
 
 	beforeEach(() => {
-		name = "MyAPI";
+		path = "/account";
+		method = "GET";
 
 		conan = new Conan();
-		stage = new ConanAwsGatewayApiStage(conan, name);
+		apiResource = new ConanAwsGatewayApiResource(conan, path, method);
 	});
 
 	it("should extend ConanComponent", () => {
-		stage.should.be.instanceOf(ConanComponent);
+		apiResource.should.be.instanceOf(ConanComponent);
 	});
 
-	it("should save conant to stage.conan", () => {
-		stage.conan.should.eql(conan);
+	it("should save conan to .conan", () => {
+		apiResource.conan.should.eql(conan);
 	});
 
 	describe("(parameters)", () => {
 		[
-			"name",
-			"description"
+			"path",
+			"method"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
 
 			describe(`.${parameterName}(new${parameterNamePascalCase})`, () => {
 				it(`should save new${parameterNamePascalCase}`, () => {
-					let component = new ConanAwsGatewayApiStage(conan);
+					let component = new ConanAwsGatewayApiResource(conan);
 					const testValue = "abc123";
 					component = component[parameterName](testValue);
 					component[parameterName]().should.eql(testValue);
@@ -44,41 +44,14 @@ describe("ConanAwsGatewayApiStage(conan, name)", () => {
 	});
 
 	describe("(steps)", () => {
-		it("should add a find api by name step", () => {
-			const step = conan.steps.findByName("findApiStageByNameStep");
-			step.parameters.should.eql(stage);
+		it("should add a find apiResource by name step", () => {
+			const step = conan.steps.findByName("findApiResourceByPathStep");
+			step.parameters.should.eql(apiResource);
 		});
 
-		it("should add a create stage step", () => {
-			const step = conan.steps.findByName("createApiStageStep");
-			step.parameters.should.eql(stage);
-		});
-
-		it("should add a update stage step", () => {
-			const step = conan.steps.findByName("updateApiStageStep");
-			step.parameters.should.eql(stage);
-		});
-	});
-
-	describe("stage.api(name)", () => {
-		let newApi;
-
-		beforeEach(() => {
-			name = "MyAPI";
-
-			newApi = stage.api(name);
-		});
-
-		it("should return an instance of ConanAwsGatewayApi", () => {
-			newApi.should.be.instanceOf(ConanAwsGatewayApi);
-		});
-
-		it("should pass conan to the ConanAwsGatewayApi constructor", () => {
-			newApi.conan.should.eql(conan);
-		});
-
-		it("should pass the api name to the ConanAwsGatewayApi constructor", () => {
-			newApi.name().should.eql(name);
+		it("should add a create api resources step", () => {
+			const step = conan.steps.findByName("createApiResourcesStep");
+			step.parameters.should.eql(apiResource);
 		});
 	});
 
@@ -89,16 +62,13 @@ describe("ConanAwsGatewayApiStage(conan, name)", () => {
 		"DELETE"
 	].forEach((resourceMethod) => {
 		const methodFunctionName = resourceMethod.toLowerCase();
-		describe(`stage.${methodFunctionName}(path)`, () => {
+		describe(`apiResource.${methodFunctionName}(path)`, () => {
 			let newResource;
-			let path;
-			let method;
-
 			beforeEach(() => {
 				path = "/testResource";
 				method = resourceMethod;
 
-				newResource = ConanAwsGatewayApiStage.prototype[methodFunctionName].call(stage, path);
+				newResource = ConanAwsGatewayApiResource.prototype[methodFunctionName].call(apiResource, path);
 			});
 
 			it("should return an instance of ConanAwsGatewayApiResource", () => {

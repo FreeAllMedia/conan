@@ -18,79 +18,60 @@ var _componentsConanComponentJs = require("../../../components/conanComponent.js
 
 var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
 
-var _conanAwsGatewayApiResourceJs = require("./conanAwsGatewayApiResource.js");
+var _stepsFindApiResourceByPathStepJs = require("../steps/findApiResourceByPathStep.js");
 
-var _conanAwsGatewayApiResourceJs2 = _interopRequireDefault(_conanAwsGatewayApiResourceJs);
+var _stepsFindApiResourceByPathStepJs2 = _interopRequireDefault(_stepsFindApiResourceByPathStepJs);
 
-var _stepsFindApiStageByNameStepJs = require("../steps/findApiStageByNameStep.js");
+var _stepsCreateApiResourcesStepJs = require("../steps/createApiResourcesStep.js");
 
-var _stepsFindApiStageByNameStepJs2 = _interopRequireDefault(_stepsFindApiStageByNameStepJs);
+var _stepsCreateApiResourcesStepJs2 = _interopRequireDefault(_stepsCreateApiResourcesStepJs);
 
-var _stepsUpdateApiStageStepJs = require("../steps/updateApiStageStep.js");
+var ConanAwsGatewayApiResource = (function (_ConanComponent) {
+	_inherits(ConanAwsGatewayApiResource, _ConanComponent);
 
-var _stepsUpdateApiStageStepJs2 = _interopRequireDefault(_stepsUpdateApiStageStepJs);
+	function ConanAwsGatewayApiResource() {
+		_classCallCheck(this, ConanAwsGatewayApiResource);
 
-var _stepsCreateApiStageStepJs = require("../steps/createApiStageStep.js");
-
-var _stepsCreateApiStageStepJs2 = _interopRequireDefault(_stepsCreateApiStageStepJs);
-
-//potential circular dep
-
-var _conanAwsGatewayApiJs = require("./conanAwsGatewayApi.js");
-
-var _conanAwsGatewayApiJs2 = _interopRequireDefault(_conanAwsGatewayApiJs);
-
-var ConanAwsGatewayApiStage = (function (_ConanComponent) {
-	_inherits(ConanAwsGatewayApiStage, _ConanComponent);
-
-	function ConanAwsGatewayApiStage() {
-		_classCallCheck(this, ConanAwsGatewayApiStage);
-
-		_get(Object.getPrototypeOf(ConanAwsGatewayApiStage.prototype), "constructor", this).apply(this, arguments);
+		_get(Object.getPrototypeOf(ConanAwsGatewayApiResource.prototype), "constructor", this).apply(this, arguments);
 	}
 
-	_createClass(ConanAwsGatewayApiStage, [{
+	_createClass(ConanAwsGatewayApiResource, [{
 		key: "initialize",
-		value: function initialize(conan, name) {
+		value: function initialize(conan, path, method) {
 			this.conan = conan;
 
-			this.parameters("name", "description");
+			this.parameters("path", "method");
 
-			this.name(name);
+			this.path(path);
+			this.method(method);
 
-			this.conan.steps.add(_stepsFindApiStageByNameStepJs2["default"], this);
-			this.conan.steps.add(_stepsUpdateApiStageStepJs2["default"], this);
-			this.conan.steps.add(_stepsCreateApiStageStepJs2["default"], this);
-		}
-	}, {
-		key: "api",
-		value: function api(name) {
-			return new _conanAwsGatewayApiJs2["default"](this.conan, name);
+			this.conan.steps.add(_stepsFindApiResourceByPathStepJs2["default"], this);
+			this.conan.steps.add(_stepsCreateApiResourcesStepJs2["default"], this);
 		}
 	}, {
 		key: "get",
 		value: function get(path) {
-			return new _conanAwsGatewayApiResourceJs2["default"](this.conan, path, "GET");
+			return new ConanAwsGatewayApiResource(this.conan, path, "GET");
 		}
 	}, {
 		key: "post",
 		value: function post(path) {
-			return new _conanAwsGatewayApiResourceJs2["default"](this.conan, path, "POST");
+			return new ConanAwsGatewayApiResource(this.conan, path, "POST");
 		}
 	}, {
 		key: "put",
 		value: function put(path) {
-			return new _conanAwsGatewayApiResourceJs2["default"](this.conan, path, "PUT");
+			return new ConanAwsGatewayApiResource(this.conan, path, "PUT");
 		}
 	}, {
 		key: "delete",
 		value: function _delete(path) {
-			return new _conanAwsGatewayApiResourceJs2["default"](this.conan, path, "DELETE");
+			return new ConanAwsGatewayApiResource(this.conan, path, "DELETE");
 		}
 	}]);
 
-	return ConanAwsGatewayApiStage;
+	return ConanAwsGatewayApiResource;
 })(_componentsConanComponentJs2["default"]);
 
-exports["default"] = ConanAwsGatewayApiStage;
+exports["default"] = ConanAwsGatewayApiResource;
 module.exports = exports["default"];

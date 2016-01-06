@@ -1,7 +1,10 @@
 import ConanComponent from "../../../components/conanComponent.js";
+import ConanAwsGatewayApiResource from "./conanAwsGatewayApiResource.js";
 import findApiStageByNameStep from "../steps/findApiStageByNameStep.js";
 import updateApiStageStep from "../steps/updateApiStageStep.js";
 import createApiStageStep from "../steps/createApiStageStep.js";
+//potential circular dep
+import ConanAwsGatewayApi from "./conanAwsGatewayApi.js";
 
 export default class ConanAwsGatewayApiStage extends ConanComponent {
 	initialize(conan, name) {
@@ -22,7 +25,20 @@ export default class ConanAwsGatewayApiStage extends ConanComponent {
 	api(name) {
 		return new ConanAwsGatewayApi(this.conan, name);
 	}
-}
 
-//circular dep
-import ConanAwsGatewayApi from "./conanAwsGatewayApi.js";
+	get(path) {
+		return new ConanAwsGatewayApiResource(this.conan, path, "GET");
+	}
+
+	post(path) {
+		return new ConanAwsGatewayApiResource(this.conan, path, "POST");
+	}
+
+	put(path) {
+		return new ConanAwsGatewayApiResource(this.conan, path, "PUT");
+	}
+
+	delete(path) {
+		return new ConanAwsGatewayApiResource(this.conan, path, "DELETE");
+	}
+}
