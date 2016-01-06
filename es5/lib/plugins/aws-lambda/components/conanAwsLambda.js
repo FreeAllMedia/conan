@@ -70,6 +70,11 @@ var ConanAwsLambda = (function (_ConanComponent) {
 			this.conan.steps.add(_stepsCompileLambdaZipStepJs2["default"], this);
 			this.conan.steps.add(_stepsUpsertLambdaStepJs2["default"], this);
 		}
+	}, {
+		key: "lambda",
+		value: function lambda(name) {
+			return new ConanAwsLambda(this.conan, name);
+		}
 	}]);
 
 	return ConanAwsLambda;

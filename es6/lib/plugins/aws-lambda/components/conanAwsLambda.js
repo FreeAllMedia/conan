@@ -40,4 +40,8 @@ export default class ConanAwsLambda extends ConanComponent {
 		this.conan.steps.add(compileLambdaZipStep, this);
 		this.conan.steps.add(upsertLambdaStep, this);
 	}
+
+	lambda(name) {
+		return new ConanAwsLambda(this.conan, name);
+	}
 }

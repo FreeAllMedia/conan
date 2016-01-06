@@ -109,4 +109,24 @@ describe("ConanAwsLambda(conan, name, filePath, role)", () => {
 			step.parameters.should.eql(lambda);
 		});
 	});
+
+	describe(".lambda(name)", () => {
+		beforeEach(() => {
+			name = "MyLambda";
+
+			lambda = lambda.lambda(name);
+		});
+
+		it("should return an instance of ConanAwsLambda", () => {
+			lambda.should.be.instanceOf(ConanAwsLambda);
+		});
+
+		it("should pass conan to the ConanAwsLambda constructor", () => {
+			lambda.conan.should.eql(conan);
+		});
+
+		it("should pass the lambda name to the ConanAwsLambda constructor", () => {
+			lambda.name().should.eql(name);
+		});
+	});
 });

@@ -111,4 +111,24 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 			step.parameters.should.eql(lambda);
 		});
 	});
+
+	describe(".lambda(name)", function () {
+		beforeEach(function () {
+			name = "MyLambda";
+
+			lambda = lambda.lambda(name);
+		});
+
+		it("should return an instance of ConanAwsLambda", function () {
+			lambda.should.be.instanceOf(_componentsConanAwsLambdaJs2["default"]);
+		});
+
+		it("should pass conan to the ConanAwsLambda constructor", function () {
+			lambda.conan.should.eql(conan);
+		});
+
+		it("should pass the lambda name to the ConanAwsLambda constructor", function () {
+			lambda.name().should.eql(name);
+		});
+	});
 });
