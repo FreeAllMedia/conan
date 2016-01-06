@@ -18,20 +18,20 @@ var _jargon = require("jargon");
 
 var _jargon2 = _interopRequireDefault(_jargon);
 
-describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
+describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 	var lambda = undefined;
 	var name = undefined;
 	var filePath = undefined;
-	var handler = undefined;
+	var role = undefined;
 	var conan = undefined;
 
 	beforeEach(function () {
 		name = "AccountCreate";
 		filePath = "/account/create.js";
-		handler = "handler";
+		role = "SomeRole";
 
 		conan = new _conanJs2["default"]();
-		lambda = new _componentsConanAwsLambdaJs2["default"](conan, name, filePath, handler);
+		lambda = new _componentsConanAwsLambdaJs2["default"](conan, name, filePath, role);
 	});
 
 	it("should extend ConanComponent", function () {
@@ -42,8 +42,20 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", function () {
 		lambda.conan.should.eql(conan);
 	});
 
+	it("should save name to .name()", function () {
+		lambda.name().should.eql(name);
+	});
+
+	it("should save filePath to .filePath()", function () {
+		lambda.filePath().should.eql(filePath);
+	});
+
+	it("should save role to .role()", function () {
+		lambda.role().should.eql(role);
+	});
+
 	describe("(parameters)", function () {
-		["name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish", "packages", "bucket", "dependencies"].forEach(function (parameterName) {
+		["name", "filePath", "role", "runtime", "handler", "description", "memorySize", "timeout", "publish", "packages", "bucket", "dependencies"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function describeComponentParameter() {

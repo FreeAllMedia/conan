@@ -3,20 +3,20 @@ import ConanAwsLambda from "../../components/conanAwsLambda.js";
 import ConanComponent from "../../../../components/conanComponent.js";
 import inflect from "jargon";
 
-describe("ConanAwsLambda(conan, name, filePath, handler)", () => {
+describe("ConanAwsLambda(conan, name, filePath, role)", () => {
 	let lambda;
 	let name;
 	let filePath;
-	let handler;
+	let role;
 	let conan;
 
 	beforeEach(() => {
 		name = "AccountCreate";
 		filePath = "/account/create.js";
-		handler = "handler";
+		role = "SomeRole";
 
 		conan = new Conan();
-		lambda = new ConanAwsLambda(conan, name, filePath, handler);
+		lambda = new ConanAwsLambda(conan, name, filePath, role);
 	});
 
 	it("should extend ConanComponent", () => {
@@ -27,13 +27,25 @@ describe("ConanAwsLambda(conan, name, filePath, handler)", () => {
 		lambda.conan.should.eql(conan);
 	});
 
+	it("should save name to .name()", () => {
+		lambda.name().should.eql(name);
+	});
+
+	it("should save filePath to .filePath()", () => {
+		lambda.filePath().should.eql(filePath);
+	});
+
+	it("should save role to .role()", () => {
+		lambda.role().should.eql(role);
+	});
+
 	describe("(parameters)", () => {
 		[
 			"name",
 			"filePath",
-			"handler",
-			"runtime",
 			"role",
+			"runtime",
+			"handler",
 			"description",
 			"memorySize",
 			"timeout",

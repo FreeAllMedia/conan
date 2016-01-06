@@ -11,12 +11,8 @@ const conan = new Conan({
 conan.use(ConanAwsLambdaPlugin);
 conan.use(ConanAwsGatewayApiPlugin);
 
-conan.lambda(
-	"CrapLambda",
-	__dirname + "/lambda.js"
-)
-	.dependencies(__dirname + "/itWorks.js")
-	.role("AWSLambda");
+conan.lambda("SomeLambda", __dirname + "/lambda.js", "AWSLambda");
+conan.lambda("PythonLambda", __dirname + "/lambda.py", "AWSLambda").runtime("python2.7");
 
 // conan
 // 	.api("v1") // results = { apis: { "v1": { id: 9 } }

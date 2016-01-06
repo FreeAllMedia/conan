@@ -6,7 +6,7 @@ import compileLambdaZipStep from "../steps/compileLambdaZipStep.js";
 import upsertLambdaStep from "../steps/upsertLambdaStep.js";
 
 export default class ConanAwsLambda extends ConanComponent {
-	initialize(conan, name, filePath, handler) {
+	initialize(conan, name, filePath, role) {
 		this.conan = conan;
 
 		this.parameters(
@@ -26,7 +26,7 @@ export default class ConanAwsLambda extends ConanComponent {
 
 		this.name(name);
 		this.filePath(filePath);
-		this.handler(handler);
+		this.role(role);
 
 		this.handler("handler");
 		this.runtime("nodejs");

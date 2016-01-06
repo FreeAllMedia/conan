@@ -34,7 +34,10 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 			mockLambdaSpy,
 
-			createFunctionParameters;
+			createFunctionParameters,
+
+			fileName,
+			handlerString;
 
 	const mockLambda = {
 		createFunction: sinon.spy((params, callback) => {
@@ -109,6 +112,9 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 		mockLambdaSpy = sinon.spy();
 
+		fileName = path.parse(parameters.filePath()).name;
+		handlerString = `${fileName}.${parameters.handler()}`;
+
 		stepDone = (afterStepCallback) => {
 			return (error, data) => {
 				stepReturnError = error;
@@ -136,8 +142,6 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 	describe("(When Lambda is NOT New)", () => {
 		it("should call AWS to update the lambda configuration with the designated parameters", () => {
-			const fileName = path.parse(parameters.filePath()).name;
-			const handlerString = `${fileName}.${parameters.handler()}`;
 
 			const updateConfigurationParameters = {
 				FunctionName: parameters.name(),
@@ -210,7 +214,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 		it("should call AWS with the designated lambda parameters", () => {
 			const expectedCreateFunctionParameters = {
 				FunctionName: parameters.name(),
-				Handler: parameters.handler(),
+				Handler: handlerString,
 				Role: roleArn,
 				Description: parameters.description(),
 				MemorySize: parameters.memorySize(),

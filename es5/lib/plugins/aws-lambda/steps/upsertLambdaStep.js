@@ -27,10 +27,13 @@ function upsertLambdaStep(conan, context, stepDone) {
 
 	var lambdaZipBuffer = _fs2["default"].readFileSync(context.results.lambdaZipFilePath);
 
+	var fileName = _path2["default"].parse(conanAwsLambda.filePath()).name;
+	var handlerString = fileName + "." + conanAwsLambda.handler();
+
 	if (lambdaIsNew) {
 		var createFunctionParameters = {
 			FunctionName: conanAwsLambda.name(),
-			Handler: conanAwsLambda.handler(),
+			Handler: handlerString,
 			Role: roleArn,
 			Description: conanAwsLambda.description(),
 			MemorySize: conanAwsLambda.memorySize(),
@@ -50,9 +53,6 @@ function upsertLambdaStep(conan, context, stepDone) {
 			});
 		});
 	} else {
-		var fileName = _path2["default"].parse(conanAwsLambda.filePath()).name;
-		var handlerString = fileName + "." + conanAwsLambda.handler();
-
 		var updateConfigurationParameters = {
 			FunctionName: conanAwsLambda.name(),
 			Handler: handlerString,
