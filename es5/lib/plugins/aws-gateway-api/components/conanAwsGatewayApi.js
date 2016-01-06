@@ -18,6 +18,10 @@ var _componentsConanComponentJs = require("../../../components/conanComponent.js
 
 var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
 
+var _conanAwsGatewayApiStageJs = require("./conanAwsGatewayApiStage.js");
+
+var _conanAwsGatewayApiStageJs2 = _interopRequireDefault(_conanAwsGatewayApiStageJs);
+
 var _stepsFindApiByNameStepJs = require("../steps/findApiByNameStep.js");
 
 var _stepsFindApiByNameStepJs2 = _interopRequireDefault(_stepsFindApiByNameStepJs);
@@ -52,6 +56,16 @@ var ConanAwsGatewayApi = (function (_ConanComponent) {
 			this.conan.steps.add(_stepsFindApiByNameStepJs2["default"], this);
 			this.conan.steps.add(_stepsUpdateApiStepJs2["default"], this);
 			this.conan.steps.add(_stepsCreateApiStepJs2["default"], this);
+		}
+	}, {
+		key: "stage",
+		value: function stage(name) {
+			return new _conanAwsGatewayApiStageJs2["default"](this.conan, name);
+		}
+	}, {
+		key: "api",
+		value: function api(name) {
+			return new ConanAwsGatewayApi(this.conan, name);
 		}
 	}]);
 

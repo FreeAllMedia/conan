@@ -10,6 +10,10 @@ var _componentsConanAwsGatewayApiJs = require("../../components/conanAwsGatewayA
 
 var _componentsConanAwsGatewayApiJs2 = _interopRequireDefault(_componentsConanAwsGatewayApiJs);
 
+var _componentsConanAwsGatewayApiStageJs = require("../../components/conanAwsGatewayApiStage.js");
+
+var _componentsConanAwsGatewayApiStageJs2 = _interopRequireDefault(_componentsConanAwsGatewayApiStageJs);
+
 var _componentsConanComponentJs = require("../../../../components/conanComponent.js");
 
 var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
@@ -67,6 +71,48 @@ describe("ConanAwsGatewayApi(conan, name)", function () {
 		it("should add a create api step", function () {
 			var step = conan.steps.findByName("createApiStep");
 			step.parameters.should.eql(api);
+		});
+	});
+
+	describe("api.stage(name)", function () {
+		var stage = undefined;
+
+		beforeEach(function () {
+			name = "MyStage";
+
+			stage = api.stage(name);
+		});
+
+		it("should return an instance of ConanAwsGatewayApiStage", function () {
+			stage.should.be.instanceOf(_componentsConanAwsGatewayApiStageJs2["default"]);
+		});
+
+		it("should pass conan to the ConanAwsGatewayApiStage constructor", function () {
+			stage.conan.should.eql(conan);
+		});
+
+		it("should pass the stage name to the ConanAwsGatewayApi constructor", function () {
+			stage.name().should.eql(name);
+		});
+	});
+
+	describe("api.api(name)", function () {
+		beforeEach(function () {
+			name = "MyAPI";
+
+			api = api.api(name);
+		});
+
+		it("should return an instance of ConanAwsGatewayApi", function () {
+			api.should.be.instanceOf(_componentsConanAwsGatewayApiJs2["default"]);
+		});
+
+		it("should pass conan to the ConanAwsGatewayApi constructor", function () {
+			api.conan.should.eql(conan);
+		});
+
+		it("should pass the api name to the ConanAwsGatewayApi constructor", function () {
+			api.name().should.eql(name);
 		});
 	});
 });

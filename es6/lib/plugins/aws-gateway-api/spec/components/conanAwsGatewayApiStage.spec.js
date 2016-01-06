@@ -5,7 +5,6 @@ import ConanComponent from "../../../../components/conanComponent.js";
 import inflect from "jargon";
 
 describe("ConanAwsGatewayApiStage(conan, name)", () => {
-	let api;
 	let stage;
 	let name;
 	let conan;
@@ -14,21 +13,21 @@ describe("ConanAwsGatewayApiStage(conan, name)", () => {
 		name = "MyAPI";
 
 		conan = new Conan();
-		api = new ConanAwsGatewayApi(conan, "SomeApi");
-		stage = new ConanAwsGatewayApiStage(api, name);
+		stage = new ConanAwsGatewayApiStage(conan, name);
 	});
 
 	it("should extend ConanComponent", () => {
-		api.should.be.instanceOf(ConanComponent);
+		stage.should.be.instanceOf(ConanComponent);
 	});
 
-	it("should save conan to .conan", () => {
-		api.conan.should.eql(conan);
+	it("should save conant to stage.conan", () => {
+		stage.conan.should.eql(conan);
 	});
 
 	describe("(parameters)", () => {
 		[
-			"name"
+			"name",
+			"description"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
 
@@ -43,10 +42,42 @@ describe("ConanAwsGatewayApiStage(conan, name)", () => {
 		});
 	});
 
-	// describe("(steps)", () => {
-	// 	it("should add a find api by name step", () => {
-	// 		const step = conan.steps.findByName("findLambdaByNameStep");
-	// 		step.parameters.should.eql(api);
-	// 	});
-	// });
+	describe("(steps)", () => {
+		it("should add a find api by name step", () => {
+			const step = conan.steps.findByName("findApiStageByNameStep");
+			step.parameters.should.eql(stage);
+		});
+
+		it("should add a create stage step", () => {
+			const step = conan.steps.findByName("createApiStageStep");
+			step.parameters.should.eql(stage);
+		});
+
+		it("should add a update stage step", () => {
+			const step = conan.steps.findByName("updateApiStageStep");
+			step.parameters.should.eql(stage);
+		});
+	});
+
+	describe("stage.api(name)", () => {
+		let newApi;
+
+		beforeEach(() => {
+			name = "MyAPI";
+
+			newApi = stage.api(name);
+		});
+
+		it("should return an instance of ConanAwsGatewayApi", () => {
+			newApi.should.be.instanceOf(ConanAwsGatewayApi);
+		});
+
+		it("should pass conan to the ConanAwsGatewayApi constructor", () => {
+			newApi.conan.should.eql(conan);
+		});
+
+		it("should pass the api name to the ConanAwsGatewayApi constructor", () => {
+			newApi.name().should.eql(name);
+		});
+	});
 });
