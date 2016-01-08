@@ -15,6 +15,6 @@ __       |  /<M.   '/ / .-. \ \| |\ \  | | | / / \ \   | |\ \  | | |
 
 ASCII art by "VK" @ [RetroJunkie.com](http://www.retrojunkie.com/asciiart/cartchar/conan.htm)
 
-# CONAN: The Deployer
+# Conan: The Deployer
 
-Conan.js is a barbarically-simple solution for writing, testing, and deploying AWS Lambdas across multiple apis, stages, and regions.
+Conan.js is a PRE-ALPHA project under heavy development. Please only consider this version as a preview, and not necessarily representative of its final form.
