@@ -28,7 +28,7 @@ function findApiResourceByPathStep(conan, context, done) {
 					return currentResource.path === resourceFullPath;
 				});
 				if (resource) {
-					var results = { newApiResources: newApiResources, resourceId: resource.id, resourceParentId: resource.parentId };
+					var results = { newApiResources: newApiResources, apiResourceId: resource.id, apiResourceParentId: resource.parentId };
 					done(null, results);
 				} else {
 					(function () {
@@ -51,19 +51,20 @@ function findApiResourceByPathStep(conan, context, done) {
 						});
 						var results = { newApiResources: newApiResources };
 						if (lastResourceFound) {
-							results.resourceParentId = lastResourceFound.id;
+							results.apiResourceParentId = lastResourceFound.id;
 						} else {
 							// resource unexisting at all, find root
 							var rootResource = response.items.find(function (currentResource) {
 								return currentResource.path === "/";
 							});
-							results.resourceParentId = rootResource.id;
+							results.apiResourceParentId = rootResource.id;
 						}
+						results.apiResourceId = null;
 						done(null, results);
 					})();
 				}
 			} else {
-				done(error);
+				done(error, { apiResourceId: null });
 			}
 		});
 	} else {

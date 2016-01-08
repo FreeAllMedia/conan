@@ -26,6 +26,14 @@ var _stepsCreateApiResourcesStepJs = require("../steps/createApiResourcesStep.js
 
 var _stepsCreateApiResourcesStepJs2 = _interopRequireDefault(_stepsCreateApiResourcesStepJs);
 
+var _stepsFindResourceMethodStepJs = require("../steps/findResourceMethodStep.js");
+
+var _stepsFindResourceMethodStepJs2 = _interopRequireDefault(_stepsFindResourceMethodStepJs);
+
+var _stepsCreateResourceMethodStepJs = require("../steps/createResourceMethodStep.js");
+
+var _stepsCreateResourceMethodStepJs2 = _interopRequireDefault(_stepsCreateResourceMethodStepJs);
+
 var ConanAwsGatewayApiResource = (function (_ConanComponent) {
 	_inherits(ConanAwsGatewayApiResource, _ConanComponent);
 
@@ -47,6 +55,8 @@ var ConanAwsGatewayApiResource = (function (_ConanComponent) {
 
 			this.conan.steps.add(_stepsFindApiResourceByPathStepJs2["default"], this);
 			this.conan.steps.add(_stepsCreateApiResourcesStepJs2["default"], this);
+			this.conan.steps.add(_stepsFindResourceMethodStepJs2["default"], this);
+			this.conan.steps.add(_stepsCreateResourceMethodStepJs2["default"], this);
 		}
 	}, {
 		key: "get",

@@ -29,6 +29,8 @@ describe("createApiResourcesStep", function () {
 	    context = undefined,
 	    parameters = undefined,
 	    restApiId = undefined,
+	    apiResourceParentId = undefined,
+	    newApiResources = undefined,
 	    should = undefined;
 
 	var APIGateway = (function () {
@@ -64,11 +66,15 @@ describe("createApiResourcesStep", function () {
 		}();
 
 		restApiId = "23sysh";
+		apiResourceParentId = "23sysh3";
+		newApiResources = ["accounts"];
 
 		context = {
 			parameters: parameters,
 			results: {
-				restApiId: restApiId
+				restApiId: restApiId,
+				apiResourceParentId: apiResourceParentId,
+				newApiResources: newApiResources
 			},
 			libraries: {
 				AWS: {
@@ -90,12 +96,138 @@ describe("createApiResourcesStep", function () {
 		});
 
 		it("should send the appropiate parameters to the AWS create deployment call", function () {
-			createResourceSpy.firstCall.args[0].should.eql({});
+			createResourceSpy.firstCall.args[0].should.eql({
+				parentId: apiResourceParentId,
+				pathPart: "accounts",
+				restApiId: restApiId
+			});
 		});
 
 		it("should set the constructor parameters", function () {
 			constructorSpy.firstCall.args[0].should.eql({
 				region: conan.config.region
+			});
+		});
+	});
+
+	describe("(rest api id is not present)", function () {
+		beforeEach(function () {
+			delete context.results.restApiId;
+			createResourceSpy = _sinon2["default"].spy();
+		});
+
+		it("should skip the function call entirely", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function () {
+				createResourceSpy.called.should.be["false"];
+				done();
+			});
+		});
+	});
+
+	describe("(api resource parent id is not present)", function () {
+		beforeEach(function () {
+			delete context.results.apiResourceParentId;
+			createResourceSpy = _sinon2["default"].spy();
+		});
+
+		it("should skip the function call entirely", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function () {
+				createResourceSpy.called.should.be["false"];
+				done();
+			});
+		});
+	});
+
+	describe("(new api resources is not an array)", function () {
+		beforeEach(function () {
+			delete context.results.newApiResources;
+			createResourceSpy = _sinon2["default"].spy();
+		});
+
+		it("should skip the function call entirely", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function () {
+				createResourceSpy.called.should.be["false"];
+				done();
+			});
+		});
+	});
+
+	describe("(everything good but no new api resources)", function () {
+		beforeEach(function () {
+			context.results.newApiResources = [];
+			createResourceSpy = _sinon2["default"].spy();
+		});
+
+		it("should skip the function call entirely", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function () {
+				createResourceSpy.called.should.be["false"];
+				done();
+			});
+		});
+	});
+
+	describe("(there are new api resources to create)", function () {
+		var responseData = undefined;
+
+		describe("(one new api resource)", function () {
+			describe("(normal response)", function () {
+				beforeEach(function () {
+					responseData = { id: "sjhd72k" };
+					createResourceSpy = _sinon2["default"].spy(function (awsParameters, callback) {
+						callback(null, responseData);
+					});
+				});
+
+				it("should set the newly created api resource id", function (done) {
+					(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function (error, results) {
+						results.apiResourceId.should.equal(responseData.id);
+						done();
+					});
+				});
+			});
+		});
+
+		describe("(two or more new api resources)", function () {
+			var secondResponseData = undefined;
+			var currentCall = undefined;
+
+			describe("(normal response)", function () {
+				beforeEach(function () {
+					context.results.newApiResources.push("items");
+
+					responseData = { id: "sjhd72k" };
+					secondResponseData = { id: "zksd872" };
+					currentCall = 0;
+
+					createResourceSpy = _sinon2["default"].spy(function (awsParameters, callback) {
+						var currentResponse = undefined;
+						if (currentCall === 0) {
+							currentResponse = responseData;
+							currentCall++;
+						} else {
+							currentResponse = secondResponseData;
+						}
+						callback(null, currentResponse);
+					});
+				});
+
+				it("should set the result id for the leaf - api resource", function (done) {
+					(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function (error, results) {
+						results.apiResourceId.should.equal(secondResponseData.id);
+						done();
+					});
+				});
+
+				it("should use the parent id from the previous resource on the next one", function (done) {
+					(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function () {
+						createResourceSpy.secondCall.args[0].should.eql({
+							parentId: "sjhd72k",
+							pathPart: "items",
+							restApiId: restApiId
+						});
+						done();
+					});
+				});
 			});
 		});
 	});
@@ -107,9 +239,16 @@ describe("createApiResourcesStep", function () {
 			});
 		});
 
-		it("should return error", function (done) {
+		it("should return an error when is just one", function (done) {
 			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function (error) {
 				should.exist(error);
+				done();
+			});
+		});
+
+		it("should explicitly set tu null the api resource id", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function (error, result) {
+				(result.apiResourceId === null).should.be["true"];
 				done();
 			});
 		});

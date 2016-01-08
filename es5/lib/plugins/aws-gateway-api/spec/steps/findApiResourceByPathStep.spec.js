@@ -159,7 +159,7 @@ describe("findApiResourceByPathStep", function () {
 
 			it("should use the right parent id as the root resource", function (done) {
 				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
-					result.resourceParentId.should.equal("v6x4ma2fog");
+					result.apiResourceParentId.should.equal("v6x4ma2fog");
 					done();
 				});
 			});
@@ -191,6 +191,13 @@ describe("findApiResourceByPathStep", function () {
 				});
 			});
 
+			it("should explicitly set tu null the api resource id if it was not there", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
+					(result.apiResourceId === null).should.be["true"];
+					done();
+				});
+			});
+
 			it("should queue the missing resource", function (done) {
 				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.newApiResources.should.eql(["items"]);
@@ -200,7 +207,7 @@ describe("findApiResourceByPathStep", function () {
 
 			it("should use the right parent id for the missing resource", function (done) {
 				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
-					result.resourceParentId.should.equal("v6x4ma2sss");
+					result.apiResourceParentId.should.equal("v6x4ma2sss");
 					done();
 				});
 			});
@@ -232,6 +239,13 @@ describe("findApiResourceByPathStep", function () {
 				});
 			});
 
+			it("should explicitly set tu null the api resource id if it was not there", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
+					(result.apiResourceId === null).should.be["true"];
+					done();
+				});
+			});
+
 			it("should queue the missing resources", function (done) {
 				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.newApiResources.should.eql(["items", "subItems"]);
@@ -241,7 +255,14 @@ describe("findApiResourceByPathStep", function () {
 
 			it("should use the right parent id for the first missing resource", function (done) {
 				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
-					result.resourceParentId.should.equal("v6x4ma2sss");
+					result.apiResourceParentId.should.equal("v6x4ma2sss");
+					done();
+				});
+			});
+
+			it("should return the array in the appropiate order", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
+					result.newApiResources[0].should.eql("items");
 					done();
 				});
 			});
@@ -275,14 +296,14 @@ describe("findApiResourceByPathStep", function () {
 
 			it("should return the existing resource id", function (done) {
 				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
-					result.resourceId.should.equal("v6x4ma2ss3");
+					result.apiResourceId.should.equal("v6x4ma2ss3");
 					done();
 				});
 			});
 
 			it("should return the existing resource parent id", function (done) {
 				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
-					result.resourceParentId.should.equal("v6x4ma2ss2");
+					result.apiResourceParentId.should.equal("v6x4ma2ss2");
 					done();
 				});
 			});
@@ -306,6 +327,13 @@ describe("findApiResourceByPathStep", function () {
 		it("should return error", function (done) {
 			(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error) {
 				should.exist(error);
+				done();
+			});
+		});
+
+		it("should explicitly set tu null the api resource id if it was not there", function (done) {
+			(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
+				(result.apiResourceId === null).should.be["true"];
 				done();
 			});
 		});

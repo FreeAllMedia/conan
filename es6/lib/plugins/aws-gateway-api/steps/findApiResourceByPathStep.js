@@ -22,7 +22,7 @@ export default function findApiResourceByPathStep(conan, context, done) {
 						return (currentResource.path === resourceFullPath);
 					});
 					if(resource) {
-						const results = { newApiResources, resourceId: resource.id, resourceParentId: resource.parentId };
+						const results = { newApiResources, apiResourceId: resource.id, apiResourceParentId: resource.parentId };
 						done(null, results);
 					} else {
 						// partial matching
@@ -46,18 +46,19 @@ export default function findApiResourceByPathStep(conan, context, done) {
 						);
 						const results = { newApiResources };
 						if(lastResourceFound) {
-							results.resourceParentId = lastResourceFound.id;
+							results.apiResourceParentId = lastResourceFound.id;
 						} else {
 							// resource unexisting at all, find root
 							const rootResource = response.items.find((currentResource) => {
 								return (currentResource.path === "/");
 							});
-							results.resourceParentId = rootResource.id;
+							results.apiResourceParentId = rootResource.id;
 						}
+						results.apiResourceId = null;
 						done(null, results);
 					}
 				} else {
-					done(error);
+					done(error, {apiResourceId: null});
 				}
 			});
 	} else {

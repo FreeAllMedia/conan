@@ -1,6 +1,8 @@
 import ConanComponent from "../../../components/conanComponent.js";
 import findApiResourceByPathStep from "../steps/findApiResourceByPathStep.js";
 import createApiResourcesStep from "../steps/createApiResourcesStep.js";
+import findResourceMethodStep from "../steps/findResourceMethodStep.js";
+import createResourceMethodStep from "../steps/createResourceMethodStep.js";
 
 export default class ConanAwsGatewayApiResource extends ConanComponent {
 	initialize(conan, path, method) {
@@ -16,6 +18,8 @@ export default class ConanAwsGatewayApiResource extends ConanComponent {
 
 		this.conan.steps.add(findApiResourceByPathStep, this);
 		this.conan.steps.add(createApiResourcesStep, this);
+		this.conan.steps.add(findResourceMethodStep, this);
+		this.conan.steps.add(createResourceMethodStep, this);
 	}
 
 	get(path) {
