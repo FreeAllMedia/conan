@@ -1,0 +1,65 @@
+import fileSystem from "fs";
+import path from "path";
+
+export default function upsertLambdaStep(conan, context, stepDone) {
+	const conanAwsLambda = context.parameters;
+	const AWS = context.libraries.AWS;
+	const lambda = new AWS.Lambda({region: conan.config.region});
+
+	const lambdaArn = context.results.lambdaArn;
+	const roleArn = context.results.roleArn;
+
+	const lambdaIsNew = lambdaArn === null;
+
+	const lambdaZipBuffer = fileSystem.readFileSync(context.results.lambdaZipFilePath);
+
+	const fileName = path.parse(conanAwsLambda.filePath()).name;
+	const handlerString = `${fileName}.${conanAwsLambda.handler()}`;
+
+	if (lambdaIsNew) {
+		const createFunctionParameters = {
+			FunctionName: conanAwsLambda.name(),
+			Handler: handlerString,
+			Role: roleArn,
+			Description: conanAwsLambda.description(),
+			MemorySize: conanAwsLambda.memorySize(),
+			Timeout: conanAwsLambda.timeout(),
+			Runtime: conanAwsLambda.runtime(),
+			Code: {
+				ZipFile: lambdaZipBuffer
+			}
+		};
+
+		lambda.createFunction(createFunctionParameters, (createFunctionError, data) => {
+			if (createFunctionError) {
+				throw createFunctionError;
+			}
+			stepDone(null, {
+				lambdaArn: data.FunctionArn
+			});
+		});
+	} else {
+		const updateConfigurationParameters = {
+			FunctionName: conanAwsLambda.name(),
+			Handler: handlerString,
+			Role: roleArn,
+			Description: conanAwsLambda.description(),
+			MemorySize: conanAwsLambda.memorySize(),
+			Timeout: conanAwsLambda.timeout()
+		};
+		lambda.updateFunctionConfiguration(updateConfigurationParameters, (updateConfigurationError) => {
+			if (updateConfigurationError) { throw updateConfigurationError; }
+			const updateCodeParameters = {
+				ZipFile: lambdaZipBuffer,
+				FunctionName: conanAwsLambda.name(),
+				Publish: conanAwsLambda.publish()
+			};
+			lambda.updateFunctionCode(updateCodeParameters, (updateCodeError, data) => {
+				if (updateCodeError) { throw updateCodeError; }
+				stepDone(null, {
+					lambdaArn: lambdaArn
+				});
+			});
+		});
+	}
+}

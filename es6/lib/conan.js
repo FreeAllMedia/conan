@@ -1,5 +1,4 @@
-import ConanContext from "./conanContext.js";
-import ConanSteps from "./conanSteps.js";
+import ConanSteps from "./components/conanSteps.js";
 
 /**
  * @class Conan
@@ -12,13 +11,12 @@ export default class Conan {
 	 */
 	constructor(config) {
 		this.config = config || {};
-		this.context = new ConanContext();
-		this.steps = new ConanSteps();
+		this.steps = new ConanSteps(this);
 		this.plugins = [];
 	}
 
 	use(ConanPlugin) {
-		return require("./conan/conan.use.js").call(this, ConanPlugin);
+		this.plugins.push(new ConanPlugin(this));
 	}
 
 	deploy(callback) {
@@ -26,6 +24,6 @@ export default class Conan {
 	}
 
 	get version() {
-		return require("./conan/conan.version.js").call(this);
+		return require("../../package.json").version;
 	}
 }

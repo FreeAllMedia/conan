@@ -18,7 +18,7 @@ describe("conan.deploy(callback)", function () {
 	});
 
 	it("should run all step functions in order", function (done) {
-		var conanStepFunction = function conanStepFunction(stepConan, stepDone) {
+		var conanStepFunction = function conanStepFunction(stepConan, context, stepDone) {
 			return stepDone();
 		};
 
