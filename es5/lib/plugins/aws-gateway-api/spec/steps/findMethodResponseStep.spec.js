@@ -18,17 +18,18 @@ var _chai = require("chai");
 
 var _chai2 = _interopRequireDefault(_chai);
 
-var _stepsCreateApiStageStepJs = require("../../steps/createApiStageStep.js");
+var _stepsFindMethodResponseStepJs = require("../../steps/findMethodResponseStep.js");
 
-var _stepsCreateApiStageStepJs2 = _interopRequireDefault(_stepsCreateApiStageStepJs);
+var _stepsFindMethodResponseStepJs2 = _interopRequireDefault(_stepsFindMethodResponseStepJs);
 
-describe("createApiStageStep", function () {
-	var createDeploymentSpy = undefined,
+describe("findMethodResponseStep", function () {
+	var getMethodResponseSpy = undefined,
 	    constructorSpy = undefined,
 	    conan = undefined,
 	    context = undefined,
 	    parameters = undefined,
 	    restApiId = undefined,
+	    apiResourceId = undefined,
 	    should = undefined;
 
 	var APIGateway = (function () {
@@ -39,9 +40,9 @@ describe("createApiStageStep", function () {
 		}
 
 		_createClass(APIGateway, [{
-			key: "createDeployment",
-			value: function createDeployment(params, callback) {
-				createDeploymentSpy(params, callback);
+			key: "getMethodResponse",
+			value: function getMethodResponse(params, callback) {
+				getMethodResponseSpy(params, callback);
 			}
 		}]);
 
@@ -54,7 +55,7 @@ describe("createApiStageStep", function () {
 		});
 
 		constructorSpy = _sinon2["default"].spy();
-		createDeploymentSpy = _sinon2["default"].spy(function (params, callback) {
+		getMethodResponseSpy = _sinon2["default"].spy(function (params, callback) {
 			callback();
 		});
 		should = _chai2["default"].should();
@@ -65,14 +66,14 @@ describe("createApiStageStep", function () {
 			}
 
 			_createClass(MockConanAwsParameters, [{
-				key: "name",
-				value: function name() {
-					return "testStage";
+				key: "method",
+				value: function method() {
+					return "GET";
 				}
 			}, {
-				key: "description",
-				value: function description() {
-					return "testStage description";
+				key: "statusCodes",
+				value: function statusCodes() {
+					return [200, 404];
 				}
 			}]);
 
@@ -80,11 +81,13 @@ describe("createApiStageStep", function () {
 		})())();
 
 		restApiId = "23sysh";
+		apiResourceId = "23sysh3";
 
 		context = {
 			parameters: parameters,
 			results: {
-				restApiId: restApiId
+				restApiId: restApiId,
+				apiResourceId: apiResourceId
 			},
 			libraries: {
 				AWS: {
@@ -95,22 +98,22 @@ describe("createApiStageStep", function () {
 	});
 
 	it("should be a function", function () {
-		(typeof _stepsCreateApiStageStepJs2["default"]).should.equal("function");
+		(typeof _stepsFindMethodResponseStepJs2["default"]).should.equal("function");
 	});
 
 	describe("(parameters)", function () {
 		beforeEach(function (done) {
-			(0, _stepsCreateApiStageStepJs2["default"])(conan, context, function () {
+			(0, _stepsFindMethodResponseStepJs2["default"])(conan, context, function () {
 				done();
 			});
 		});
 
-		it("should send the appropiate parameters to the AWS call", function () {
-			createDeploymentSpy.firstCall.args[0].should.eql({
+		it("should send the appropiate parameters to the AWS get function call", function () {
+			getMethodResponseSpy.firstCall.args[0].should.eql({
+				httpMethod: parameters.method(),
+				resourceId: context.results.apiResourceId,
 				restApiId: restApiId,
-				stageName: "testStage",
-				description: "conan deployment for stage creation",
-				stageDescription: "testStage description"
+				statusCode: "200"
 			});
 		});
 
@@ -124,58 +127,66 @@ describe("createApiStageStep", function () {
 	describe("(rest api id is not present)", function () {
 		beforeEach(function () {
 			delete context.results.restApiId;
-			createDeploymentSpy = _sinon2["default"].spy();
+			getMethodResponseSpy = _sinon2["default"].spy();
 		});
 
 		it("should skip the function call entirely", function (done) {
-			(0, _stepsCreateApiStageStepJs2["default"])(conan, context, function () {
-				createDeploymentSpy.called.should.be["false"];
+			(0, _stepsFindMethodResponseStepJs2["default"])(conan, context, function () {
+				getMethodResponseSpy.called.should.be["false"];
 				done();
 			});
 		});
 	});
 
-	describe("(rest api id is present but stage already exists)", function () {
+	describe("(api resource id is not present)", function () {
 		beforeEach(function () {
-			context.results = { restApiId: restApiId, stageName: "testStage" };
-			createDeploymentSpy = _sinon2["default"].spy();
+			delete context.results.apiResourceId;
+			getMethodResponseSpy = _sinon2["default"].spy();
 		});
 
 		it("should skip the function call entirely", function (done) {
-			(0, _stepsCreateApiStageStepJs2["default"])(conan, context, function () {
-				createDeploymentSpy.called.should.be["false"];
+			(0, _stepsFindMethodResponseStepJs2["default"])(conan, context, function () {
+				getMethodResponseSpy.called.should.be["false"];
 				done();
 			});
 		});
 	});
 
-	describe("(stage created)", function () {
-		var responseData = undefined;
-
+	describe("(no response methods not found)", function () {
 		beforeEach(function () {
-			responseData = { name: "testStage", id: 2 };
-			createDeploymentSpy = _sinon2["default"].spy(function (params, callback) {
-				callback(null, responseData);
+			getMethodResponseSpy = _sinon2["default"].spy(function (params, callback) {
+				callback({ statusCode: 404 });
 			});
 		});
 
-		it("should return with no error for that stage", function (done) {
-			(0, _stepsCreateApiStageStepJs2["default"])(conan, context, function (error) {
+		it("should return no error", function (done) {
+			(0, _stepsFindMethodResponseStepJs2["default"])(conan, context, function (error) {
 				should.not.exist(error);
 				done();
 			});
 		});
 
-		it("should return the deployment id", function (done) {
-			(0, _stepsCreateApiStageStepJs2["default"])(conan, context, function (error, result) {
-				result.deploymentId.should.equal(responseData.id);
+		it("should return an emtpy array on status codes", function (done) {
+			(0, _stepsFindMethodResponseStepJs2["default"])(conan, context, function (error, result) {
+				result.responseStatusCodes.should.eql([]);
 				done();
 			});
 		});
+	});
 
-		it("should return the stage name", function (done) {
-			(0, _stepsCreateApiStageStepJs2["default"])(conan, context, function (error, result) {
-				result.stageName.should.equal(parameters.name());
+	describe("(response method found)", function () {
+		var responseData = undefined;
+
+		beforeEach(function () {
+			responseData = { statusCode: "200" };
+			getMethodResponseSpy = _sinon2["default"].spy(function (params, callback) {
+				callback(null, responseData);
+			});
+		});
+
+		it("should return the status codes", function (done) {
+			(0, _stepsFindMethodResponseStepJs2["default"])(conan, context, function (error, result) {
+				result.responseStatusCodes.should.eql(["200", "200"]);
 				done();
 			});
 		});
@@ -183,13 +194,13 @@ describe("createApiStageStep", function () {
 
 	describe("(unknown error)", function () {
 		beforeEach(function () {
-			createDeploymentSpy = _sinon2["default"].spy(function (params, callback) {
+			getMethodResponseSpy = _sinon2["default"].spy(function (params, callback) {
 				callback({ statusCode: 401 });
 			});
 		});
 
 		it("should return error", function (done) {
-			(0, _stepsCreateApiStageStepJs2["default"])(conan, context, function (error) {
+			(0, _stepsFindMethodResponseStepJs2["default"])(conan, context, function (error) {
 				should.exist(error);
 				done();
 			});

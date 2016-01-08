@@ -3,6 +3,13 @@ import findApiResourceByPathStep from "../steps/findApiResourceByPathStep.js";
 import createApiResourcesStep from "../steps/createApiResourcesStep.js";
 import findResourceMethodStep from "../steps/findResourceMethodStep.js";
 import createResourceMethodStep from "../steps/createResourceMethodStep.js";
+import putIntegrationStep from "../steps/putIntegrationStep.js";
+import putIntegrationResponseStep from "../steps/putIntegrationResponseStep.js";
+import putMethodResponseStep from "../steps/putMethodResponseStep.js";
+import findMethodResponseStep from "../steps/findMethodResponseStep.js";
+import findLambdaByNameStep from "../../aws-lambda/steps/findLambdaByNameStep.js";
+
+import findApiStageByNameStep from "../steps/findApiStageByNameStep.js";
 
 export default class ConanAwsGatewayApiResource extends ConanComponent {
 	initialize(conan, path, method) {
@@ -10,16 +17,24 @@ export default class ConanAwsGatewayApiResource extends ConanComponent {
 
 		this.parameters(
 			"path",
-			"method"
+			"method",
+			"lambda",
+			"statusCodes"
 		);
 
 		this.path(path);
 		this.method(method);
+		this.statusCodes([200]);
 
-		this.conan.steps.add(findApiResourceByPathStep, this);
-		this.conan.steps.add(createApiResourcesStep, this);
-		this.conan.steps.add(findResourceMethodStep, this);
-		this.conan.steps.add(createResourceMethodStep, this);
+		this.conan.steps.before(findApiStageByNameStep, findLambdaByNameStep, this);
+		this.conan.steps.before(findApiStageByNameStep, findApiResourceByPathStep, this);
+		this.conan.steps.before(findApiStageByNameStep, createApiResourcesStep, this);
+		this.conan.steps.before(findApiStageByNameStep, findResourceMethodStep, this);
+		this.conan.steps.before(findApiStageByNameStep, createResourceMethodStep, this);
+		this.conan.steps.before(findApiStageByNameStep, putIntegrationStep, this);
+		this.conan.steps.before(findApiStageByNameStep, putIntegrationResponseStep, this);
+		this.conan.steps.before(findApiStageByNameStep, findMethodResponseStep, this);
+		this.conan.steps.before(findApiStageByNameStep, putMethodResponseStep, this);
 	}
 
 	get(path) {

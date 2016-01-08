@@ -1,5 +1,7 @@
 import Conan from "../../../../conan.js";
 import ConanAwsGatewayApiResource from "../../components/conanAwsGatewayApiResource.js";
+import findApiStageByNameStep from "../../steps/findApiStageByNameStep.js";
+import findLambdaByNameStep from "../../../aws-lambda/steps/findLambdaByNameStep.js";
 import ConanComponent from "../../../../components/conanComponent.js";
 import inflect from "jargon";
 
@@ -28,7 +30,9 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 	describe("(parameters)", () => {
 		[
 			"path",
-			"method"
+			"method",
+			"lambda",
+			"statusCodes"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
 
@@ -44,6 +48,22 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 	});
 
 	describe("(steps)", () => {
+		describe("(step order)", () => {
+			beforeEach(() => {
+				conan = new Conan();
+				conan.steps.add(findApiStageByNameStep, {});
+				apiResource = new ConanAwsGatewayApiResource(conan, path, method);
+			});
+
+			it("should insert all his steps before the find stage component step", () => {
+				conan.steps.all.pop().handler.should.equal(findApiStageByNameStep);
+			});
+
+			it("should insert the find lambda step at first", () => {
+				conan.steps.all.shift().handler.should.equal(findLambdaByNameStep);
+			});
+		});
+
 		it("should add a find apiResource by name step", () => {
 			const step = conan.steps.findByName("findApiResourceByPathStep");
 			step.parameters.should.eql(apiResource);
@@ -61,6 +81,31 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 
 		it("should add a create resource method step", () => {
 			const step = conan.steps.findByName("createResourceMethodStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a find lambda by name step", () => {
+			const step = conan.steps.findByName("findLambdaByNameStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a put integration step", () => {
+			const step = conan.steps.findByName("putIntegrationStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a put integration response step", () => {
+			const step = conan.steps.findByName("putIntegrationResponseStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a put method response step", () => {
+			const step = conan.steps.findByName("findMethodResponseStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a put method response step", () => {
+			const step = conan.steps.findByName("putMethodResponseStep");
 			step.parameters.should.eql(apiResource);
 		});
 	});

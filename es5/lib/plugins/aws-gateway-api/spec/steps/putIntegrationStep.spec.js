@@ -18,18 +18,21 @@ var _chai = require("chai");
 
 var _chai2 = _interopRequireDefault(_chai);
 
-var _stepsCreateResourceMethodStepJs = require("../../steps/createResourceMethodStep.js");
+var _stepsPutIntegrationStepJs = require("../../steps/putIntegrationStep.js");
 
-var _stepsCreateResourceMethodStepJs2 = _interopRequireDefault(_stepsCreateResourceMethodStepJs);
+var _stepsPutIntegrationStepJs2 = _interopRequireDefault(_stepsPutIntegrationStepJs);
 
-describe("createResourceMethodStep", function () {
-	var putMethodSpy = undefined,
+describe("putIntegrationStep", function () {
+	var putIntegrationSpy = undefined,
 	    constructorSpy = undefined,
 	    conan = undefined,
 	    context = undefined,
 	    parameters = undefined,
 	    restApiId = undefined,
 	    apiResourceId = undefined,
+	    lambdaArn = undefined,
+	    uri = undefined,
+	    requestTemplates = undefined,
 	    should = undefined;
 
 	var APIGateway = (function () {
@@ -40,9 +43,9 @@ describe("createResourceMethodStep", function () {
 		}
 
 		_createClass(APIGateway, [{
-			key: "putMethod",
-			value: function putMethod(params, callback) {
-				putMethodSpy(params, callback);
+			key: "putIntegration",
+			value: function putIntegration(params, callback) {
+				putIntegrationSpy(params, callback);
 			}
 		}]);
 
@@ -55,7 +58,7 @@ describe("createResourceMethodStep", function () {
 		});
 
 		constructorSpy = _sinon2["default"].spy();
-		putMethodSpy = _sinon2["default"].spy(function (params, callback) {
+		putIntegrationSpy = _sinon2["default"].spy(function (params, callback) {
 			callback();
 		});
 		should = _chai2["default"].should();
@@ -75,14 +78,22 @@ describe("createResourceMethodStep", function () {
 			return MockConanAwsParameters;
 		})())();
 
+		// uri according to aws docs
+		// arn:aws:apigateway:{region}:{service}:{path|action}/{service_api}
+
 		restApiId = "23sysh";
 		apiResourceId = "23sysh3";
+		lambdaArn = "arn:aws:lambda:us-east-1:166191849902:function:accounts";
+		uri = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/" + lambdaArn + "/invocations";
+
+		requestTemplates = { "application/json": "{\n  \"params\": {\n      \"header\": {\n          \"accessToken\": \"$input.params(\"Access-Token\")\"\n      }\n  },\n  \"data\": {}\n}" };
 
 		context = {
 			parameters: parameters,
 			results: {
 				restApiId: restApiId,
-				apiResourceId: apiResourceId
+				apiResourceId: apiResourceId,
+				lambdaArn: lambdaArn
 			},
 			libraries: {
 				AWS: {
@@ -93,21 +104,24 @@ describe("createResourceMethodStep", function () {
 	});
 
 	it("should be a function", function () {
-		(typeof _stepsCreateResourceMethodStepJs2["default"]).should.equal("function");
+		(typeof _stepsPutIntegrationStepJs2["default"]).should.equal("function");
 	});
 
 	describe("(parameters)", function () {
 		beforeEach(function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function () {
+			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
 				done();
 			});
 		});
 
 		it("should send the appropiate parameters to the AWS call", function () {
-			putMethodSpy.firstCall.args[0].should.eql({
+			putIntegrationSpy.firstCall.args[0].should.eql({
 				resourceId: apiResourceId,
 				httpMethod: parameters.method(),
-				authorizationType: "none",
+				type: "AWS",
+				integrationHttpMethod: "POST",
+				uri: uri,
+				requestTemplates: requestTemplates,
 				restApiId: restApiId
 			});
 		});
@@ -123,15 +137,15 @@ describe("createResourceMethodStep", function () {
 		var responseData = undefined;
 
 		beforeEach(function () {
-			responseData = { httpMethod: "GET" };
-			putMethodSpy = _sinon2["default"].spy(function (awsParameters, callback) {
+			responseData = {};
+			putIntegrationSpy = _sinon2["default"].spy(function (awsParameters, callback) {
 				callback(null, responseData);
 			});
 		});
 
-		it("should return the resource http method", function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function (error, result) {
-				result.resourceHttpMethod.should.equal(responseData.httpMethod);
+		it("should return with no error", function (done) {
+			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function (error) {
+				should.not.exist(error);
 				done();
 			});
 		});
@@ -140,12 +154,12 @@ describe("createResourceMethodStep", function () {
 	describe("(rest api id is not present)", function () {
 		beforeEach(function () {
 			delete context.results.restApiId;
-			putMethodSpy = _sinon2["default"].spy();
+			putIntegrationSpy = _sinon2["default"].spy();
 		});
 
 		it("should skip the function call entirely", function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function () {
-				putMethodSpy.called.should.be["false"];
+			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+				putIntegrationSpy.called.should.be["false"];
 				done();
 			});
 		});
@@ -154,26 +168,26 @@ describe("createResourceMethodStep", function () {
 	describe("(api resource id is not present)", function () {
 		beforeEach(function () {
 			delete context.results.apiResourceId;
-			putMethodSpy = _sinon2["default"].spy();
+			putIntegrationSpy = _sinon2["default"].spy();
 		});
 
 		it("should skip the function call entirely", function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function () {
-				putMethodSpy.called.should.be["false"];
+			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+				putIntegrationSpy.called.should.be["false"];
 				done();
 			});
 		});
 	});
 
-	describe("(http resource method is present - it was found)", function () {
+	describe("(lambda arn is not present)", function () {
 		beforeEach(function () {
-			context.results.resourceHttpMethod = "GET";
-			putMethodSpy = _sinon2["default"].spy();
+			delete context.results.lambdaArn;
+			putIntegrationSpy = _sinon2["default"].spy();
 		});
 
 		it("should skip the function call entirely", function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function () {
-				putMethodSpy.called.should.be["false"];
+			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+				putIntegrationSpy.called.should.be["false"];
 				done();
 			});
 		});
@@ -181,13 +195,13 @@ describe("createResourceMethodStep", function () {
 
 	describe("(unknown error)", function () {
 		beforeEach(function () {
-			putMethodSpy = _sinon2["default"].spy(function (params, callback) {
+			putIntegrationSpy = _sinon2["default"].spy(function (params, callback) {
 				callback({ statusCode: 401 });
 			});
 		});
 
 		it("should return an error when is just one", function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function (error) {
+			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function (error) {
 				should.exist(error);
 				done();
 			});

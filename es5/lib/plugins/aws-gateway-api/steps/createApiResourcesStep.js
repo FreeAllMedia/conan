@@ -35,7 +35,11 @@ function createApiResourcesStep(conan, context, done) {
 					nextResource(error);
 				});
 			}, function (error) {
-				done(error, { apiResourceId: leafResourceId });
+				var results = {};
+				if (leafResourceId || error) {
+					results.apiResourceId = leafResourceId;
+				}
+				done(error, results);
 			});
 		})();
 	} else {

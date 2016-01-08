@@ -34,6 +34,30 @@ var _stepsCreateResourceMethodStepJs = require("../steps/createResourceMethodSte
 
 var _stepsCreateResourceMethodStepJs2 = _interopRequireDefault(_stepsCreateResourceMethodStepJs);
 
+var _stepsPutIntegrationStepJs = require("../steps/putIntegrationStep.js");
+
+var _stepsPutIntegrationStepJs2 = _interopRequireDefault(_stepsPutIntegrationStepJs);
+
+var _stepsPutIntegrationResponseStepJs = require("../steps/putIntegrationResponseStep.js");
+
+var _stepsPutIntegrationResponseStepJs2 = _interopRequireDefault(_stepsPutIntegrationResponseStepJs);
+
+var _stepsPutMethodResponseStepJs = require("../steps/putMethodResponseStep.js");
+
+var _stepsPutMethodResponseStepJs2 = _interopRequireDefault(_stepsPutMethodResponseStepJs);
+
+var _stepsFindMethodResponseStepJs = require("../steps/findMethodResponseStep.js");
+
+var _stepsFindMethodResponseStepJs2 = _interopRequireDefault(_stepsFindMethodResponseStepJs);
+
+var _awsLambdaStepsFindLambdaByNameStepJs = require("../../aws-lambda/steps/findLambdaByNameStep.js");
+
+var _awsLambdaStepsFindLambdaByNameStepJs2 = _interopRequireDefault(_awsLambdaStepsFindLambdaByNameStepJs);
+
+var _stepsFindApiStageByNameStepJs = require("../steps/findApiStageByNameStep.js");
+
+var _stepsFindApiStageByNameStepJs2 = _interopRequireDefault(_stepsFindApiStageByNameStepJs);
+
 var ConanAwsGatewayApiResource = (function (_ConanComponent) {
 	_inherits(ConanAwsGatewayApiResource, _ConanComponent);
 
@@ -48,15 +72,21 @@ var ConanAwsGatewayApiResource = (function (_ConanComponent) {
 		value: function initialize(conan, path, method) {
 			this.conan = conan;
 
-			this.parameters("path", "method");
+			this.parameters("path", "method", "lambda", "statusCodes");
 
 			this.path(path);
 			this.method(method);
+			this.statusCodes([200]);
 
-			this.conan.steps.add(_stepsFindApiResourceByPathStepJs2["default"], this);
-			this.conan.steps.add(_stepsCreateApiResourcesStepJs2["default"], this);
-			this.conan.steps.add(_stepsFindResourceMethodStepJs2["default"], this);
-			this.conan.steps.add(_stepsCreateResourceMethodStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _awsLambdaStepsFindLambdaByNameStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindApiResourceByPathStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsCreateApiResourcesStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindResourceMethodStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsCreateResourceMethodStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationResponseStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindMethodResponseStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutMethodResponseStepJs2["default"], this);
 		}
 	}, {
 		key: "get",

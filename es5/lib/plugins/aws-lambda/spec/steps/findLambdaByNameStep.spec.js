@@ -116,6 +116,36 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 				lambdaArn: awsResponseData.Configuration.FunctionArn
 			});
 		});
+
+		it("should work indistinctly with a lambda parameters instead of a name parameter", function (done) {
+			parameters = new ((function () {
+				function MockConanAwsLambda() {
+					_classCallCheck(this, MockConanAwsLambda);
+				}
+
+				_createClass(MockConanAwsLambda, [{
+					key: "lambda",
+					value: function lambda() {
+						return "TestFunctionWithLambda";
+					}
+				}]);
+
+				return MockConanAwsLambda;
+			})())();
+
+			context = {
+				parameters: parameters,
+				libraries: { AWS: MockAWS },
+				results: {}
+			};
+
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, results) {
+				results.should.eql({
+					lambdaArn: awsResponseData.Configuration.FunctionArn
+				});
+				done();
+			});
+		});
 	});
 
 	describe("(Lambda is not Found)", function () {

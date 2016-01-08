@@ -18,12 +18,12 @@ var _chai = require("chai");
 
 var _chai2 = _interopRequireDefault(_chai);
 
-var _stepsCreateResourceMethodStepJs = require("../../steps/createResourceMethodStep.js");
+var _stepsPutMethodResponseStepJs = require("../../steps/putMethodResponseStep.js");
 
-var _stepsCreateResourceMethodStepJs2 = _interopRequireDefault(_stepsCreateResourceMethodStepJs);
+var _stepsPutMethodResponseStepJs2 = _interopRequireDefault(_stepsPutMethodResponseStepJs);
 
-describe("createResourceMethodStep", function () {
-	var putMethodSpy = undefined,
+describe("putMethodResponseStep", function () {
+	var putMethodResponseSpy = undefined,
 	    constructorSpy = undefined,
 	    conan = undefined,
 	    context = undefined,
@@ -40,9 +40,9 @@ describe("createResourceMethodStep", function () {
 		}
 
 		_createClass(APIGateway, [{
-			key: "putMethod",
-			value: function putMethod(params, callback) {
-				putMethodSpy(params, callback);
+			key: "putMethodResponse",
+			value: function putMethodResponse(params, callback) {
+				putMethodResponseSpy(params, callback);
 			}
 		}]);
 
@@ -55,7 +55,7 @@ describe("createResourceMethodStep", function () {
 		});
 
 		constructorSpy = _sinon2["default"].spy();
-		putMethodSpy = _sinon2["default"].spy(function (params, callback) {
+		putMethodResponseSpy = _sinon2["default"].spy(function (params, callback) {
 			callback();
 		});
 		should = _chai2["default"].should();
@@ -70,6 +70,11 @@ describe("createResourceMethodStep", function () {
 				value: function method() {
 					return "GET";
 				}
+			}, {
+				key: "statusCodes",
+				value: function statusCodes() {
+					return [200];
+				}
 			}]);
 
 			return MockConanAwsParameters;
@@ -82,7 +87,8 @@ describe("createResourceMethodStep", function () {
 			parameters: parameters,
 			results: {
 				restApiId: restApiId,
-				apiResourceId: apiResourceId
+				apiResourceId: apiResourceId,
+				responseStatusCodes: []
 			},
 			libraries: {
 				AWS: {
@@ -93,22 +99,23 @@ describe("createResourceMethodStep", function () {
 	});
 
 	it("should be a function", function () {
-		(typeof _stepsCreateResourceMethodStepJs2["default"]).should.equal("function");
+		(typeof _stepsPutMethodResponseStepJs2["default"]).should.equal("function");
 	});
 
 	describe("(parameters)", function () {
 		beforeEach(function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function () {
+			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function () {
 				done();
 			});
 		});
 
 		it("should send the appropiate parameters to the AWS call", function () {
-			putMethodSpy.firstCall.args[0].should.eql({
+			putMethodResponseSpy.firstCall.args[0].should.eql({
 				resourceId: apiResourceId,
 				httpMethod: parameters.method(),
-				authorizationType: "none",
-				restApiId: restApiId
+				restApiId: restApiId,
+				statusCode: "200",
+				responseParameters: {}
 			});
 		});
 
@@ -119,33 +126,85 @@ describe("createResourceMethodStep", function () {
 		});
 	});
 
-	describe("(resource method created)", function () {
-		var responseData = undefined;
-
+	describe("(rest api id is not present)", function () {
 		beforeEach(function () {
-			responseData = { httpMethod: "GET" };
-			putMethodSpy = _sinon2["default"].spy(function (awsParameters, callback) {
-				callback(null, responseData);
-			});
+			delete context.results.restApiId;
+			putMethodResponseSpy = _sinon2["default"].spy();
 		});
 
-		it("should return the resource http method", function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function (error, result) {
-				result.resourceHttpMethod.should.equal(responseData.httpMethod);
+		it("should skip the function call entirely", function (done) {
+			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function () {
+				putMethodResponseSpy.called.should.be["false"];
 				done();
 			});
 		});
 	});
 
-	describe("(rest api id is not present)", function () {
+	describe("(the status code is present on the array)", function () {
 		beforeEach(function () {
-			delete context.results.restApiId;
-			putMethodSpy = _sinon2["default"].spy();
+			parameters = new ((function () {
+				function MockConanAwsParameters() {
+					_classCallCheck(this, MockConanAwsParameters);
+				}
+
+				_createClass(MockConanAwsParameters, [{
+					key: "method",
+					value: function method() {
+						return "GET";
+					}
+				}, {
+					key: "statusCodes",
+					value: function statusCodes() {
+						return [200, 404];
+					}
+				}]);
+
+				return MockConanAwsParameters;
+			})())();
+
+			restApiId = "23sysh";
+			apiResourceId = "23sysh3";
+
+			context = {
+				parameters: parameters,
+				results: {
+					restApiId: restApiId,
+					apiResourceId: apiResourceId,
+					responseStatusCodes: ["200"]
+				},
+				libraries: {
+					AWS: {
+						APIGateway: APIGateway
+					}
+				}
+			};
+
+			putMethodResponseSpy = _sinon2["default"].spy(function (params, callback) {
+				callback(null, {});
+			});
 		});
 
-		it("should skip the function call entirely", function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function () {
-				putMethodSpy.called.should.be["false"];
+		it("should skip the function call for it", function (done) {
+			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function () {
+				putMethodResponseSpy.firstCall.args[0].statusCode.should.equal("404");
+				done();
+			});
+		});
+	});
+
+	describe("(method response created)", function () {
+		var responseData = undefined;
+
+		beforeEach(function () {
+			responseData = {};
+			putMethodResponseSpy = _sinon2["default"].spy(function (awsParameters, callback) {
+				callback(null, responseData);
+			});
+		});
+
+		it("should not return an error", function (done) {
+			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function (error) {
+				should.not.exist(error);
 				done();
 			});
 		});
@@ -154,26 +213,12 @@ describe("createResourceMethodStep", function () {
 	describe("(api resource id is not present)", function () {
 		beforeEach(function () {
 			delete context.results.apiResourceId;
-			putMethodSpy = _sinon2["default"].spy();
+			putMethodResponseSpy = _sinon2["default"].spy();
 		});
 
 		it("should skip the function call entirely", function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function () {
-				putMethodSpy.called.should.be["false"];
-				done();
-			});
-		});
-	});
-
-	describe("(http resource method is present - it was found)", function () {
-		beforeEach(function () {
-			context.results.resourceHttpMethod = "GET";
-			putMethodSpy = _sinon2["default"].spy();
-		});
-
-		it("should skip the function call entirely", function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function () {
-				putMethodSpy.called.should.be["false"];
+			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function () {
+				putMethodResponseSpy.called.should.be["false"];
 				done();
 			});
 		});
@@ -181,13 +226,13 @@ describe("createResourceMethodStep", function () {
 
 	describe("(unknown error)", function () {
 		beforeEach(function () {
-			putMethodSpy = _sinon2["default"].spy(function (params, callback) {
+			putMethodResponseSpy = _sinon2["default"].spy(function (params, callback) {
 				callback({ statusCode: 401 });
 			});
 		});
 
 		it("should return an error when is just one", function (done) {
-			(0, _stepsCreateResourceMethodStepJs2["default"])(conan, context, function (error) {
+			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function (error) {
 				should.exist(error);
 				done();
 			});

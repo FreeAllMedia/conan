@@ -89,6 +89,30 @@ describe("conanSteps.start(callback)", function () {
 		(typeof stepOne.firstCall.args[2]).should.equal("function");
 	});
 
+	describe("(Error handling)", function () {
+		var stepError = undefined;
+
+		beforeEach(function () {
+			conan = new _libConanJs2["default"]();
+			steps = new _libComponentsConanStepsJs2["default"](conan);
+			stepError = new Error("a step error");
+
+			stepOne = _sinon2["default"].spy(function (parentConan, context, stepDone) {
+				stepDone(stepError);
+			});
+
+			stepOneParameters = { "apiName": "test-dev" };
+			steps.add(stepOne, stepOneParameters);
+		});
+
+		it("should return the step error to the final callback so the user knows why the proccess failed", function (done) {
+			steps.start(function (error) {
+				error.should.eql(stepError);
+				done();
+			});
+		});
+	});
+
 	describe("(Temp Directory)", function () {
 		it("should create the temp directory", function (done) {
 			var stepThree = _sinon2["default"].spy(function (parentConan, context, stepDone) {

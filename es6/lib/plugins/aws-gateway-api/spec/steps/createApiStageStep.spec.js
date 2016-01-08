@@ -64,7 +64,7 @@ describe("createApiStageStep", () => {
 			});
 		});
 
-		it("should send the appropiate parameters to the AWS create deployment call", () => {
+		it("should send the appropiate parameters to the AWS call", () => {
 			createDeploymentSpy.firstCall.args[0].should.eql({
 				restApiId,
 				stageName: "testStage",
