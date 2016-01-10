@@ -19,6 +19,7 @@ describe("conan.use(ConanPlugin)", () => {
 	});
 
 	it("should add the instantiated plugin to the conan.plugins array", () => {
-		conan.plugins[0].should.be.instanceOf(ConanPlugin);
+		// .plugins[0] will always be ConanAwsLambdaPlugin by design
+		conan.plugins[1].should.be.instanceOf(ConanPlugin);
 	});
 });

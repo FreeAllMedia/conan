@@ -14,6 +14,10 @@ var _componentsConanStepsJs = require("./components/conanSteps.js");
 
 var _componentsConanStepsJs2 = _interopRequireDefault(_componentsConanStepsJs);
 
+var _pluginsAwsLambdaConanAwsLambdaPluginJs = require("./plugins/aws-lambda/conanAwsLambdaPlugin.js");
+
+var _pluginsAwsLambdaConanAwsLambdaPluginJs2 = _interopRequireDefault(_pluginsAwsLambdaConanAwsLambdaPluginJs);
+
 /**
  * @class Conan
  */
@@ -31,6 +35,7 @@ var Conan = (function () {
 		this.config = config || {};
 		this.steps = new _componentsConanStepsJs2["default"](this);
 		this.plugins = [];
+		this.use(_pluginsAwsLambdaConanAwsLambdaPluginJs2["default"]);
 	}
 
 	_createClass(Conan, [{

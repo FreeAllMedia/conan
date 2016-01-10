@@ -1,10 +1,18 @@
 /* eslint-disable no-unused-vars */
 import Conan from "../lib/conan.js";
+import ConanAwsLambdaPlugin from "../lib/plugins/aws-lambda/conanAwsLambdaPlugin.js";
+import sinon from "sinon";
 
 describe("Conan(config)", () => {
 	it("should pass itself to ConanSteps", () => {
 		const conan = new Conan();
 		conan.steps.parent.should.eql(conan);
+	});
+
+	it("should use the ConanAwsLambdaPlugin by default", () => {
+		const conan = new Conan();
+		conan
+			.plugins[0].should.be.instanceOf(ConanAwsLambdaPlugin);
 	});
 
 	describe("(Instantiating with a config object)", () => {
