@@ -18,6 +18,14 @@ var _componentsConanComponentJs = require("./components/conanComponent.js");
 
 var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
 
+var _pluginsAwsLambdaConanAwsLambdaPluginJs = require("./plugins/aws-lambda/conanAwsLambdaPlugin.js");
+
+var _pluginsAwsLambdaConanAwsLambdaPluginJs2 = _interopRequireDefault(_pluginsAwsLambdaConanAwsLambdaPluginJs);
+
+var _pluginsAwsGatewayApiConanAwsGatewayApiPluginJs = require("./plugins/aws-gateway-api/conanAwsGatewayApiPlugin.js");
+
+var _pluginsAwsGatewayApiConanAwsGatewayApiPluginJs2 = _interopRequireDefault(_pluginsAwsGatewayApiConanAwsGatewayApiPluginJs);
+
 /**
  * @class Conan
  */
@@ -60,3 +68,5 @@ var Conan = (function () {
 
 exports["default"] = Conan;
 exports.ConanComponent = _componentsConanComponentJs2["default"];
+exports.ConanAwsLambdaPlugin = _pluginsAwsLambdaConanAwsLambdaPluginJs2["default"];
+exports.ConanAwsGatewayApiPlugin = _pluginsAwsGatewayApiConanAwsGatewayApiPluginJs2["default"];
