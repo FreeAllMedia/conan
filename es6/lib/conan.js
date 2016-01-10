@@ -1,4 +1,5 @@
 import ConanSteps from "./components/conanSteps.js";
+import ConanAwsLambdaPlugin from "./plugins/aws-lambda/conanAwsLambdaPlugin.js";
 
 /**
  * @class Conan
@@ -13,6 +14,7 @@ export default class Conan {
 		this.config = config || {};
 		this.steps = new ConanSteps(this);
 		this.plugins = [];
+		this.use(ConanAwsLambdaPlugin);
 	}
 
 	use(ConanPlugin) {
