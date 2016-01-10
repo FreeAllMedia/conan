@@ -1,15 +1,10 @@
 /* eslint-disable no-console */
 const Conan = require("../es5/lib/conan.js");
-const ConanAwsLambdaPlugin = require("../es5/lib/plugins/aws-lambda/conanAwsLambdaPlugin.js");
-const ConanAwsGatewayApiPlugin = require("../es5/lib/plugins/aws-gateway-api/conanAwsGatewayApiPlugin.js");
 
 const conan = new Conan({
 	region: "us-east-1",
 	bucket: "conan.test"
 });
-
-conan.use(ConanAwsLambdaPlugin);
-conan.use(ConanAwsGatewayApiPlugin);
 
 conan
 	.lambda("SomeLambda", __dirname + "/lambda.js", "AWSLambda")
