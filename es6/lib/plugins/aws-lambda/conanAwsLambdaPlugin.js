@@ -3,8 +3,10 @@ import AWS from "aws-sdk";
 
 export default class ConanAwsLambdaPlugin {
 	constructor (conan) {
-		conan.lambda = this.lambda;
+		console.log("CONFIG:", conan.config)
+		conan.config.region = conan.config.region || "us-east-1";
 		conan.lambdas = {};
+		conan.lambda = this.lambda;
 		conan.steps.library("AWS", AWS);
 	}
 

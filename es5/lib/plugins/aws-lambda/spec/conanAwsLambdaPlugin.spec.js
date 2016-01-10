@@ -30,6 +30,18 @@ describe("ConanAwsLambdaPlugin(conan)", function () {
 		conan.use(_conanAwsLambdaPluginJs2["default"]);
 	});
 
+	it("should set conan.config.region to 'us-east-1' if not already set", function () {
+		conan.config.region.should.eql("us-east-1");
+	});
+
+	it("should NOT set conan.config.region to 'us-east-1' if already set", function () {
+		conan = new _conanJs2["default"]({
+			region: "us-west-2"
+		});
+		conan.use(_conanAwsLambdaPluginJs2["default"]);
+		conan.config.region.should.eql("us-west-2");
+	});
+
 	it("should setup conan.lambda()", function () {
 		(typeof conan.lambda).should.eql("function");
 	});
@@ -39,27 +51,14 @@ describe("ConanAwsLambdaPlugin(conan)", function () {
 	});
 
 	describe("(AWS)", function () {
-		var librarySpy = undefined;
-		var fakeConan = undefined;
-
-		before(function (done) {
-			librarySpy = _sinon2["default"].spy();
-
-			fakeConan = {
-				steps: {
-					library: function library(name, value) {
-						librarySpy(name, value);
-						done();
-					}
-				}
-			};
-
-			/* eslint-disable no-new */
-			new _conanAwsLambdaPluginJs2["default"](fakeConan);
+		before(function () {
+			conan = new _conanJs2["default"]();
+			conan.steps.constructor.prototype.library = _sinon2["default"].spy(conan.steps.constructor.prototype.library);
+			conan.use(_conanAwsLambdaPluginJs2["default"]);
 		});
 
 		it("should add the AWS library", function () {
-			librarySpy.calledWith("AWS", _awsSdk2["default"]).should.be["true"];
+			conan.steps.library.calledWith("AWS", _awsSdk2["default"]).should.be["true"];
 		});
 	});
 

@@ -7,23 +7,19 @@ var _libConanJs = require("../lib/conan.js");
 
 var _libConanJs2 = _interopRequireDefault(_libConanJs);
 
-var _libPluginsAwsLambdaConanAwsLambdaPluginJs = require("../lib/plugins/aws-lambda/conanAwsLambdaPlugin.js");
-
-var _libPluginsAwsLambdaConanAwsLambdaPluginJs2 = _interopRequireDefault(_libPluginsAwsLambdaConanAwsLambdaPluginJs);
-
 var _sinon = require("sinon");
 
 var _sinon2 = _interopRequireDefault(_sinon);
 
 describe("Conan(config)", function () {
-	it("should pass itself to ConanSteps", function () {
-		var conan = new _libConanJs2["default"]();
-		conan.steps.parent.should.eql(conan);
+	var conan = undefined;
+
+	beforeEach(function () {
+		conan = new _libConanJs2["default"]();
 	});
 
-	it("should use the ConanAwsLambdaPlugin by default", function () {
-		var conan = new _libConanJs2["default"]();
-		conan.plugins[0].should.be.instanceOf(_libPluginsAwsLambdaConanAwsLambdaPluginJs2["default"]);
+	it("should pass itself to ConanSteps", function () {
+		conan.steps.parent.should.eql(conan);
 	});
 
 	describe("(Instantiating with a config object)", function () {
