@@ -1,5 +1,5 @@
 import ConanSteps from "./components/conanSteps.js";
-
+import ConanComponent from "./components/conanComponent.js";
 /**
  * @class Conan
  */
@@ -28,3 +28,5 @@ export default class Conan {
     return require("../../package.json").version;
   }
 }
+
+export { ConanComponent };

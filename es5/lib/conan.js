@@ -14,6 +14,10 @@ var _componentsConanStepsJs = require("./components/conanSteps.js");
 
 var _componentsConanStepsJs2 = _interopRequireDefault(_componentsConanStepsJs);
 
+var _componentsConanComponentJs = require("./components/conanComponent.js");
+
+var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
+
 /**
  * @class Conan
  */
@@ -55,4 +59,4 @@ var Conan = (function () {
 })();
 
 exports["default"] = Conan;
-module.exports = exports["default"];
+exports.ConanComponent = _componentsConanComponentJs2["default"];

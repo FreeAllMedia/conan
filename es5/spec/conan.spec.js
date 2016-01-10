@@ -7,6 +7,10 @@ var _libConanJs = require("../lib/conan.js");
 
 var _libConanJs2 = _interopRequireDefault(_libConanJs);
 
+var _libComponentsConanComponentJs = require("../lib/components/conanComponent.js");
+
+var _libComponentsConanComponentJs2 = _interopRequireDefault(_libComponentsConanComponentJs);
+
 var _sinon = require("sinon");
 
 var _sinon2 = _interopRequireDefault(_sinon);
@@ -26,27 +30,26 @@ describe("Conan(config)", function () {
 		it("should not throw an error", function () {
 			(function () {
 				var config = { key: "value" };
-				var conan = new _libConanJs2["default"](config);
+				conan = new _libConanJs2["default"](config);
 			}).should.not["throw"]();
 		});
 
 		it("should save config object to conan.config", function () {
 			var config = { key: "value" };
-			var conan = new _libConanJs2["default"](config);
+			conan = new _libConanJs2["default"](config);
 			conan.config.should.eql(config);
 		});
 	});
 
 	describe("(Instantiating without a config object)", function () {
-		it("should not throw an error", function () {
-			(function () {
-				var conan = new _libConanJs2["default"]();
-			}).should.not["throw"]();
-		});
-
 		it("should save an empty object to conan.config", function () {
-			var conan = new _libConanJs2["default"]();
 			conan.config.should.eql({});
+		});
+	});
+
+	describe("(Exports)", function () {
+		it("should export ConanComponent", function () {
+			_libConanJs.ConanComponent.should.eql(_libComponentsConanComponentJs2["default"]);
 		});
 	});
 });
