@@ -12,6 +12,18 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 		conan.use(ConanAwsLambdaPlugin);
 	});
 
+	it("should set conan.config.region to 'us-east-1' if not already set", () => {
+		conan.config.region.should.eql("us-east-1");
+	});
+
+	it("should NOT set conan.config.region to 'us-east-1' if already set", () => {
+		conan = new Conan({
+			region: "us-west-2"
+		});
+		conan.use(ConanAwsLambdaPlugin);
+		conan.config.region.should.eql("us-west-2");
+	});
+
   it("should setup conan.lambda()", () => {
 		(typeof conan.lambda).should.eql("function");
 	});
@@ -21,27 +33,14 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 	});
 
 	describe("(AWS)", () => {
-		let librarySpy;
-		let fakeConan;
-
-		before(done => {
-			librarySpy = sinon.spy();
-
-			fakeConan = {
-				steps: {
-					library: (name, value) => {
-						librarySpy(name, value);
-						done();
-					}
-				}
-			};
-
-			/* eslint-disable no-new */
-			new ConanAwsLambdaPlugin(fakeConan);
+		before(() => {
+			conan = new Conan();
+			conan.steps.constructor.prototype.library = sinon.spy(conan.steps.constructor.prototype.library);
+			conan.use(ConanAwsLambdaPlugin);
 		});
 
 		it("should add the AWS library", () => {
-			librarySpy.calledWith("AWS", AWS).should.be.true;
+			conan.steps.library.calledWith("AWS", AWS).should.be.true;
 		});
 	});
 
