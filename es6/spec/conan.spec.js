@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
-import Conan from "../lib/conan.js";
+import Conan, { ConanComponent } from "../lib/conan.js";
+import ExpectedConanComponent from "../lib/components/conanComponent.js";
 import sinon from "sinon";
 
 describe("Conan(config)", () => {
@@ -17,27 +18,26 @@ describe("Conan(config)", () => {
 		it("should not throw an error", () => {
 			() => {
 				const config = {key: "value"};
-				const conan = new Conan(config);
+				conan = new Conan(config);
 			}.should.not.throw();
 		});
 
 		it("should save config object to conan.config", () => {
 			const config = {key: "value"};
-			const conan = new Conan(config);
+			conan = new Conan(config);
 			conan.config.should.eql(config);
 		});
 	});
 
 	describe("(Instantiating without a config object)", () => {
-		it("should not throw an error", () => {
-			() => {
-				const conan = new Conan();
-			}.should.not.throw();
-		});
-
 		it("should save an empty object to conan.config", () => {
-			const conan = new Conan();
 			conan.config.should.eql({});
+		});
+	});
+
+	describe("(Exports)", () => {
+		it("should export ConanComponent", () => {
+			ConanComponent.should.eql(ExpectedConanComponent);
 		});
 	});
 });
