@@ -22,8 +22,10 @@ export default function start(callback) {
 				Object.assign(accumulatedResults, stepResult);
 				done(stepError, stepResult);
 			});
-		}, () => {
-			temp.cleanup(callback);
+		}, (errors) => {
+			temp.cleanup(() => {
+				callback(errors);
+			});
 		});
 	});
 }

@@ -73,6 +73,30 @@ describe("conanSteps.start(callback)", () => {
 		(typeof stepOne.firstCall.args[2]).should.equal("function");
 	});
 
+	describe("(Error handling)", () => {
+		let stepError;
+
+		beforeEach(() => {
+			conan = new Conan();
+			steps = new ConanSteps(conan);
+			stepError = new Error("Some step error");
+
+			stepOne = sinon.spy((parentConan, context, stepDone) => {
+				stepDone(stepError);
+			});
+
+			stepOneParameters = {"apiName": "test-dev"};
+			steps.add(stepOne, stepOneParameters);
+		});
+
+		it("should return the step error to the final callback so the user knows why the proccess failed", done => {
+			steps.start((error)=> {
+				error.should.eql(stepError);
+				done();
+			});
+		});
+	});
+
 	describe("(Temp Directory)", () => {
 		it("should create the temp directory", done => {
 			const stepThree = sinon.spy((parentConan, context, stepDone) => {

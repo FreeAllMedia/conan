@@ -22,4 +22,42 @@ describe("conan.deploy(callback)", () => {
 			done(error);
 		});
 	});
+
+	it("should return step errors", done => {
+		const conanStepError = new Error("Some error happened!");
+
+		const conanStepWithErrorFunction = (stepConan, context, stepDone) => {
+			stepDone(conanStepError);
+		};
+
+		const conanStepOne = sinon.spy(conanStepWithErrorFunction);
+		const conanStepTwo = sinon.spy();
+
+		conan.steps.add(conanStepOne);
+		conan.steps.add(conanStepTwo);
+
+		conan.deploy((error) => {
+			error.should.eql(conanStepError);
+			done();
+		});
+	});
+
+	it("should halt step execution if an error is returned", done => {
+		const conanStepError = new Error("Some error happened!");
+
+		const conanStepWithError = (stepConan, context, stepDone) => {
+			stepDone(conanStepError);
+		};
+
+		const conanStepOne = sinon.spy(conanStepWithError);
+		const conanStepTwo = sinon.spy();
+
+		conan.steps.add(conanStepOne);
+		conan.steps.add(conanStepTwo);
+
+		conan.deploy(() => {
+			conanStepTwo.called.should.be.false;
+			done();
+		});
+	});
 });

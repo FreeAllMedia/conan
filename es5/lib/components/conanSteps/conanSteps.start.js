@@ -39,8 +39,10 @@ function start(callback) {
 				Object.assign(accumulatedResults, stepResult);
 				done(stepError, stepResult);
 			});
-		}, function () {
-			_temp2["default"].cleanup(callback);
+		}, function (errors) {
+			_temp2["default"].cleanup(function () {
+				callback(errors);
+			});
 		});
 	});
 }
