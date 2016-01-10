@@ -22,7 +22,6 @@ var ConanAwsLambdaPlugin = (function () {
 	function ConanAwsLambdaPlugin(conan) {
 		_classCallCheck(this, ConanAwsLambdaPlugin);
 
-		console.log("CONFIG:", conan.config);
 		conan.config.region = conan.config.region || "us-east-1";
 		conan.lambdas = {};
 		conan.lambda = this.lambda;

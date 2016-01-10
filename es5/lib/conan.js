@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -19,38 +19,39 @@ var _componentsConanStepsJs2 = _interopRequireDefault(_componentsConanStepsJs);
  */
 
 var Conan = (function () {
-	/**
-  * @constructor
-  * @method constructor
-  * @return {undefined} Nothing is returned.
-  */
+  /**
+   * @constructor
+   * @method constructor
+   * @param {Object} config A configuration object that is saved to `conan.config`. There are no options by default, but plugins can add many of them.
+   * @return {Conan} An instantiated copy of Conan
+   */
 
-	function Conan(config) {
-		_classCallCheck(this, Conan);
+  function Conan(config) {
+    _classCallCheck(this, Conan);
 
-		this.config = config || {};
-		this.steps = new _componentsConanStepsJs2["default"](this);
-		this.plugins = [];
-	}
+    this.config = config || {};
+    this.steps = new _componentsConanStepsJs2["default"](this);
+    this.plugins = [];
+  }
 
-	_createClass(Conan, [{
-		key: "use",
-		value: function use(ConanPlugin) {
-			this.plugins.push(new ConanPlugin(this));
-		}
-	}, {
-		key: "deploy",
-		value: function deploy(callback) {
-			this.steps.start(callback);
-		}
-	}, {
-		key: "version",
-		get: function get() {
-			return require("../../package.json").version;
-		}
-	}]);
+  _createClass(Conan, [{
+    key: "use",
+    value: function use(ConanPlugin) {
+      this.plugins.push(new ConanPlugin(this));
+    }
+  }, {
+    key: "deploy",
+    value: function deploy(callback) {
+      this.steps.start(callback);
+    }
+  }, {
+    key: "version",
+    get: function get() {
+      return require("../../package.json").version;
+    }
+  }]);
 
-	return Conan;
+  return Conan;
 })();
 
 exports["default"] = Conan;
