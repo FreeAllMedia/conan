@@ -55,7 +55,6 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 	    lambdaArn = undefined,
 	    mockLambdaSpy = undefined,
 	    createFunctionParameters = undefined,
-	    fileName = undefined,
 	    handlerString = undefined;
 
 	var mockLambda = {
@@ -170,8 +169,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 
 		mockLambdaSpy = _sinon2["default"].spy();
 
-		fileName = _path2["default"].parse(parameters.filePath()).name;
-		handlerString = fileName + "." + parameters.handler();
+		handlerString = "lambda." + parameters.handler();
 
 		stepDone = function (afterStepCallback) {
 			return function (error, data) {

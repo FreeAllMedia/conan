@@ -14,7 +14,7 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 	const lambdaZipBuffer = fileSystem.readFileSync(context.results.lambdaZipFilePath);
 
 	const fileName = path.parse(conanAwsLambda.filePath()).name;
-	const handlerString = `${fileName}.${conanAwsLambda.handler()}`;
+	const handlerString = `lambda.${conanAwsLambda.handler()}`;
 
 	if (lambdaIsNew) {
 		const createFunctionParameters = {
