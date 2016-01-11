@@ -111,7 +111,8 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 		mockLambdaSpy = sinon.spy();
 
-		handlerString = `lambda.${parameters.handler()}`;
+		const fileName = path.parse(parameters.filePath()).name;
+		handlerString = `${fileName}.${parameters.handler()}`;
 
 		stepDone = (afterStepCallback) => {
 			return (error, data) => {
@@ -182,10 +183,10 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 				updateFunctionCodeError.statusCode = 400;
 			});
 
-			it("should throw an error", () => {
-				() => {
-					upsertLambdaStep(conan, context);
-				}.should.throw();
+			it("should return an error", () => {
+				upsertLambdaStep(conan, context, (error) => {
+					error.should.eql(updateFunctionCodeError);
+				});
 			});
 		});
 
@@ -195,10 +196,10 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 				updateFunctionConfigurationError.statusCode = 400;
 			});
 
-			it("should throw an error", () => {
-				() => {
-					upsertLambdaStep(conan, context);
-				}.should.throw();
+			it("should return an error", () => {
+				upsertLambdaStep(conan, context, (error) => {
+					error.should.eql(updateFunctionConfigurationError);
+				});
 			});
 		});
 	});
@@ -247,10 +248,10 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 				createFunctionError.statusCode = 400;
 			});
 
-			it("should throw an error", () => {
-				() => {
-					upsertLambdaStep(conan, context);
-				}.should.throw();
+			it("should return an error", () => {
+				upsertLambdaStep(conan, context, (error) => {
+					error.should.eql(createFunctionError);
+				});
 			});
 		});
 
