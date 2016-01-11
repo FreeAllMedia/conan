@@ -141,7 +141,6 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 	describe("(When Lambda is NOT New)", () => {
 		it("should call AWS to update the lambda configuration with the designated parameters", () => {
-
 			const updateConfigurationParameters = {
 				FunctionName: parameters.name(),
 				Handler: handlerString,
