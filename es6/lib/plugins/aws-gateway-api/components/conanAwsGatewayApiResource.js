@@ -7,6 +7,7 @@ import putIntegrationStep from "../steps/putIntegrationStep.js";
 import putIntegrationResponseStep from "../steps/putIntegrationResponseStep.js";
 import putMethodResponseStep from "../steps/putMethodResponseStep.js";
 import findMethodResponseStep from "../steps/findMethodResponseStep.js";
+import addPermissionStep from "../steps/addPermissionStep.js";
 import findLambdaByNameStep from "../../aws-lambda/steps/findLambdaByNameStep.js";
 
 import findApiStageByNameStep from "../steps/findApiStageByNameStep.js";
@@ -35,6 +36,7 @@ export default class ConanAwsGatewayApiResource extends ConanComponent {
 		this.conan.steps.before(findApiStageByNameStep, putIntegrationResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, findMethodResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, putMethodResponseStep, this);
+		this.conan.steps.before(findApiStageByNameStep, addPermissionStep, this);
 	}
 
 	get(path) {

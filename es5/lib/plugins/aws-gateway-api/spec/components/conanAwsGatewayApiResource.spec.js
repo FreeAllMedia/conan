@@ -124,6 +124,11 @@ describe("ConanAwsGatewayApiResource(conan)", function () {
 			var step = conan.steps.findByName("putMethodResponseStep");
 			step.parameters.should.eql(apiResource);
 		});
+
+		it("should add a put method response step", function () {
+			var step = conan.steps.findByName("addPermissionStep");
+			step.parameters.should.eql(apiResource);
+		});
 	});
 
 	["GET", "POST", "PUT", "DELETE"].forEach(function (resourceMethod) {

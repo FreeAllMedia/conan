@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = createApiStageStep;
 
 function createApiStageStep(conan, context, done) {
-	if (context.results.restApiId && !context.results.stageName) {
+	if (context.results.restApiId) {
 		var api = new context.libraries.AWS.APIGateway({
 			region: conan.config.region
 		});

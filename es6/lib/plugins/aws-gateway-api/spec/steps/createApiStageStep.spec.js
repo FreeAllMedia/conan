@@ -94,20 +94,6 @@ describe("createApiStageStep", () => {
 		});
 	});
 
-	describe("(rest api id is present but stage already exists)", () => {
-		beforeEach(() => {
-			context.results = { restApiId, stageName: "testStage" };
-			createDeploymentSpy = sinon.spy();
-		});
-
-		it("should skip the function call entirely", done => {
-			createApiStageStep(conan, context, () => {
-				createDeploymentSpy.called.should.be.false;
-				done();
-			});
-		});
-	});
-
 	describe("(stage created)", () => {
 		let responseData;
 

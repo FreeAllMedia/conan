@@ -50,6 +50,10 @@ var _stepsFindMethodResponseStepJs = require("../steps/findMethodResponseStep.js
 
 var _stepsFindMethodResponseStepJs2 = _interopRequireDefault(_stepsFindMethodResponseStepJs);
 
+var _stepsAddPermissionStepJs = require("../steps/addPermissionStep.js");
+
+var _stepsAddPermissionStepJs2 = _interopRequireDefault(_stepsAddPermissionStepJs);
+
 var _awsLambdaStepsFindLambdaByNameStepJs = require("../../aws-lambda/steps/findLambdaByNameStep.js");
 
 var _awsLambdaStepsFindLambdaByNameStepJs2 = _interopRequireDefault(_awsLambdaStepsFindLambdaByNameStepJs);
@@ -87,6 +91,7 @@ var ConanAwsGatewayApiResource = (function (_ConanComponent) {
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationResponseStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindMethodResponseStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutMethodResponseStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsAddPermissionStepJs2["default"], this);
 		}
 	}, {
 		key: "get",

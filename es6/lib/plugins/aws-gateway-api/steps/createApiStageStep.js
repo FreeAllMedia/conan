@@ -1,5 +1,5 @@
 export default function createApiStageStep(conan, context, done) {
-	if(context.results.restApiId && !context.results.stageName) {
+	if(context.results.restApiId) {
 		const api = new context.libraries.AWS.APIGateway({
 			region: conan.config.region
 		});

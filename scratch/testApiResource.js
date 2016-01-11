@@ -7,9 +7,9 @@ const conan = new Conan({
 conan.use(ConanAwsApiGatewayPlugin);
 
 conan
-	.api("niConan")
-		.stage("niStage")
-			.get("/accounts/items")
+	.api("nicoConanDevelopment")
+		.stage("development")
+			.get("/accounts/subItems")
 			.lambda("ListAccounts")
 			.statusCodes([200, 404, 401, 500]);
 
