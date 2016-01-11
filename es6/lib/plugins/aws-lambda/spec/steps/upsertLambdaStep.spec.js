@@ -36,7 +36,6 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 			createFunctionParameters,
 
-			fileName,
 			handlerString;
 
 	const mockLambda = {
@@ -112,8 +111,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 		mockLambdaSpy = sinon.spy();
 
-		fileName = path.parse(parameters.filePath()).name;
-		handlerString = `${fileName}.${parameters.handler()}`;
+		handlerString = `lambda.${parameters.handler()}`;
 
 		stepDone = (afterStepCallback) => {
 			return (error, data) => {
