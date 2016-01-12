@@ -8,6 +8,7 @@ import putIntegrationResponseStep from "../steps/putIntegrationResponseStep.js";
 import putMethodResponseStep from "../steps/putMethodResponseStep.js";
 import findMethodResponseStep from "../steps/findMethodResponseStep.js";
 import addPermissionStep from "../steps/addPermissionStep.js";
+import getAccountIdStep from "../steps/getAccountIdStep.js";
 import findLambdaByNameStep from "../../aws-lambda/steps/findLambdaByNameStep.js";
 
 import findApiStageByNameStep from "../steps/findApiStageByNameStep.js";
@@ -20,11 +21,15 @@ export default class ConanAwsGatewayApiResource extends ConanComponent {
 			"path",
 			"method",
 			"lambda",
-			"statusCodes"
+			"statusCodes",
+			"headers",
+			"queryStrings"
 		);
 
 		this.path(path);
 		this.method(method);
+		this.headers([]);
+		this.queryStrings([]);
 		this.statusCodes([200]);
 
 		this.conan.steps.before(findApiStageByNameStep, findLambdaByNameStep, this);
@@ -36,6 +41,7 @@ export default class ConanAwsGatewayApiResource extends ConanComponent {
 		this.conan.steps.before(findApiStageByNameStep, putIntegrationResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, findMethodResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, putMethodResponseStep, this);
+		this.conan.steps.before(findApiStageByNameStep, getAccountIdStep, this);
 		this.conan.steps.before(findApiStageByNameStep, addPermissionStep, this);
 	}
 

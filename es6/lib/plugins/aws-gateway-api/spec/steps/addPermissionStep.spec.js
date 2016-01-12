@@ -5,16 +5,22 @@ import addPermissionStep from "../../steps/addPermissionStep.js";
 
 describe("addPermissionStep", () => {
 	let addPermissionSpy,
+		getPolicySpy,
 		constructorSpy,
 		conan,
 		context,
 		parameters,
 		restApiId,
+		accountId,
 		should;
 
 	class Lambda {
 		constructor(constructorParameters) {
 			constructorSpy(constructorParameters);
+		}
+
+		getPolicy(params, callback) {
+			getPolicySpy(params, callback);
 		}
 
 		addPermission(params, callback) {
@@ -27,22 +33,31 @@ describe("addPermissionStep", () => {
 			region: "us-east-1"
 		});
 
+		restApiId = "283mds2";
+		accountId = "2293892861";
+
 		constructorSpy = sinon.spy();
 		addPermissionSpy = sinon.spy((params, callback) => {
 			callback();
 		});
+		getPolicySpy = sinon.spy((params, callback) => {
+			callback(null, {
+				"Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Condition\":{\"ArnLike\":{\"AWS:SourceArn\":\"arn:wrong:execute-api:us-east-1:2293892861:283mds2/*/GET/accounts/items\"}},\"Action\":\"lambda:InvokeFunction\",\"Resource\":\"arn:aws:lambda:us-east-1:166191841105:function:ListAccounts\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"apigateway.amazonaws.com\"},\"Sid\":\"89d8cf5e-28f5-498b-8d87-d3eb2073115e\"}],\"Id\":\"default\"}"
+			});
+		});
 		should = chai.should();
 
-		restApiId = "283mds2";
-
 		parameters = new class MockConanAwsParameters {
+			path() { return "/accounts/items"; }
 			lambda() { return "listAccountItems"; }
+			method() { return "GET"; }
 		}();
 
 		context = {
 			parameters,
 			results: {
-				restApiId
+				restApiId,
+				accountId
 			},
 			libraries: {
 				AWS: {
@@ -63,14 +78,26 @@ describe("addPermissionStep", () => {
 			});
 		});
 
+		it("should send the appropiate parameters to the AWS get policy call", () => {
+			getPolicySpy.firstCall.args[0].should.eql({
+				FunctionName: "listAccountItems"
+			});
+		});
+
 		it("should send the appropiate parameters to the AWS call", () => {
-			addPermissionSpy.firstCall.args[0].should.eql({
-				// SourceArn: `arn:aws:apigateway:us-east-1::/restapis/${restApiId}/*`,
+			const parametersSent = addPermissionSpy.firstCall.args[0];
+			//because it's an auto generated uuid, tested separately
+			delete parametersSent.StatementId;
+			parametersSent.should.eql({
+				SourceArn: `arn:aws:execute-api:us-east-1:${accountId}:${restApiId}/*/GET/accounts/items`,
 				Action: "lambda:InvokeFunction",
 				Principal: "apigateway.amazonaws.com",
-				FunctionName: "listAccountItems",
-				StatementId: "1"
+				FunctionName: "listAccountItems"
 			});
+		});
+
+		it("should generated an uuid on the parameters", () => {
+			addPermissionSpy.firstCall.args[0].should.have.property("StatementId");
 		});
 
 		it("should set the constructor parameters", () => {
@@ -98,11 +125,117 @@ describe("addPermissionStep", () => {
 		});
 	});
 
-	describe("(lambda is not present)", () => {
+	describe("(a parameter is not present)", () => {
 		beforeEach(() => {
-			parameters = new class MockConanAwsParameters {
-			}();
+			parameters = {};
 
+			context = {
+				parameters,
+				results: {
+					restApiId,
+					accountId
+				},
+				libraries: {
+					AWS: {
+						Lambda
+					}
+				}
+			};
+			addPermissionSpy = sinon.spy();
+		});
+
+		it("should skip the function call entirely", done => {
+			addPermissionStep(conan, context, () => {
+				addPermissionSpy.called.should.be.false;
+				done();
+			});
+		});
+	});
+
+	describe("(get policy paths)", () => {
+		describe("(permission already set)", () => {
+			beforeEach(done => {
+				getPolicySpy = sinon.spy((params, callback) => {
+					callback(null, {
+						"Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Condition\":{\"ArnLike\":{\"AWS:SourceArn\":\"arn:aws:execute-api:us-east-1:2293892861:283mds2/*/GET/accounts/items\"}},\"Action\":\"lambda:InvokeFunction\",\"Resource\":\"arn:aws:lambda:us-east-1:166191841105:function:ListAccounts\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"apigateway.amazonaws.com\"},\"Sid\":\"89d8cf5e-28f5-498b-8d87-d3eb2073115e\"}],\"Id\":\"default\"}"
+					});
+				});
+				addPermissionSpy = sinon.spy();
+				addPermissionStep(conan, context, () => {
+					done();
+				});
+			});
+
+			it("should skip the call to add permission", () => {
+				addPermissionSpy.called.should.be.false;
+			});
+
+			it("should call to get policy", () => {
+				getPolicySpy.called.should.be.true;
+			});
+		});
+
+		describe("(get policy return error)", () => {
+			beforeEach(done => {
+				getPolicySpy = sinon.spy((params, callback) => {
+					callback({});
+				});
+				addPermissionSpy = sinon.spy((params, callback) => {
+					callback(null, {});
+				});
+				addPermissionStep(conan, context, () => {
+					done();
+				});
+			});
+
+			it("should call to add permission", () => {
+				addPermissionSpy.called.should.be.true;
+			});
+		});
+
+		describe("(get policy return an invalid json)", () => {
+			beforeEach(done => {
+				getPolicySpy = sinon.spy((params, callback) => {
+					callback(null, {
+						"Policy": "{d\"Version\":\"2012-10-17\",\"Statement\":[{\"Condition\":{\"ArnLike\":{\"AWS:SourceArn\":\"arn:aws:execute-api:us-east-1:2293892861:283mds2/*/GET/accounts/items\"}},\"Action\":\"lambda:InvokeFunction\",\"Resource\":\"arn:aws:lambda:us-east-1:166191841105:function:ListAccounts\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"apigateway.amazonaws.com\"},\"Sid\":\"89d8cf5e-28f5-498b-8d87-d3eb2073115e\"}],\"Id\":\"default\"}"
+					});
+				});
+				addPermissionSpy = sinon.spy((params, callback) => {
+					callback(null, {});
+				});
+				addPermissionStep(conan, context, () => {
+					done();
+				});
+			});
+
+			it("should call to add permission", () => {
+				addPermissionSpy.called.should.be.true;
+			});
+		});
+
+		describe("(get policy return a json with no source arn like)", () => {
+			beforeEach(done => {
+				getPolicySpy = sinon.spy((params, callback) => {
+					callback(null, {
+						"Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Condition\":{\"SomeProperty\":{\"AWS:SourceArn\":\"arn:aws:execute-api:us-east-1:2293892861:283mds2/*/GET/accounts/items\"}},\"Action\":\"lambda:InvokeFunction\",\"Resource\":\"arn:aws:lambda:us-east-1:166191841105:function:ListAccounts\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"apigateway.amazonaws.com\"},\"Sid\":\"89d8cf5e-28f5-498b-8d87-d3eb2073115e\"}],\"Id\":\"default\"}"
+					});
+				});
+				addPermissionSpy = sinon.spy((params, callback) => {
+					callback(null, {});
+				});
+				addPermissionStep(conan, context, () => {
+					done();
+				});
+			});
+
+			it("should call to add permission", () => {
+				addPermissionSpy.called.should.be.true;
+			});
+		});
+	});
+
+	describe("(account id is not present)", () => {
+		beforeEach(() => {
 			context = {
 				parameters,
 				results: {
@@ -125,20 +258,29 @@ describe("addPermissionStep", () => {
 		});
 	});
 
-	// commented until specific permissions to resource or rest api
-	// describe("(rest api id is not present)", () => {
-	// 	beforeEach(() => {
-	// 		delete context.results.restApiId;
-	// 		addPermissionSpy = sinon.spy();
-	// 	});
-	//
-	// 	it("should skip the function call entirely", done => {
-	// 		addPermissionStep(conan, context, () => {
-	// 			addPermissionSpy.called.should.be.false;
-	// 			done();
-	// 		});
-	// 	});
-	// });
+	describe("(rest api id is not present)", () => {
+		beforeEach(() => {
+			context = {
+				parameters,
+				results: {
+					accountId
+				},
+				libraries: {
+					AWS: {
+						Lambda
+					}
+				}
+			};
+			addPermissionSpy = sinon.spy();
+		});
+
+		it("should skip the function call entirely", done => {
+			addPermissionStep(conan, context, () => {
+				addPermissionSpy.called.should.be.false;
+				done();
+			});
+		});
+	});
 
 	describe("(conflict error or already exists error)", () => {
 		beforeEach(() => {

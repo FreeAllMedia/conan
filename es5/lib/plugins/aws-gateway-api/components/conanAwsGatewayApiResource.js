@@ -54,6 +54,10 @@ var _stepsAddPermissionStepJs = require("../steps/addPermissionStep.js");
 
 var _stepsAddPermissionStepJs2 = _interopRequireDefault(_stepsAddPermissionStepJs);
 
+var _stepsGetAccountIdStepJs = require("../steps/getAccountIdStep.js");
+
+var _stepsGetAccountIdStepJs2 = _interopRequireDefault(_stepsGetAccountIdStepJs);
+
 var _awsLambdaStepsFindLambdaByNameStepJs = require("../../aws-lambda/steps/findLambdaByNameStep.js");
 
 var _awsLambdaStepsFindLambdaByNameStepJs2 = _interopRequireDefault(_awsLambdaStepsFindLambdaByNameStepJs);
@@ -76,10 +80,12 @@ var ConanAwsGatewayApiResource = (function (_ConanComponent) {
 		value: function initialize(conan, path, method) {
 			this.conan = conan;
 
-			this.parameters("path", "method", "lambda", "statusCodes");
+			this.parameters("path", "method", "lambda", "statusCodes", "headers", "queryStrings");
 
 			this.path(path);
 			this.method(method);
+			this.headers([]);
+			this.queryStrings([]);
 			this.statusCodes([200]);
 
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _awsLambdaStepsFindLambdaByNameStepJs2["default"], this);
@@ -91,6 +97,7 @@ var ConanAwsGatewayApiResource = (function (_ConanComponent) {
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationResponseStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindMethodResponseStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutMethodResponseStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsGetAccountIdStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsAddPermissionStepJs2["default"], this);
 		}
 	}, {

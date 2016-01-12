@@ -7,10 +7,12 @@ const conan = new Conan({
 conan.use(ConanAwsApiGatewayPlugin);
 
 conan
-	.api("nicoConanDevelopment")
+	.api("nicoNew")
 		.stage("development")
-			.get("/accounts/subItems")
+			.get("/accounts/{id}")
 			.lambda("ListAccounts")
+			.headers(["Access-Token", "Content-Type"])
+			.queryStrings(["pageSize"])
 			.statusCodes([200, 404, 401, 500]);
 
 conan.deploy((error) => {

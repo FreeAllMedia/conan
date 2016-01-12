@@ -73,6 +73,21 @@ describe("putIntegrationStep", function () {
 				value: function method() {
 					return "GET";
 				}
+			}, {
+				key: "path",
+				value: function path() {
+					return "/account/items";
+				}
+			}, {
+				key: "headers",
+				value: function headers() {
+					return [];
+				}
+			}, {
+				key: "queryStrings",
+				value: function queryStrings() {
+					return [];
+				}
 			}]);
 
 			return MockConanAwsParameters;
@@ -86,7 +101,7 @@ describe("putIntegrationStep", function () {
 		lambdaArn = "arn:aws:lambda:us-east-1:166191849902:function:accounts";
 		uri = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/" + lambdaArn + "/invocations";
 
-		requestTemplates = { "application/json": "{\n  \"params\": {\n      \"header\": {\n          \"accessToken\": \"$input.params(\"Access-Token\")\"\n      }\n  },\n  \"data\": {}\n}" };
+		requestTemplates = { "application/json": "{\n  \"params\": {\n \"header\": {\n},\n \"queryString\": {\n},\n \"path\": {\n}},\n \"data\": $input.json('$')\n}" };
 
 		context = {
 			parameters: parameters,
@@ -105,6 +120,134 @@ describe("putIntegrationStep", function () {
 
 	it("should be a function", function () {
 		(typeof _stepsPutIntegrationStepJs2["default"]).should.equal("function");
+	});
+
+	describe("(parameter mapping)", function () {
+		describe("(header)", function () {
+			beforeEach(function (done) {
+				context.parameters = new ((function () {
+					function MockConanAwsParameters() {
+						_classCallCheck(this, MockConanAwsParameters);
+					}
+
+					_createClass(MockConanAwsParameters, [{
+						key: "path",
+						value: function path() {
+							return "/accounts/items";
+						}
+					}, {
+						key: "method",
+						value: function method() {
+							return "GET";
+						}
+					}, {
+						key: "headers",
+						value: function headers() {
+							return ["Access-Token"];
+						}
+					}, {
+						key: "queryStrings",
+						value: function queryStrings() {
+							return [];
+						}
+					}]);
+
+					return MockConanAwsParameters;
+				})())();
+				requestTemplates = { "application/json": "{\n  \"params\": {\n \"header\": {\n\"accessToken\": \"$input.params('Access-Token')\"\n},\n \"queryString\": {\n},\n \"path\": {\n}},\n \"data\": $input.json('$')\n}" };
+				(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+					done();
+				});
+			});
+
+			it("should map the header parameters", function () {
+				putIntegrationSpy.firstCall.args[0].requestTemplates.should.eql(requestTemplates);
+			});
+		});
+
+		describe("(queryStrings)", function () {
+			beforeEach(function (done) {
+				context.parameters = new ((function () {
+					function MockConanAwsParameters() {
+						_classCallCheck(this, MockConanAwsParameters);
+					}
+
+					_createClass(MockConanAwsParameters, [{
+						key: "method",
+						value: function method() {
+							return "GET";
+						}
+					}, {
+						key: "path",
+						value: function path() {
+							return "/accounts/items";
+						}
+					}, {
+						key: "headers",
+						value: function headers() {
+							return [];
+						}
+					}, {
+						key: "queryStrings",
+						value: function queryStrings() {
+							return ["pageSize"];
+						}
+					}]);
+
+					return MockConanAwsParameters;
+				})())();
+				requestTemplates = { "application/json": "{\n  \"params\": {\n \"header\": {\n},\n \"queryString\": {\n\"pageSize\": \"$input.params('pageSize')\"\n},\n \"path\": {\n}},\n \"data\": $input.json('$')\n}" };
+				(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+					done();
+				});
+			});
+
+			it("should map the header parameters", function () {
+				putIntegrationSpy.firstCall.args[0].requestTemplates.should.eql(requestTemplates);
+			});
+		});
+
+		describe("(path)", function () {
+			beforeEach(function (done) {
+				context.parameters = new ((function () {
+					function MockConanAwsParameters() {
+						_classCallCheck(this, MockConanAwsParameters);
+					}
+
+					_createClass(MockConanAwsParameters, [{
+						key: "method",
+						value: function method() {
+							return "GET";
+						}
+					}, {
+						key: "path",
+						value: function path() {
+							return "/account/{id}";
+						}
+					}, {
+						key: "headers",
+						value: function headers() {
+							return [];
+						}
+					}, {
+						key: "queryStrings",
+						value: function queryStrings() {
+							return [];
+						}
+					}]);
+
+					return MockConanAwsParameters;
+				})())();
+				requestTemplates = { "application/json": "{\n  \"params\": {\n \"header\": {\n},\n \"queryString\": {\n},\n \"path\": {\n\"id\": \"$input.params('id')\"\n}},\n \"data\": $input.json('$')\n}" };
+				(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+					done();
+				});
+			});
+
+			it("should map the header parameters", function () {
+				putIntegrationSpy.firstCall.args[0].requestTemplates.should.eql(requestTemplates);
+			});
+		});
 	});
 
 	describe("(parameters)", function () {

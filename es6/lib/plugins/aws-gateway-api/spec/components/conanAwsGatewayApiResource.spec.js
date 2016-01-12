@@ -32,7 +32,9 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 			"path",
 			"method",
 			"lambda",
-			"statusCodes"
+			"statusCodes",
+			"headers",
+			"queryStrings"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
 
@@ -99,7 +101,7 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 			step.parameters.should.eql(apiResource);
 		});
 
-		it("should add a put method response step", () => {
+		it("should add a find method response step", () => {
 			const step = conan.steps.findByName("findMethodResponseStep");
 			step.parameters.should.eql(apiResource);
 		});
@@ -109,8 +111,13 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 			step.parameters.should.eql(apiResource);
 		});
 
-		it("should add a put method response step", () => {
+		it("should add a add permission step", () => {
 			const step = conan.steps.findByName("addPermissionStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a get account id step", () => {
+			const step = conan.steps.findByName("getAccountIdStep");
 			step.parameters.should.eql(apiResource);
 		});
 	});
