@@ -11,6 +11,7 @@ describe("putMethodResponseStep", () => {
 		parameters,
 		restApiId,
 		apiResourceId,
+		responseParameters,
 		should;
 
 	class APIGateway {
@@ -37,10 +38,12 @@ describe("putMethodResponseStep", () => {
 		parameters = new class MockConanAwsParameters {
 			method() { return "GET"; }
 			statusCodes() { return [200]; }
+			responseHeaders() { return {}; }
 		}();
 
 		restApiId = "23sysh";
 		apiResourceId = "23sysh3";
+		responseParameters = {};
 
 		context = {
 			parameters,
@@ -104,6 +107,7 @@ describe("putMethodResponseStep", () => {
 			parameters = new class MockConanAwsParameters {
 				method() { return "GET"; }
 				statusCodes() { return [200, 404]; }
+				responseHeaders() { return {}; }
 			}();
 
 			restApiId = "23sysh";
@@ -163,6 +167,41 @@ describe("putMethodResponseStep", () => {
 		it("should skip the function call entirely", done => {
 			putMethodResponseStep(conan, context, () => {
 				putMethodResponseSpy.called.should.be.false;
+				done();
+			});
+		});
+	});
+
+	describe("(responseHeaders)", () => {
+		beforeEach(() => {
+			parameters = new class MockConanAwsParameters {
+				method() { return "GET"; }
+				statusCodes() { return [200, 401, 404]; }
+				responseHeaders() { return {"Access-Control-Allow-Origin": "*"}; }
+			}();
+
+			responseParameters = {
+				"method.response.header.Access-Control-Allow-Origin": false
+			};
+
+			context = {
+				parameters,
+				results: {
+					restApiId,
+					apiResourceId,
+					responseStatusCodes: []
+				},
+				libraries: {
+					AWS: {
+						APIGateway
+					}
+				}
+			};
+		});
+
+		it("should put them all in the response parameters", done => {
+			putMethodResponseStep(conan, context, () => {
+				putMethodResponseSpy.firstCall.args[0].responseParameters.should.eql(responseParameters);
 				done();
 			});
 		});

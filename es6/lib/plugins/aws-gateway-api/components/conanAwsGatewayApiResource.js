@@ -23,13 +23,15 @@ export default class ConanAwsGatewayApiResource extends ConanComponent {
 			"lambda",
 			"statusCodes",
 			"headers",
-			"queryStrings"
+			"queryStrings",
+			"responseHeaders"
 		);
 
 		this.path(path);
 		this.method(method);
 		this.headers([]);
 		this.queryStrings([]);
+		this.responseHeaders({});
 		this.statusCodes([200]);
 
 		this.conan.steps.before(findApiStageByNameStep, findLambdaByNameStep, this);
@@ -38,9 +40,9 @@ export default class ConanAwsGatewayApiResource extends ConanComponent {
 		this.conan.steps.before(findApiStageByNameStep, findResourceMethodStep, this);
 		this.conan.steps.before(findApiStageByNameStep, createResourceMethodStep, this);
 		this.conan.steps.before(findApiStageByNameStep, putIntegrationStep, this);
-		this.conan.steps.before(findApiStageByNameStep, putIntegrationResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, findMethodResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, putMethodResponseStep, this);
+		this.conan.steps.before(findApiStageByNameStep, putIntegrationResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, getAccountIdStep, this);
 		this.conan.steps.before(findApiStageByNameStep, addPermissionStep, this);
 	}
@@ -59,5 +61,9 @@ export default class ConanAwsGatewayApiResource extends ConanComponent {
 
 	delete(path) {
 		return new ConanAwsGatewayApiResource(this.conan, path, "DELETE");
+	}
+
+	options(path) {
+		return new ConanAwsGatewayApiResource(this.conan, path, "OPTIONS");
 	}
 }

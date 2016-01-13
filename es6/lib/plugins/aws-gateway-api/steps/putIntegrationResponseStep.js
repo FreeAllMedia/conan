@@ -1,7 +1,16 @@
 import flowsync from "flowsync";
 
-// HACK: parametrize napping template
 const responseTemplates = {"application/json": ""};
+
+function getResponseParameters(responseHeaders) {
+	let result = {};
+	Object.keys(responseHeaders).forEach(
+		responseHeaderName => {
+			result[`method.response.header.${responseHeaderName}`] = `'${responseHeaders[responseHeaderName]}'`;
+		}
+	);
+	return result;
+}
 
 export default function putIntegrationResponseStep(conan, context, done) {
 	const restApiId = context.results.restApiId;
@@ -14,6 +23,8 @@ export default function putIntegrationResponseStep(conan, context, done) {
 			region: conan.config.region
 		});
 
+		const responseParameters = getResponseParameters(context.parameters.responseHeaders());
+
 		flowsync.eachSeries(statusCodes,
 			(statusCode, next) => {
 				const apiParameters = {
@@ -22,6 +33,7 @@ export default function putIntegrationResponseStep(conan, context, done) {
 					httpMethod: context.parameters.method(),
 					selectionPattern: "",
 					responseTemplates,
+					responseParameters,
 					statusCode: `${statusCode}`
 				};
 				api.putIntegrationResponse(apiParameters,

@@ -34,7 +34,8 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 			"lambda",
 			"statusCodes",
 			"headers",
-			"queryStrings"
+			"queryStrings",
+			"responseHeaders"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
 
@@ -126,7 +127,8 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 		"GET",
 		"POST",
 		"PUT",
-		"DELETE"
+		"DELETE",
+		"OPTIONS"
 	].forEach((resourceMethod) => {
 		const methodFunctionName = resourceMethod.toLowerCase();
 		describe(`apiResource.${methodFunctionName}(path)`, () => {

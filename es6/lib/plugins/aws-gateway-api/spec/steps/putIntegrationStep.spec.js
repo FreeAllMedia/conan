@@ -208,12 +208,19 @@ describe("putIntegrationStep", () => {
 	describe("(lambda arn is not present)", () => {
 		beforeEach(() => {
 			delete context.results.lambdaArn;
-			putIntegrationSpy = sinon.spy();
+			requestTemplates = {"application/json": "{\"statusCode\": 200}"};
 		});
 
-		it("should skip the function call entirely", done => {
+		it("should put a mock integration", done => {
 			putIntegrationStep(conan, context, () => {
-				putIntegrationSpy.called.should.be.false;
+				putIntegrationSpy.firstCall.args[0].should.eql({
+					resourceId: apiResourceId,
+					httpMethod: parameters.method(),
+					type: "MOCK",
+					integrationHttpMethod: "POST",
+					requestTemplates,
+					restApiId
+				});
 				done();
 			});
 		});

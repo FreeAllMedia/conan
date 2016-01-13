@@ -9,11 +9,56 @@ conan.use(ConanAwsApiGatewayPlugin);
 conan
 	.api("nicoNew")
 		.stage("development")
+			.post("/accounts")
+				.lambda("SomeLambda")
+				.headers(["Access-Token", "Content-Type"])
+				.queryStrings(["pageSize"])
+				.responseHeaders({
+					"Allow-Control-Allow-Origin": "*",
+					"Allow-Control-Allow-Methods": "*",
+					"Allow-Control-Allow-Headers": "Access-Token"
+				})
+				.statusCodes([200, 404, 401, 500])
+			.options("/accounts")
+				.responseHeaders({
+					"Allow-Control-Allow-Origin": "*"
+				})
+				.statusCodes([200])
 			.get("/accounts/{id}")
-			.lambda("ListAccounts")
-			.headers(["Access-Token", "Content-Type"])
-			.queryStrings(["pageSize"])
-			.statusCodes([200, 404, 401, 500]);
+				.lambda("SomeLambda")
+				.headers(["Access-Token", "Content-Type"])
+				.queryStrings(["pageSize"])
+				.responseHeaders({
+					"Allow-Control-Allow-Origin": "*",
+					"Allow-Control-Allow-Methods": "*",
+					"Allow-Control-Allow-Headers": "Access-Token"
+				})
+				.statusCodes([200, 404, 401, 500])
+			.put("/accounts/{id}")
+				.lambda("SomeLambda")
+				.headers(["Access-Token", "Content-Type"])
+				.queryStrings(["pageSize"])
+				.responseHeaders({
+					"Allow-Control-Allow-Origin": "*",
+					"Allow-Control-Allow-Methods": "*",
+					"Allow-Control-Allow-Headers": "Access-Token"
+				})
+				.statusCodes([200, 404, 401, 500])
+			.delete("/accounts/{id}")
+				.lambda("SomeLambda")
+				.headers(["Access-Token", "Content-Type"])
+				.queryStrings(["pageSize"])
+				.responseHeaders({
+					"Allow-Control-Allow-Origin": "*",
+					"Allow-Control-Allow-Methods": "*",
+					"Allow-Control-Allow-Headers": "Access-Token"
+				})
+				.statusCodes([200, 404, 401, 500])
+			.options("/accounts/{id}")
+				.responseHeaders({
+					"Allow-Control-Allow-Origin": "*"
+				})
+				.statusCodes([200]);
 
 conan.deploy((error) => {
 	console.log("Deployment complete.", { error });

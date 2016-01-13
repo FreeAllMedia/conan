@@ -153,6 +153,61 @@ describe("addPermissionStep", function () {
 		});
 	});
 
+	describe("(when no lambda)", function () {
+		beforeEach(function (done) {
+			parameters = new ((function () {
+				function MockConanAwsParameters() {
+					_classCallCheck(this, MockConanAwsParameters);
+				}
+
+				_createClass(MockConanAwsParameters, [{
+					key: "path",
+					value: function path() {
+						return "/accounts/items";
+					}
+				}, {
+					key: "lambda",
+					value: function lambda() {
+						return null;
+					}
+				}, {
+					key: "method",
+					value: function method() {
+						return "GET";
+					}
+				}]);
+
+				return MockConanAwsParameters;
+			})())();
+
+			context = {
+				parameters: parameters,
+				results: {
+					restApiId: restApiId,
+					accountId: accountId
+				},
+				libraries: {
+					AWS: {
+						Lambda: Lambda
+					}
+				}
+			};
+
+			addPermissionSpy = _sinon2["default"].spy();
+
+			(0, _stepsAddPermissionStepJs2["default"])(conan, context, function () {
+				done();
+			});
+		});
+
+		it("should skip the function call entirely", function (done) {
+			(0, _stepsAddPermissionStepJs2["default"])(conan, context, function () {
+				addPermissionSpy.called.should.be["false"];
+				done();
+			});
+		});
+	});
+
 	describe("(permission added)", function () {
 		var responseData = undefined;
 

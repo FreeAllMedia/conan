@@ -18,8 +18,7 @@ export default function putIntegrationStep(conan, context, done) {
 	let resourceId = context.results.apiResourceId;
 	const lambdaArn = context.results.lambdaArn;
 	if(restApiId
-			&& resourceId
-			&& lambdaArn) {
+			&& resourceId) {
 		const api = new context.libraries.AWS.APIGateway({
 			region: conan.config.region
 		});
@@ -36,17 +35,22 @@ export default function putIntegrationStep(conan, context, done) {
 		const pathMapValues = getVelocityMap(pathParameters);
 		const pathMap = `\"path\": {${pathMapValues}\n}`;
 		const paramsSection = `\"params\": {\n ${headerMap},\n ${queryStringMap},\n ${pathMap}},`;
-		const uri = `arn:aws:apigateway:${conan.config.region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations`;
 		const requestTemplates = {"application/json": `{\n  ${paramsSection}\n \"data\": $input.json('$')\n}`};
 		const apiParameters = {
 			restApiId,
 			resourceId,
-			type: "AWS",
-			uri,
+			type: "MOCK",
 			httpMethod: context.parameters.method(),
 			integrationHttpMethod: "POST",
-			requestTemplates
+			requestTemplates: {"application/json": "{\"statusCode\": 200}"}
 		};
+
+		if(lambdaArn) {
+			apiParameters.type = "AWS";
+			apiParameters.uri = `arn:aws:apigateway:${conan.config.region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations`;
+			apiParameters.requestTemplates = requestTemplates;
+		}
+
 		api.putIntegration(apiParameters,
 			(error, response) => {
 				if(response) {

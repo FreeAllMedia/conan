@@ -30,6 +30,7 @@ describe("putMethodResponseStep", function () {
 	    parameters = undefined,
 	    restApiId = undefined,
 	    apiResourceId = undefined,
+	    responseParameters = undefined,
 	    should = undefined;
 
 	var APIGateway = (function () {
@@ -75,6 +76,11 @@ describe("putMethodResponseStep", function () {
 				value: function statusCodes() {
 					return [200];
 				}
+			}, {
+				key: "responseHeaders",
+				value: function responseHeaders() {
+					return {};
+				}
 			}]);
 
 			return MockConanAwsParameters;
@@ -82,6 +88,7 @@ describe("putMethodResponseStep", function () {
 
 		restApiId = "23sysh";
 		apiResourceId = "23sysh3";
+		responseParameters = {};
 
 		context = {
 			parameters: parameters,
@@ -157,6 +164,11 @@ describe("putMethodResponseStep", function () {
 					value: function statusCodes() {
 						return [200, 404];
 					}
+				}, {
+					key: "responseHeaders",
+					value: function responseHeaders() {
+						return {};
+					}
 				}]);
 
 				return MockConanAwsParameters;
@@ -219,6 +231,60 @@ describe("putMethodResponseStep", function () {
 		it("should skip the function call entirely", function (done) {
 			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function () {
 				putMethodResponseSpy.called.should.be["false"];
+				done();
+			});
+		});
+	});
+
+	describe("(responseHeaders)", function () {
+		beforeEach(function () {
+			parameters = new ((function () {
+				function MockConanAwsParameters() {
+					_classCallCheck(this, MockConanAwsParameters);
+				}
+
+				_createClass(MockConanAwsParameters, [{
+					key: "method",
+					value: function method() {
+						return "GET";
+					}
+				}, {
+					key: "statusCodes",
+					value: function statusCodes() {
+						return [200, 401, 404];
+					}
+				}, {
+					key: "responseHeaders",
+					value: function responseHeaders() {
+						return { "Access-Control-Allow-Origin": "*" };
+					}
+				}]);
+
+				return MockConanAwsParameters;
+			})())();
+
+			responseParameters = {
+				"method.response.header.Access-Control-Allow-Origin": false
+			};
+
+			context = {
+				parameters: parameters,
+				results: {
+					restApiId: restApiId,
+					apiResourceId: apiResourceId,
+					responseStatusCodes: []
+				},
+				libraries: {
+					AWS: {
+						APIGateway: APIGateway
+					}
+				}
+			};
+		});
+
+		it("should put them all in the response parameters", function (done) {
+			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function () {
+				putMethodResponseSpy.firstCall.args[0].responseParameters.should.eql(responseParameters);
 				done();
 			});
 		});

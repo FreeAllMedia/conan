@@ -49,7 +49,7 @@ describe("ConanAwsGatewayApiResource(conan)", function () {
 	});
 
 	describe("(parameters)", function () {
-		["path", "method", "lambda", "statusCodes", "headers", "queryStrings"].forEach(function (parameterName) {
+		["path", "method", "lambda", "statusCodes", "headers", "queryStrings", "responseHeaders"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
@@ -136,7 +136,7 @@ describe("ConanAwsGatewayApiResource(conan)", function () {
 		});
 	});
 
-	["GET", "POST", "PUT", "DELETE"].forEach(function (resourceMethod) {
+	["GET", "POST", "PUT", "DELETE", "OPTIONS"].forEach(function (resourceMethod) {
 		var methodFunctionName = resourceMethod.toLowerCase();
 		describe("apiResource." + methodFunctionName + "(path)", function () {
 			var newResource = undefined;

@@ -12,6 +12,7 @@ describe("putIntegrationResponseStep", () => {
 		restApiId,
 		apiResourceId,
 		responseTemplates,
+		responseParameters,
 		should;
 
 	class APIGateway {
@@ -38,11 +39,13 @@ describe("putIntegrationResponseStep", () => {
 		parameters = new class MockConanAwsParameters {
 			method() { return "GET"; }
 			statusCodes() { return [200]; }
+			responseHeaders() { return {}; }
 		}();
 
 		restApiId = "23sysh";
 		apiResourceId = "23sysh3";
 		responseTemplates = {"application/json": ""};
+		responseParameters = {};
 
 		context = {
 			parameters,
@@ -75,6 +78,7 @@ describe("putIntegrationResponseStep", () => {
 				httpMethod: parameters.method(),
 				restApiId,
 				responseTemplates,
+				responseParameters,
 				selectionPattern: "",
 				statusCode: "200"
 			});
@@ -123,6 +127,7 @@ describe("putIntegrationResponseStep", () => {
 				parameters = new class MockConanAwsParameters {
 					method() { return "GET"; }
 					statusCodes() { return [200, 401, 404]; }
+					responseHeaders() { return {"Access-Control-Allow-Origin": "*"}; }
 				}();
 
 				restApiId = "23sysh";
@@ -146,6 +151,40 @@ describe("putIntegrationResponseStep", () => {
 			it("should put them all", done => {
 				putIntegrationResponseStep(conan, context, () => {
 					sinon.assert.callCount(putIntegrationResponseSpy, 3);
+					done();
+				});
+			});
+		});
+
+		describe("(responseHeaders)", () => {
+			beforeEach(() => {
+				parameters = new class MockConanAwsParameters {
+					method() { return "GET"; }
+					statusCodes() { return [200, 401, 404]; }
+					responseHeaders() { return {"Access-Control-Allow-Origin": "*"}; }
+				}();
+
+				responseParameters = {
+					"method.response.header.Access-Control-Allow-Origin": "'*'"
+				};
+
+				context = {
+					parameters,
+					results: {
+						restApiId,
+						apiResourceId
+					},
+					libraries: {
+						AWS: {
+							APIGateway
+						}
+					}
+				};
+			});
+
+			it("should put them all in the response parameters", done => {
+				putIntegrationResponseStep(conan, context, () => {
+					putIntegrationResponseSpy.firstCall.args[0].responseParameters.should.eql(responseParameters);
 					done();
 				});
 			});
