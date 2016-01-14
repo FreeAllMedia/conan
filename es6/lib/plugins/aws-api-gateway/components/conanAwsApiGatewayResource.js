@@ -20,7 +20,10 @@ export default class ConanAwsApiGatewayResource extends ConanComponent {
 		this.parameters(
 			"path",
 			"method",
-			"lambda",
+			"lambda"
+		);
+
+		this.multipleValueParameters(
 			"statusCodes",
 			"headers",
 			"queryStrings"
@@ -28,9 +31,7 @@ export default class ConanAwsApiGatewayResource extends ConanComponent {
 
 		this.path(path);
 		this.method(method);
-		this.headers([]);
-		this.queryStrings([]);
-		this.statusCodes([200]);
+		this.statusCodes(200);
 
 		this.conan.steps.before(findApiStageByNameStep, findLambdaByNameStep, this);
 		this.conan.steps.before(findApiStageByNameStep, findApiResourceByPathStep, this);

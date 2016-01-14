@@ -48,8 +48,20 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 		apiResource.conan.should.eql(conan);
 	});
 
+	describe("(default parameter values)", function () {
+		it("should set path to the value provided by the constructor", function () {
+			apiResource.path().should.eql(path);
+		});
+		it("should set method to the value provided by the constructor", function () {
+			apiResource.method().should.eql(method);
+		});
+		it("should set status codes to 200 by default", function () {
+			apiResource.statusCodes().should.eql([200]);
+		});
+	});
+
 	describe("(parameters)", function () {
-		["path", "method", "lambda", "statusCodes", "headers", "queryStrings"].forEach(function (parameterName) {
+		["path", "method", "lambda"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
@@ -58,6 +70,22 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 					var testValue = "abc123";
 					component = component[parameterName](testValue);
 					component[parameterName]().should.eql(testValue);
+				});
+			});
+		});
+	});
+
+	describe("(multiple-value parameters)", function () {
+		["statusCodes", "headers", "queryStrings"].forEach(function (parameterName) {
+			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
+
+			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
+				it("should save new" + parameterNamePascalCase, function () {
+					var component = new _componentsConanAwsApiGatewayResourceJs2["default"](conan);
+					var testValueOne = "abc123";
+					var testValueTwo = "abc123";
+					component = component[parameterName](testValueOne, testValueTwo);
+					component[parameterName]().should.eql([testValueOne, testValueTwo]);
 				});
 			});
 		});

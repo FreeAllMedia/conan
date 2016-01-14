@@ -80,13 +80,13 @@ var ConanAwsApiGatewayResource = (function (_ConanComponent) {
 		value: function initialize(conan, path, method) {
 			this.conan = conan;
 
-			this.parameters("path", "method", "lambda", "statusCodes", "headers", "queryStrings");
+			this.parameters("path", "method", "lambda");
+
+			this.multipleValueParameters("statusCodes", "headers", "queryStrings");
 
 			this.path(path);
 			this.method(method);
-			this.headers([]);
-			this.queryStrings([]);
-			this.statusCodes([200]);
+			this.statusCodes(200);
 
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _awsLambdaStepsFindLambdaByNameStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindApiResourceByPathStepJs2["default"], this);

@@ -2,14 +2,16 @@ import jargon from "jargon";
 
 function getVelocityMap(parameterArray) {
 	let result = [];
-	parameterArray.forEach(
-		headerName => {
-			// TODO: add this requirements to jargon itself
-			const curatedHeaderName = jargon(headerName).camel.toString().replace(/-|{|}/g, "");
-			const curatedBrackets = headerName.replace(/\{|}/g, "");
-			result.push(`\n\"${curatedHeaderName}\": \"$input.params('${curatedBrackets}')\"`);
-		}
-	);
+	if (parameterArray !== undefined) {
+		parameterArray.forEach(
+			headerName => {
+				// TODO: add this requirements to jargon itself
+				const curatedHeaderName = jargon(headerName).camel.toString().replace(/-|{|}/g, "");
+				const curatedBrackets = headerName.replace(/\{|}/g, "");
+				result.push(`\n\"${curatedHeaderName}\": \"$input.params('${curatedBrackets}')\"`);
+			}
+		);
+	}
 	return result.join(",");
 }
 

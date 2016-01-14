@@ -81,12 +81,12 @@ describe("putIntegrationStep", function () {
 			}, {
 				key: "headers",
 				value: function headers() {
-					return [];
+					return undefined;
 				}
 			}, {
 				key: "queryStrings",
 				value: function queryStrings() {
-					return [];
+					return undefined;
 				}
 			}]);
 
@@ -148,7 +148,7 @@ describe("putIntegrationStep", function () {
 					}, {
 						key: "queryStrings",
 						value: function queryStrings() {
-							return [];
+							return undefined;
 						}
 					}]);
 
@@ -185,7 +185,7 @@ describe("putIntegrationStep", function () {
 					}, {
 						key: "headers",
 						value: function headers() {
-							return [];
+							return undefined;
 						}
 					}, {
 						key: "queryStrings",
@@ -227,12 +227,12 @@ describe("putIntegrationStep", function () {
 					}, {
 						key: "headers",
 						value: function headers() {
-							return [];
+							return undefined;
 						}
 					}, {
 						key: "queryStrings",
 						value: function queryStrings() {
-							return [];
+							return undefined;
 						}
 					}]);
 

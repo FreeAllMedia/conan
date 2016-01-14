@@ -1,6 +1,4 @@
-module.exports = {
-	handler: function handler(event, context) {
-		var name = event.name;
-		context.succeed("Hello, " + name + "!");
-	}
+exports.handler = function handler(event, context) {
+	var name = event.params.path.id;
+	context.succeed("Hello, " + name + "!");
 };

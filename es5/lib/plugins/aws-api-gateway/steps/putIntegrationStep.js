@@ -13,12 +13,14 @@ var _jargon2 = _interopRequireDefault(_jargon);
 
 function getVelocityMap(parameterArray) {
 	var result = [];
-	parameterArray.forEach(function (headerName) {
-		// TODO: add this requirements to jargon itself
-		var curatedHeaderName = (0, _jargon2["default"])(headerName).camel.toString().replace(/-|{|}/g, "");
-		var curatedBrackets = headerName.replace(/\{|}/g, "");
-		result.push("\n\"" + curatedHeaderName + "\": \"$input.params('" + curatedBrackets + "')\"");
-	});
+	if (parameterArray !== undefined) {
+		parameterArray.forEach(function (headerName) {
+			// TODO: add this requirements to jargon itself
+			var curatedHeaderName = (0, _jargon2["default"])(headerName).camel.toString().replace(/-|{|}/g, "");
+			var curatedBrackets = headerName.replace(/\{|}/g, "");
+			result.push("\n\"" + curatedHeaderName + "\": \"$input.params('" + curatedBrackets + "')\"");
+		});
+	}
 	return result.join(",");
 }
 
