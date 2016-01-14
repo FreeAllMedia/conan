@@ -6,7 +6,7 @@ gulp.task("test", cb => {
 
 	if (process.env.TRAVIS_NODE_VERSION) {
 		console.log("TRAVIS_NODE_VERSION", process.env.TRAVIS_NODE_VERSION);
-		es6Environment = ["4.0", "4.1"].indexOf(process.env.TRAVIS_NODE_VERSION) !== -1;
+		es6Environment = ["4.0", "4.1"].indexOf(process.env.TRAVIS_NODE_VERSION) === -1;
 	}
 
 	if (es6Environment) {
