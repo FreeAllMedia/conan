@@ -63,6 +63,65 @@ var ConanComponent = (function () {
 				return _.parameters;
 			}
 		}
+	}, {
+		key: "multipleValueParameters",
+		value: function multipleValueParameters() {
+			var _this2 = this;
+
+			var _ = (0, _incognito2["default"])(this);
+
+			for (var _len3 = arguments.length, newParameters = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+				newParameters[_key3] = arguments[_key3];
+			}
+
+			newParameters.forEach(function (parameterName) {
+
+				var getterSetterFunction = function getterSetterFunction() {
+					for (var _len4 = arguments.length, newValues = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+						newValues[_key4] = arguments[_key4];
+					}
+
+					if (newValues.length > 0) {
+						_.parameters[parameterName] = newValues;
+						return _this2; // For chaining
+					} else {
+							return _.parameters[parameterName];
+						}
+				};
+
+				_this2[parameterName] = getterSetterFunction;
+			});
+		}
+	}, {
+		key: "aggregateValueParameters",
+		value: function aggregateValueParameters() {
+			var _this3 = this;
+
+			var _ = (0, _incognito2["default"])(this);
+
+			for (var _len5 = arguments.length, newParameters = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+				newParameters[_key5] = arguments[_key5];
+			}
+
+			newParameters.forEach(function (parameterName) {
+
+				var getterSetterFunction = function getterSetterFunction() {
+					for (var _len6 = arguments.length, newValues = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+						newValues[_key6] = arguments[_key6];
+					}
+
+					_.parameters[parameterName] = _.parameters[parameterName] || [];
+					if (newValues.length > 0) {
+						_.parameters[parameterName] = _.parameters[parameterName].concat(newValues);
+						return _this3; // For chaining
+					} else {
+							return _.parameters[parameterName];
+						}
+				};
+
+				_this3[parameterName] = getterSetterFunction;
+			});
+		}
 	}]);
 
 	return ConanComponent;

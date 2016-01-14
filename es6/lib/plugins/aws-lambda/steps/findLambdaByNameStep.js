@@ -3,9 +3,15 @@ export default function findLambdaByNameStep(conan, context, stepDone) {
 	const lambda = new AWS.Lambda({
 		region: conan.config.region
 	});
+	let lambdaName;
+	if(typeof context.parameters.name === "function") {
+		lambdaName = context.parameters.name();
+	} else {
+		lambdaName = context.parameters.lambda();
+	}
 
 	lambda.getFunction({
-		"FunctionName": context.parameters.name()
+		"FunctionName": lambdaName
 	}, (error, responseData) => {
 		if (error && error.statusCode === 404) {
 			stepDone(null, {

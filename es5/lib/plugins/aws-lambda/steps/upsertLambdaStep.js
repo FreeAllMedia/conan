@@ -28,7 +28,8 @@ function upsertLambdaStep(conan, context, stepDone) {
 	var lambdaZipBuffer = _fs2["default"].readFileSync(context.results.lambdaZipFilePath);
 
 	var fileName = _path2["default"].parse(conanAwsLambda.filePath()).name;
-	var handlerString = fileName + "." + conanAwsLambda.handler();
+	var handlerName = conanAwsLambda.handler()[0];
+	var handlerString = fileName + "." + handlerName;
 
 	if (lambdaIsNew) {
 		var createFunctionParameters = {

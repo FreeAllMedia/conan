@@ -75,7 +75,7 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 		});
 
 		it("should pass the lambda handler to the ConanAwsLambda constructor", () => {
-			lambda.handler().should.eql(handler);
+			lambda.handler().should.eql([handler]);
 		});
 	});
 });

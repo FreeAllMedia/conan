@@ -52,7 +52,11 @@ var ConanAwsLambda = (function (_ConanComponent) {
 		value: function initialize(conan, name, filePath, role) {
 			this.conan = conan;
 
-			this.parameters("name", "filePath", "handler", "runtime", "role", "description", "memorySize", "timeout", "publish", "bucket", "packages", "dependencies");
+			this.parameters("name", "filePath", "runtime", "role", "description", "memorySize", "timeout", "publish", "bucket", "packages");
+
+			this.multipleValueParameters("handler");
+
+			this.aggregateValueParameters("dependencies");
 
 			this.name(name);
 			this.filePath(filePath);

@@ -15,9 +15,9 @@ var _libPluginsAwsLambdaConanAwsLambdaPluginJs = require("../lib/plugins/aws-lam
 
 var _libPluginsAwsLambdaConanAwsLambdaPluginJs2 = _interopRequireDefault(_libPluginsAwsLambdaConanAwsLambdaPluginJs);
 
-var _libPluginsAwsGatewayApiConanAwsGatewayApiPluginJs = require("../lib/plugins/aws-gateway-api/conanAwsGatewayApiPlugin.js");
+var _libPluginsAwsApiGatewayConanAwsApiGatewayPluginJs = require("../lib/plugins/aws-api-gateway/conanAwsApiGatewayPlugin.js");
 
-var _libPluginsAwsGatewayApiConanAwsGatewayApiPluginJs2 = _interopRequireDefault(_libPluginsAwsGatewayApiConanAwsGatewayApiPluginJs);
+var _libPluginsAwsApiGatewayConanAwsApiGatewayPluginJs2 = _interopRequireDefault(_libPluginsAwsApiGatewayConanAwsApiGatewayPluginJs);
 
 var _sinon = require("sinon");
 
@@ -64,8 +64,8 @@ describe("Conan(config)", function () {
 			_libConanJs.ConanAwsLambdaPlugin.should.eql(_libPluginsAwsLambdaConanAwsLambdaPluginJs2["default"]);
 		});
 
-		it("should export ConanAwsGatewayApiPlugin", function () {
-			_libConanJs.ConanAwsGatewayApiPlugin.should.eql(_libPluginsAwsGatewayApiConanAwsGatewayApiPluginJs2["default"]);
+		it("should export ConanAwsApiGatewayPlugin", function () {
+			_libConanJs.ConanAwsApiGatewayPlugin.should.eql(_libPluginsAwsApiGatewayConanAwsApiGatewayPluginJs2["default"]);
 		});
 	});
 });

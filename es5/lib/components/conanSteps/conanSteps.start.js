@@ -19,6 +19,10 @@ var _temp = require("temp");
 
 var _temp2 = _interopRequireDefault(_temp);
 
+var _jargon = require("jargon");
+
+var _jargon2 = _interopRequireDefault(_jargon);
+
 function start(callback) {
 	var _ = (0, _incognito2["default"])(this);
 	var accumulatedResults = {};
@@ -34,9 +38,11 @@ function start(callback) {
 				parameters: step.parameters,
 				results: Object.assign({}, accumulatedResults)
 			};
-
+			var beforeRunTime = new Date().getTime();
+			// console.log(`${step.handler.name} Started`);
 			step.handler(_.parent, context, function (stepError, stepResult) {
 				Object.assign(accumulatedResults, stepResult);
+				console.log((0, _jargon2["default"])(step.handler.name).table.toString().replace(/_/g, " ").replace(" steps", "") + " - " + (new Date().getTime() - beforeRunTime) + "ms");
 				done(stepError, stepResult);
 			});
 		}, function (errors) {

@@ -22,9 +22,9 @@ var _pluginsAwsLambdaConanAwsLambdaPluginJs = require("./plugins/aws-lambda/cona
 
 var _pluginsAwsLambdaConanAwsLambdaPluginJs2 = _interopRequireDefault(_pluginsAwsLambdaConanAwsLambdaPluginJs);
 
-var _pluginsAwsGatewayApiConanAwsGatewayApiPluginJs = require("./plugins/aws-gateway-api/conanAwsGatewayApiPlugin.js");
+var _pluginsAwsApiGatewayConanAwsApiGatewayPluginJs = require("./plugins/aws-api-gateway/conanAwsApiGatewayPlugin.js");
 
-var _pluginsAwsGatewayApiConanAwsGatewayApiPluginJs2 = _interopRequireDefault(_pluginsAwsGatewayApiConanAwsGatewayApiPluginJs);
+var _pluginsAwsApiGatewayConanAwsApiGatewayPluginJs2 = _interopRequireDefault(_pluginsAwsApiGatewayConanAwsApiGatewayPluginJs);
 
 /**
  * @class Conan
@@ -69,4 +69,4 @@ var Conan = (function () {
 exports["default"] = Conan;
 exports.ConanComponent = _componentsConanComponentJs2["default"];
 exports.ConanAwsLambdaPlugin = _pluginsAwsLambdaConanAwsLambdaPluginJs2["default"];
-exports.ConanAwsGatewayApiPlugin = _pluginsAwsGatewayApiConanAwsGatewayApiPluginJs2["default"];
+exports.ConanAwsApiGatewayPlugin = _pluginsAwsApiGatewayConanAwsApiGatewayPluginJs2["default"];

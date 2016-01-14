@@ -89,8 +89,8 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 		lambdaArn = "arn:aws:lambda:us-east-1:123895237541:function:SomeLambda";
 		roleArn = "arn:aws:lambda:us-east-1:123895237541:role:SomeRole";
 
-		lambdaFilePath = __dirname + "/fixtures/lambda.js";
-		lambdaZipFilePath = __dirname + "/fixtures/lambda.zip";
+		lambdaFilePath = __dirname + "/../fixtures/lambda.js";
+		lambdaZipFilePath = __dirname + "/../fixtures/lambda.zip";
 
 		parameters = new ((function () {
 			function MockConanAwsLambda() {
@@ -105,7 +105,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 			}, {
 				key: "handler",
 				value: function handler() {
-					return "handler";
+					return ["handler"];
 				}
 			}, {
 				key: "description",
@@ -199,7 +199,6 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 
 	describe("(When Lambda is NOT New)", function () {
 		it("should call AWS to update the lambda configuration with the designated parameters", function () {
-
 			var updateConfigurationParameters = {
 				FunctionName: parameters.name(),
 				Handler: handlerString,
@@ -285,7 +284,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 		});
 
 		it("should call AWS with the designated lambda code", function () {
-			var expectedCodeBuffer = _fs2["default"].readFileSync(__dirname + "/fixtures/lambda.zip");
+			var expectedCodeBuffer = _fs2["default"].readFileSync(__dirname + "/../fixtures/lambda.zip");
 
 			var codeBuffer = createFunctionParameters.Code.ZipFile;
 
