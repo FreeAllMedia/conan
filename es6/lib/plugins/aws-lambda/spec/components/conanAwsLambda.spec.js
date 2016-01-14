@@ -45,14 +45,12 @@ describe("ConanAwsLambda(conan, name, filePath, role)", () => {
 			"filePath",
 			"role",
 			"runtime",
-			"handler",
 			"description",
 			"memorySize",
 			"timeout",
 			"publish",
 			"packages",
-			"bucket",
-			"dependencies"
+			"bucket"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
 
@@ -67,10 +65,52 @@ describe("ConanAwsLambda(conan, name, filePath, role)", () => {
 		});
 	});
 
+	describe("(multiple-value parameters)", () => {
+		[
+			"handler"
+		].forEach((parameterName) => {
+			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
+
+			describe(`.${parameterName}(new${parameterNamePascalCase})`, () => {
+				it(`should save new${parameterNamePascalCase}`, () => {
+					let component = new ConanAwsLambda(conan);
+					const testValueOne = "abc123";
+					const testValueTwo = "abc123";
+					component = component[parameterName](testValueOne, testValueTwo);
+					component[parameterName]().should.eql([testValueOne, testValueTwo]);
+				});
+			});
+		});
+	});
+
+	describe("(aggregate-value parameters)", () => {
+		[
+			"dependencies"
+		].forEach((parameterName) => {
+			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
+
+			describe(`.${parameterName}(new${parameterNamePascalCase})`, () => {
+				it(`should save new${parameterNamePascalCase}`, () => {
+					let component = new ConanAwsLambda(conan);
+					const testValueOne = "abc123";
+					const testValueTwo = "abc123";
+					const testValueThree = "abc123";
+					component[parameterName](testValueOne, testValueTwo);
+					component[parameterName](testValueThree);
+					component[parameterName]().should.eql([
+						testValueOne,
+						testValueTwo,
+						testValueThree
+					]);
+				});
+			});
+		});
+	});
+
 	describe("(default values)", () => {
 		it("should set the handler to 'handler' by default", () => {
 			lambda = new ConanAwsLambda(conan, name, filePath);
-			lambda.handler().should.eql("handler");
+			lambda.handler().should.eql(["handler"]);
 		});
 		it("should set the runtime to 'nodejs' by default", () => {
 			lambda.runtime().should.eql("nodejs");

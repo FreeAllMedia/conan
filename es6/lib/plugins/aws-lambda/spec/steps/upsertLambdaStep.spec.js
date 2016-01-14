@@ -70,12 +70,12 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 		lambdaArn = "arn:aws:lambda:us-east-1:123895237541:function:SomeLambda";
 		roleArn = "arn:aws:lambda:us-east-1:123895237541:role:SomeRole";
 
-		lambdaFilePath = __dirname + "/fixtures/lambda.js";
-		lambdaZipFilePath = __dirname + "/fixtures/lambda.zip";
+		lambdaFilePath = __dirname + "/../fixtures/lambda.js";
+		lambdaZipFilePath = __dirname + "/../fixtures/lambda.zip";
 
 		parameters = new class MockConanAwsLambda {
 			name() { 				return "TestFunction"; }
-			handler() { 		return "handler"; }
+			handler() { 		return ["handler"]; }
 			description() { return "This is my Lambda!"; }
 			memorySize() { 	return 128; }
 			publish() { 		return true; }
@@ -226,7 +226,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 		});
 
 		it("should call AWS with the designated lambda code", () => {
-			const expectedCodeBuffer = fileSystem.readFileSync(__dirname + "/fixtures/lambda.zip");
+			const expectedCodeBuffer = fileSystem.readFileSync(__dirname + "/../fixtures/lambda.zip");
 
 			const codeBuffer = createFunctionParameters.Code.ZipFile;
 

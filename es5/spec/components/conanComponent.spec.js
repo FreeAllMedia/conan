@@ -71,19 +71,7 @@ describe("ConanComponent()", function () {
 		initializeSpy.calledWith(name, age).should.be["true"];
 	});
 
-	describe(".parameters()", function () {
-		it("should return all parameters in an object", function () {
-			component.parameters("name", "age");
-			component.name("Bob");
-			component.age(44);
-			component.parameters().should.eql({
-				name: "Bob",
-				age: 44
-			});
-		});
-	});
-
-	describe(".parameters(...newParameters)", function () {
+	describe(".parameters([...newParameters])", function () {
 		it("should create a getter and setter function for each new parameter", function () {
 			component.parameters("name", "age");
 
@@ -91,6 +79,47 @@ describe("ConanComponent()", function () {
 			component.age(age);
 
 			(component.name() === name && component.age() === age).should.be["true"];
+		});
+		it("should create a getter and setter function for each new parameter", function () {
+			component.parameters("name", "age");
+
+			component.name(name);
+			component.age(age);
+
+			component.parameters().should.eql({
+				name: name,
+				age: age
+			});
+		});
+	});
+
+	describe(".multipleValueParameters(...parameterNames)", function () {
+		it("should create a getter and setter function for each new parameter with multiple arguments", function () {
+			var valueOne = "SomeValue";
+			var valueTwo = "AnotherValue";
+
+			component.multipleValueParameters("handler");
+			component.handler(valueOne, valueTwo);
+			component.handler().should.eql([valueOne, valueTwo]);
+		});
+	});
+
+	describe(".aggregateValueParameters(...parameterNames)", function () {
+		var valueOne = undefined;
+		var valueTwo = undefined;
+		var valueThree = undefined;
+
+		beforeEach(function () {
+			valueOne = "SomeValue";
+			valueTwo = "AnotherValue";
+			valueThree = "YetAnotherValue";
+
+			component.aggregateValueParameters("something");
+			component.something(valueOne);
+			component.something(valueTwo, valueThree);
+		});
+		it("should create a getter and setter function for each new parameter with aggregate values", function () {
+			component.something().should.eql([valueOne, valueTwo, valueThree]);
 		});
 	});
 });

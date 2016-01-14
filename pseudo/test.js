@@ -12,8 +12,6 @@ conan
 	.lambda("SomeLambda", __dirname + "/lambda.js", "AWSLambda")
 		.handler("handler", __dirname + "/customHandler.js");
 
-
-
 conan.deploy(() => {
 	console.log("Deployment complete.");
 });

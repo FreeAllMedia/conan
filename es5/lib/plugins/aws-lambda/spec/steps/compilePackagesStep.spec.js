@@ -58,7 +58,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 
 	var mockS3GetObjectRequest = {
 		createReadStream: function createReadStream() {
-			return _fs2["default"].createReadStream(__dirname + "/fixtures/packages.zip");
+			return _fs2["default"].createReadStream(__dirname + "/../fixtures/packages.zip");
 		}
 	};
 

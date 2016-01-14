@@ -12,10 +12,17 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 
 	const packageZipFilePath = context.results.packageZipFilePath;
 
-	const lambdaFilepath = conanAwsLambda.filePath();
-	const lambdaDirectory = path.dirname(lambdaFilepath);
-	const lambdaFilename = path.basename(lambdaFilepath);
-	const lambdaReadStream = fileSystem.createReadStream(lambdaFilepath);
+	const handlerFilePath = conanAwsLambda.handler()[1];
+
+	if (fileSystem.existsSync(handlerFilePath)) {
+		conanAwsLambda.dependencies(conanAwsLambda.filePath());
+		conanAwsLambda.filePath(handlerFilePath);
+	}
+
+	const lambdaFilePath = conanAwsLambda.filePath();
+	const lambdaDirectory = path.dirname(lambdaFilePath);
+	const lambdaFileName = path.basename(lambdaFilePath);
+	const lambdaReadStream = fileSystem.createReadStream(lambdaFilePath);
 
 	const lambdaZipFileName = inflect(conanAwsLambda.name()).snake.toString();
 	const lambdaZipFilePath = `${context.temporaryDirectoryPath}/${lambdaZipFileName}.zip`;
@@ -24,7 +31,7 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 	const dependencyGlobOrGlobs = conanAwsLambda.dependencies();
 
 	const lambdaZip = archiver("zip", {});
-	lambdaZip.append(lambdaReadStream, {name: lambdaFilename});
+	lambdaZip.append(lambdaReadStream, {name: lambdaFileName});
 
 	Async.series([
 		appendDependencies,

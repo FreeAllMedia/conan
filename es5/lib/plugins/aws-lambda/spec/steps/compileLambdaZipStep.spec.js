@@ -44,7 +44,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 		dependencyFilePaths = undefined;
 		packageZipFilePath = undefined;
 
-		lambdaFilePath = __dirname + "/fixtures/lambda.js";
+		lambdaFilePath = __dirname + "/../fixtures/lambda.js";
 
 		conanAwsLambda = new ((function () {
 			function MockConanAwsLambda() {
@@ -65,6 +65,11 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 				key: "dependencies",
 				value: function dependencies() {
 					return dependencyFilePaths;
+				}
+			}, {
+				key: "handler",
+				value: function handler() {
+					return ["handler"];
 				}
 			}]);
 
@@ -104,7 +109,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 		beforeEach(function (done) {
 			// Testing that glob matching works.
 			// If glob matching works normal paths will, too.
-			dependencyFilePaths = __dirname + "/**/s*e.js";
+			dependencyFilePaths = __dirname + "/../fixtures/**/s*e.js";
 			(0, _stepsCompileLambdaZipStepJs2["default"])(conan, context, stepDone(done));
 		});
 
@@ -145,7 +150,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 		beforeEach(function (done) {
 			// Testing that glob matching works.
 			// If glob matching works normal paths will, too.
-			dependencyFilePaths = [__dirname + "/**/s*e.js", __dirname + "/**/d*y.js"];
+			dependencyFilePaths = [__dirname + "/../fixtures/**/s*e.js", __dirname + "/../fixtures/**/d*y.js"];
 
 			(0, _stepsCompileLambdaZipStepJs2["default"])(conan, context, stepDone(done));
 		});
@@ -167,7 +172,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 
 	describe("(With a package zip file)", function () {
 		beforeEach(function (done) {
-			context.results.packageZipFilePath = __dirname + "/fixtures/packages.zip";
+			context.results.packageZipFilePath = __dirname + "/../fixtures/packages.zip";
 			(0, _stepsCompileLambdaZipStepJs2["default"])(conan, context, stepDone(done));
 		});
 
