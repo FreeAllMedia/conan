@@ -10,6 +10,14 @@ var _componentsConanAwsGatewayApiResourceJs = require("../../components/conanAws
 
 var _componentsConanAwsGatewayApiResourceJs2 = _interopRequireDefault(_componentsConanAwsGatewayApiResourceJs);
 
+var _stepsFindApiStageByNameStepJs = require("../../steps/findApiStageByNameStep.js");
+
+var _stepsFindApiStageByNameStepJs2 = _interopRequireDefault(_stepsFindApiStageByNameStepJs);
+
+var _awsLambdaStepsFindLambdaByNameStepJs = require("../../../aws-lambda/steps/findLambdaByNameStep.js");
+
+var _awsLambdaStepsFindLambdaByNameStepJs2 = _interopRequireDefault(_awsLambdaStepsFindLambdaByNameStepJs);
+
 var _componentsConanComponentJs = require("../../../../components/conanComponent.js");
 
 var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
@@ -41,7 +49,7 @@ describe("ConanAwsGatewayApiResource(conan)", function () {
 	});
 
 	describe("(parameters)", function () {
-		["path", "method"].forEach(function (parameterName) {
+		["path", "method", "lambda", "statusCodes", "headers", "queryStrings"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
@@ -56,6 +64,22 @@ describe("ConanAwsGatewayApiResource(conan)", function () {
 	});
 
 	describe("(steps)", function () {
+		describe("(step order)", function () {
+			beforeEach(function () {
+				conan = new _conanJs2["default"]();
+				conan.steps.add(_stepsFindApiStageByNameStepJs2["default"], {});
+				apiResource = new _componentsConanAwsGatewayApiResourceJs2["default"](conan, path, method);
+			});
+
+			it("should insert all his steps before the find stage component step", function () {
+				conan.steps.all.pop().handler.should.equal(_stepsFindApiStageByNameStepJs2["default"]);
+			});
+
+			it("should insert the find lambda step at first", function () {
+				conan.steps.all.shift().handler.should.equal(_awsLambdaStepsFindLambdaByNameStepJs2["default"]);
+			});
+		});
+
 		it("should add a find apiResource by name step", function () {
 			var step = conan.steps.findByName("findApiResourceByPathStep");
 			step.parameters.should.eql(apiResource);
@@ -73,6 +97,41 @@ describe("ConanAwsGatewayApiResource(conan)", function () {
 
 		it("should add a create resource method step", function () {
 			var step = conan.steps.findByName("createResourceMethodStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a find lambda by name step", function () {
+			var step = conan.steps.findByName("findLambdaByNameStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a put integration step", function () {
+			var step = conan.steps.findByName("putIntegrationStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a put integration response step", function () {
+			var step = conan.steps.findByName("putIntegrationResponseStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a find method response step", function () {
+			var step = conan.steps.findByName("findMethodResponseStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a put method response step", function () {
+			var step = conan.steps.findByName("putMethodResponseStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a add permission step", function () {
+			var step = conan.steps.findByName("addPermissionStep");
+			step.parameters.should.eql(apiResource);
+		});
+
+		it("should add a get account id step", function () {
+			var step = conan.steps.findByName("getAccountIdStep");
 			step.parameters.should.eql(apiResource);
 		});
 	});

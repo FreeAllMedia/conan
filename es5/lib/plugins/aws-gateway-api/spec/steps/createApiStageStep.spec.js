@@ -105,7 +105,7 @@ describe("createApiStageStep", function () {
 			});
 		});
 
-		it("should send the appropiate parameters to the AWS create deployment call", function () {
+		it("should send the appropiate parameters to the AWS call", function () {
 			createDeploymentSpy.firstCall.args[0].should.eql({
 				restApiId: restApiId,
 				stageName: "testStage",
@@ -124,20 +124,6 @@ describe("createApiStageStep", function () {
 	describe("(rest api id is not present)", function () {
 		beforeEach(function () {
 			delete context.results.restApiId;
-			createDeploymentSpy = _sinon2["default"].spy();
-		});
-
-		it("should skip the function call entirely", function (done) {
-			(0, _stepsCreateApiStageStepJs2["default"])(conan, context, function () {
-				createDeploymentSpy.called.should.be["false"];
-				done();
-			});
-		});
-	});
-
-	describe("(rest api id is present but stage already exists)", function () {
-		beforeEach(function () {
-			context.results = { restApiId: restApiId, stageName: "testStage" };
 			createDeploymentSpy = _sinon2["default"].spy();
 		});
 

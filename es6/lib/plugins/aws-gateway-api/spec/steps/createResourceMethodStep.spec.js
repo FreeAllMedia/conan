@@ -66,10 +66,11 @@ describe("createResourceMethodStep", () => {
 			});
 		});
 
-		it("should send the appropiate parameters to the AWS create deployment call", () => {
+		it("should send the appropiate parameters to the AWS call", () => {
 			putMethodSpy.firstCall.args[0].should.eql({
 				resourceId: apiResourceId,
 				httpMethod: parameters.method(),
+				authorizationType: "none",
 				restApiId
 			});
 		});
@@ -77,20 +78,6 @@ describe("createResourceMethodStep", () => {
 		it("should set the constructor parameters", () => {
 			constructorSpy.firstCall.args[0].should.eql({
 				region: conan.config.region
-			});
-		});
-	});
-
-	describe("(rest api id is not present)", () => {
-		beforeEach(() => {
-			delete context.results.restApiId;
-			putMethodSpy = sinon.spy();
-		});
-
-		it("should skip the function call entirely", done => {
-			createResourceMethodStep(conan, context, () => {
-				putMethodSpy.called.should.be.false;
-				done();
 			});
 		});
 	});
@@ -113,9 +100,37 @@ describe("createResourceMethodStep", () => {
 		});
 	});
 
+	describe("(rest api id is not present)", () => {
+		beforeEach(() => {
+			delete context.results.restApiId;
+			putMethodSpy = sinon.spy();
+		});
+
+		it("should skip the function call entirely", done => {
+			createResourceMethodStep(conan, context, () => {
+				putMethodSpy.called.should.be.false;
+				done();
+			});
+		});
+	});
+
 	describe("(api resource id is not present)", () => {
 		beforeEach(() => {
 			delete context.results.apiResourceId;
+			putMethodSpy = sinon.spy();
+		});
+
+		it("should skip the function call entirely", done => {
+			createResourceMethodStep(conan, context, () => {
+				putMethodSpy.called.should.be.false;
+				done();
+			});
+		});
+	});
+
+	describe("(http resource method is present - it was found)", () => {
+		beforeEach(() => {
+			context.results.resourceHttpMethod = "GET";
 			putMethodSpy = sinon.spy();
 		});
 

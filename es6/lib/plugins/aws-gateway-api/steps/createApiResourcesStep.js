@@ -28,7 +28,11 @@ export default function createApiResourcesStep(conan, context, done) {
 						});
 				},
 				(error) => {
-					done(error, { apiResourceId: leafResourceId });
+					let results = {};
+					if(leafResourceId || error) {
+						results.apiResourceId = leafResourceId;
+					}
+					done(error, results);
 				});
 	} else {
 		done(null, { apiResourceId: null });

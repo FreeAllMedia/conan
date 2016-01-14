@@ -68,7 +68,7 @@ describe("createApiResourcesStep", () => {
 			});
 		});
 
-		it("should send the appropiate parameters to the AWS create deployment call", () => {
+		it("should send the appropiate parameters to the AWS call", () => {
 			createResourceSpy.firstCall.args[0].should.eql({
 				parentId: apiResourceParentId,
 				pathPart: "accounts",
@@ -134,6 +134,13 @@ describe("createApiResourcesStep", () => {
 		it("should skip the function call entirely", done => {
 			createApiResourcesStep(conan, context, () => {
 				createResourceSpy.called.should.be.false;
+				done();
+			});
+		});
+
+		it("should avoid deleting the api resource id for the resource found", done => {
+			createApiResourcesStep(conan, context, (error, results) => {
+				results.should.not.have.property("apiResourceId");
 				done();
 			});
 		});
