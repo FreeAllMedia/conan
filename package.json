@@ -1,32 +1,53 @@
 {
+  "generatorVersion": "0.2.21",
   "name": "conan",
-  "version": "0.0.0",
-  "author": "FreeAllMedia, LLC <pgoggin@freeallmedia.com>",
-  "description": "Conan.js The Deployer: Barbarically Simple Code Deployment",
-  "contributors": [
-    {
-      "name": "Dallas John Slieker",
-      "email": "dslieker@freeallmedia.com"
-    }
-  ],
-  "bin": {
-    "conan": "./bin/conan.cli.js"
-  },
+  "version": "0.0.9",
+  "description": "It cuts fries. It dices onions.",
+  "main": "index.js",
   "scripts": {
-    "test": "mocha -w ./tests/*"
+    "test": "gulp test"
   },
-  "main": "./lib/conan.lib.js",
-  "dependencies" : {
-    "commander": "2.1.x",
-    "moment": "2.5.x"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FreeAllMedia/conan.git"
+  },
+  "keywords": [
+    "conan"
+  ],
+  "author": "Free All Media, LLC",
+  "contributors": [],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FreeAllMedia/conan/issues"
+  },
+  "homepage": "https://github.com/FreeAllMedia/conan",
+  "dependencies": {
+    "aws-sdk": "^2.2.24",
+    "cli-table": "^0.3.1",
+    "flowsync": "^0.1.11",
+    "glob": "^6.0.3",
+    "hacher": "^0.1.4",
+    "incognito": "^0.1.4",
+    "jargon": "^0.1.22",
+    "temp": "^0.8.3",
+    "unzip2": "^0.2.5"
   },
   "devDependencies": {
-    "dox": "0.4.x",
-    "mocha": "1.13.x",
-    "should": "2.0.x",
-    "sinon": "1.7.x",
-    "rewire": "2.0.x",
-    "supertest": "0.8.x"
-  },
-  "license": "GPLv3"
+    "archiver": "^0.21.0",
+    "babel": "^5.5.6",
+    "babel-eslint": "^4.1.6",
+    "chai": "^3.0.0",
+    "coveralls": "^2.11.2",
+    "eslint": "^1.10.3",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.1.0",
+    "gulp-babel-istanbul": "^0.11.0",
+    "gulp-istanbul": "^0.10.0",
+    "gulp-mocha": "^2.1.3",
+    "gulp-util": "^3.0.6",
+    "mocha": "^2.2.5",
+    "sinon": "^1.17.2",
+    "stream-buffers": "^3.0.0",
+    "superstack": "0.0.4"
+  }
 }
