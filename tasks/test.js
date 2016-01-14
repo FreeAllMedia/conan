@@ -10,8 +10,8 @@ gulp.task("test", cb => {
 	}
 
 	if (es6Environment) {
-		runSequence("test-es5", cb);
-	} else {
 		runSequence("test-es6", cb);
+	} else {
+		runSequence("test-es5", cb);
 	}
 });
