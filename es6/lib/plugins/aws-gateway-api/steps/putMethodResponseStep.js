@@ -18,14 +18,14 @@ export default function putMethodResponseStep(conan, context, done) {
 	if(restApiId
 			&& resourceId
 			&& Array.isArray(responseStatusCodes)
-			&& Array.isArray(statusCodes)) {
+			&& statusCodes) {
 		const api = new context.libraries.AWS.APIGateway({
 			region: conan.config.region
 		});
 
 		const responseParameters = getResponseParameters(context.parameters.responseHeaders());
 
-		flowsync.eachSeries(statusCodes, (statusCode, next) => {
+		flowsync.eachSeries(Object.keys(statusCodes), (statusCode, next) => {
 				const status = responseStatusCodes.find((currentStatusCode) => {
 					return currentStatusCode === `${statusCode}`;
 				});

@@ -87,7 +87,7 @@ var ConanAwsGatewayApiResource = (function (_ConanComponent) {
 			this.headers([]);
 			this.queryStrings([]);
 			this.responseHeaders({});
-			this.statusCodes([200]);
+			this.statusCodes({ "200": "default" });
 
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _awsLambdaStepsFindLambdaByNameStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindApiResourceByPathStepJs2["default"], this);

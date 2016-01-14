@@ -32,7 +32,7 @@ export default class ConanAwsGatewayApiResource extends ConanComponent {
 		this.headers([]);
 		this.queryStrings([]);
 		this.responseHeaders({});
-		this.statusCodes([200]);
+		this.statusCodes({"200": "default"});
 
 		this.conan.steps.before(findApiStageByNameStep, findLambdaByNameStep, this);
 		this.conan.steps.before(findApiStageByNameStep, findApiResourceByPathStep, this);

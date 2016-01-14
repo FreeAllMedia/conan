@@ -74,7 +74,7 @@ describe("putMethodResponseStep", function () {
 			}, {
 				key: "statusCodes",
 				value: function statusCodes() {
-					return [200];
+					return { "200": "" };
 				}
 			}, {
 				key: "responseHeaders",
@@ -162,7 +162,7 @@ describe("putMethodResponseStep", function () {
 				}, {
 					key: "statusCodes",
 					value: function statusCodes() {
-						return [200, 404];
+						return { "200": "", "404": "Not Found*" };
 					}
 				}, {
 					key: "responseHeaders",
@@ -251,7 +251,7 @@ describe("putMethodResponseStep", function () {
 				}, {
 					key: "statusCodes",
 					value: function statusCodes() {
-						return [200, 401, 404];
+						return { "200": "", "401": "Unauthorized*", "404": "Not Found*" };
 					}
 				}, {
 					key: "responseHeaders",

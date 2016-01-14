@@ -73,7 +73,7 @@ describe("findMethodResponseStep", function () {
 			}, {
 				key: "statusCodes",
 				value: function statusCodes() {
-					return [200, 404];
+					return { "200": "", "404": "Not Found*" };
 				}
 			}]);
 

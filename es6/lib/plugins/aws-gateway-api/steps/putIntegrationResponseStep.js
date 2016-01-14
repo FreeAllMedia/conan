@@ -18,20 +18,20 @@ export default function putIntegrationResponseStep(conan, context, done) {
 	const statusCodes = context.parameters.statusCodes();
 	if(restApiId
 			&& resourceId
-			&& Array.isArray(statusCodes)) {
+			&& statusCodes) {
 		const api = new context.libraries.AWS.APIGateway({
 			region: conan.config.region
 		});
 
 		const responseParameters = getResponseParameters(context.parameters.responseHeaders());
 
-		flowsync.eachSeries(statusCodes,
+		flowsync.eachSeries(Object.keys(statusCodes),
 			(statusCode, next) => {
 				const apiParameters = {
 					restApiId,
 					resourceId,
 					httpMethod: context.parameters.method(),
-					selectionPattern: "",
+					selectionPattern: statusCodes[statusCode],
 					responseTemplates,
 					responseParameters,
 					statusCode: `${statusCode}`

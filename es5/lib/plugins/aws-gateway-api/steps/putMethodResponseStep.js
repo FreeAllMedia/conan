@@ -24,7 +24,7 @@ function putMethodResponseStep(conan, context, done) {
 	var resourceId = context.results.apiResourceId;
 	var statusCodes = context.parameters.statusCodes();
 	var responseStatusCodes = context.results.responseStatusCodes;
-	if (restApiId && resourceId && Array.isArray(responseStatusCodes) && Array.isArray(statusCodes)) {
+	if (restApiId && resourceId && Array.isArray(responseStatusCodes) && statusCodes) {
 		(function () {
 			var api = new context.libraries.AWS.APIGateway({
 				region: conan.config.region
@@ -32,7 +32,7 @@ function putMethodResponseStep(conan, context, done) {
 
 			var responseParameters = getResponseParameters(context.parameters.responseHeaders());
 
-			_flowsync2["default"].eachSeries(statusCodes, function (statusCode, next) {
+			_flowsync2["default"].eachSeries(Object.keys(statusCodes), function (statusCode, next) {
 				var status = responseStatusCodes.find(function (currentStatusCode) {
 					return currentStatusCode === "" + statusCode;
 				});

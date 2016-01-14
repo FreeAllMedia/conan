@@ -37,7 +37,7 @@ describe("putMethodResponseStep", () => {
 
 		parameters = new class MockConanAwsParameters {
 			method() { return "GET"; }
-			statusCodes() { return [200]; }
+			statusCodes() { return {"200": ""}; }
 			responseHeaders() { return {}; }
 		}();
 
@@ -106,7 +106,7 @@ describe("putMethodResponseStep", () => {
 		beforeEach(() => {
 			parameters = new class MockConanAwsParameters {
 				method() { return "GET"; }
-				statusCodes() { return [200, 404]; }
+				statusCodes() { return {"200": "", "404": "Not Found*"}; }
 				responseHeaders() { return {}; }
 			}();
 
@@ -176,7 +176,7 @@ describe("putMethodResponseStep", () => {
 		beforeEach(() => {
 			parameters = new class MockConanAwsParameters {
 				method() { return "GET"; }
-				statusCodes() { return [200, 401, 404]; }
+				statusCodes() { return {"200": "", "401": "Unauthorized*", "404": "Not Found*"}; }
 				responseHeaders() { return {"Access-Control-Allow-Origin": "*"}; }
 			}();
 
