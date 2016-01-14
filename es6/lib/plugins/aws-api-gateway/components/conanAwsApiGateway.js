@@ -1,10 +1,10 @@
 import ConanComponent from "../../../components/conanComponent.js";
-import ConanAwsGatewayApiStage from "./conanAwsGatewayApiStage.js";
+import ConanAwsApiGatewayStage from "./conanAwsApiGatewayStage.js";
 import findApiByNameStep from "../steps/findApiByNameStep.js";
 import updateApiStep from "../steps/updateApiStep.js";
 import createApiStep from "../steps/createApiStep.js";
 
-export default class ConanAwsGatewayApi extends ConanComponent {
+export default class ConanAwsApiGateway extends ConanComponent {
 	initialize(conan, name) {
 		this.conan = conan;
 
@@ -21,10 +21,10 @@ export default class ConanAwsGatewayApi extends ConanComponent {
 	}
 
 	stage(name) {
-		return new ConanAwsGatewayApiStage(this.conan, name);
+		return new ConanAwsApiGatewayStage(this.conan, name);
 	}
 
 	api(name) {
-		return new ConanAwsGatewayApi(this.conan, name);
+		return new ConanAwsApiGateway(this.conan, name);
 	}
 }

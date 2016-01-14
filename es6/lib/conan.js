@@ -2,7 +2,7 @@ import ConanSteps from "./components/conanSteps.js";
 import ConanComponent from "./components/conanComponent.js";
 
 import ConanAwsLambdaPlugin from "./plugins/aws-lambda/conanAwsLambdaPlugin.js";
-import ConanAwsGatewayApiPlugin from "./plugins/aws-gateway-api/conanAwsGatewayApiPlugin.js";
+import ConanAwsApiGatewayPlugin from "./plugins/aws-api-gateway/conanAwsApiGatewayPlugin.js";
 /**
  * @class Conan
  */
@@ -32,4 +32,4 @@ export default class Conan {
   }
 }
 
-export { ConanComponent, ConanAwsLambdaPlugin, ConanAwsGatewayApiPlugin };
+export { ConanComponent, ConanAwsLambdaPlugin, ConanAwsApiGatewayPlugin };

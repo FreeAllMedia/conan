@@ -1,16 +1,16 @@
 import Conan from "../../../conan.js";
-import ConanAwsGatewayApi from "../components/conanAwsGatewayApi.js";
-import ConanAwsGatewayApiPlugin from "../conanAwsGatewayApiPlugin.js";
+import ConanAwsApiGateway from "../components/conanAwsApiGateway.js";
+import ConanAwsApiGatewayPlugin from "../conanAwsApiGatewayPlugin.js";
 import sinon from "sinon";
 import AWS from "aws-sdk";
 
-describe("ConanAwsGatewayApiPlugin(conan)", () => {
+describe("ConanAwsApiGatewayPlugin(conan)", () => {
 	let conan,
 			api;
 
 	beforeEach(() => {
 		conan = new Conan();
-		conan.use(ConanAwsGatewayApiPlugin);
+		conan.use(ConanAwsApiGatewayPlugin);
 	});
 
   it("should setup conan.api()", () => {
@@ -38,7 +38,7 @@ describe("ConanAwsGatewayApiPlugin(conan)", () => {
 			};
 
 			/* eslint-disable no-new */
-			new ConanAwsGatewayApiPlugin(fakeConan);
+			new ConanAwsApiGatewayPlugin(fakeConan);
 		});
 
 		it("should add the AWS library", () => {
@@ -55,15 +55,15 @@ describe("ConanAwsGatewayApiPlugin(conan)", () => {
 			api = conan.api(name);
 		});
 
-		it("should return an instance of ConanAwsGatewayApi", () => {
-			api.should.be.instanceOf(ConanAwsGatewayApi);
+		it("should return an instance of ConanAwsApiGateway", () => {
+			api.should.be.instanceOf(ConanAwsApiGateway);
 		});
 
-		it("should pass conan to the ConanAwsGatewayApi constructor", () => {
+		it("should pass conan to the ConanAwsApiGateway constructor", () => {
 			api.conan.should.eql(conan);
 		});
 
-		it("should pass the api name to the ConanAwsGatewayApi constructor", () => {
+		it("should pass the api name to the ConanAwsApiGateway constructor", () => {
 			api.name().should.eql(name);
 		});
 	});

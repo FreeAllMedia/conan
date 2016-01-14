@@ -13,7 +13,7 @@ import findLambdaByNameStep from "../../aws-lambda/steps/findLambdaByNameStep.js
 
 import findApiStageByNameStep from "../steps/findApiStageByNameStep.js";
 
-export default class ConanAwsGatewayApiResource extends ConanComponent {
+export default class ConanAwsApiGatewayResource extends ConanComponent {
 	initialize(conan, path, method) {
 		this.conan = conan;
 
@@ -46,18 +46,18 @@ export default class ConanAwsGatewayApiResource extends ConanComponent {
 	}
 
 	get(path) {
-		return new ConanAwsGatewayApiResource(this.conan, path, "GET");
+		return new ConanAwsApiGatewayResource(this.conan, path, "GET");
 	}
 
 	post(path) {
-		return new ConanAwsGatewayApiResource(this.conan, path, "POST");
+		return new ConanAwsApiGatewayResource(this.conan, path, "POST");
 	}
 
 	put(path) {
-		return new ConanAwsGatewayApiResource(this.conan, path, "PUT");
+		return new ConanAwsApiGatewayResource(this.conan, path, "PUT");
 	}
 
 	delete(path) {
-		return new ConanAwsGatewayApiResource(this.conan, path, "DELETE");
+		return new ConanAwsApiGatewayResource(this.conan, path, "DELETE");
 	}
 }

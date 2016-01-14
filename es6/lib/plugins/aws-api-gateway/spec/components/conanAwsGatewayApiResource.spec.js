@@ -1,11 +1,11 @@
 import Conan from "../../../../conan.js";
-import ConanAwsGatewayApiResource from "../../components/conanAwsGatewayApiResource.js";
+import ConanAwsApiGatewayResource from "../../components/conanAwsApiGatewayResource.js";
 import findApiStageByNameStep from "../../steps/findApiStageByNameStep.js";
 import findLambdaByNameStep from "../../../aws-lambda/steps/findLambdaByNameStep.js";
 import ConanComponent from "../../../../components/conanComponent.js";
 import inflect from "jargon";
 
-describe("ConanAwsGatewayApiResource(conan)", () => {
+describe("ConanAwsApiGatewayResource(conan)", () => {
 	let apiResource;
 	let path;
 	let method;
@@ -16,7 +16,7 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 		method = "GET";
 
 		conan = new Conan();
-		apiResource = new ConanAwsGatewayApiResource(conan, path, method);
+		apiResource = new ConanAwsApiGatewayResource(conan, path, method);
 	});
 
 	it("should extend ConanComponent", () => {
@@ -40,7 +40,7 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 
 			describe(`.${parameterName}(new${parameterNamePascalCase})`, () => {
 				it(`should save new${parameterNamePascalCase}`, () => {
-					let component = new ConanAwsGatewayApiResource(conan);
+					let component = new ConanAwsApiGatewayResource(conan);
 					const testValue = "abc123";
 					component = component[parameterName](testValue);
 					component[parameterName]().should.eql(testValue);
@@ -54,7 +54,7 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 			beforeEach(() => {
 				conan = new Conan();
 				conan.steps.add(findApiStageByNameStep, {});
-				apiResource = new ConanAwsGatewayApiResource(conan, path, method);
+				apiResource = new ConanAwsApiGatewayResource(conan, path, method);
 			});
 
 			it("should insert all his steps before the find stage component step", () => {
@@ -135,22 +135,22 @@ describe("ConanAwsGatewayApiResource(conan)", () => {
 				path = "/testResource";
 				method = resourceMethod;
 
-				newResource = ConanAwsGatewayApiResource.prototype[methodFunctionName].call(apiResource, path);
+				newResource = ConanAwsApiGatewayResource.prototype[methodFunctionName].call(apiResource, path);
 			});
 
-			it("should return an instance of ConanAwsGatewayApiResource", () => {
-				newResource.should.be.instanceOf(ConanAwsGatewayApiResource);
+			it("should return an instance of ConanAwsApiGatewayResource", () => {
+				newResource.should.be.instanceOf(ConanAwsApiGatewayResource);
 			});
 
-			it("should pass conan to the ConanAwsGatewayApiResource constructor", () => {
+			it("should pass conan to the ConanAwsApiGatewayResource constructor", () => {
 				newResource.conan.should.eql(conan);
 			});
 
-			it("should pass the path to the ConanAwsGatewayApiResource constructor", () => {
+			it("should pass the path to the ConanAwsApiGatewayResource constructor", () => {
 				newResource.path().should.eql(path);
 			});
 
-			it("should pass the method to the ConanAwsGatewayApiResource constructor", () => {
+			it("should pass the method to the ConanAwsApiGatewayResource constructor", () => {
 				newResource.method().should.eql(method);
 			});
 		});

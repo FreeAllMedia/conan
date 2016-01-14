@@ -2,12 +2,12 @@
 import Conan, {
 	ConanComponent,
 	ConanAwsLambdaPlugin,
-	ConanAwsGatewayApiPlugin
+	ConanAwsApiGatewayPlugin
 } from "../lib/conan.js";
 
 import ExpectedConanComponent from "../lib/components/conanComponent.js";
 import ExpectedConanAwsLambdaPlugin from "../lib/plugins/aws-lambda/conanAwsLambdaPlugin.js";
-import ExpectedConanAwsGatewayApiPlugin from "../lib/plugins/aws-gateway-api/conanAwsGatewayApiPlugin.js";
+import ExpectedConanAwsApiGatewayPlugin from "../lib/plugins/aws-api-gateway/conanAwsApiGatewayPlugin.js";
 
 import sinon from "sinon";
 
@@ -52,8 +52,8 @@ describe("Conan(config)", () => {
 			ConanAwsLambdaPlugin.should.eql(ExpectedConanAwsLambdaPlugin);
 		});
 
-		it("should export ConanAwsGatewayApiPlugin", () => {
-			ConanAwsGatewayApiPlugin.should.eql(ExpectedConanAwsGatewayApiPlugin);
+		it("should export ConanAwsApiGatewayPlugin", () => {
+			ConanAwsApiGatewayPlugin.should.eql(ExpectedConanAwsApiGatewayPlugin);
 		});
 	});
 });
