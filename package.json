@@ -1,8 +1,8 @@
 {
   "generatorVersion": "0.2.21",
   "name": "conan",
-  "version": "0.0.10",
-  "description": "It cuts fries. It dices onions.",
+  "version": "0.0.11",
+  "description": "Barbarically simple deployment system.",
   "main": "es5/lib/conan.js",
   "scripts": {
     "test": "gulp test"
@@ -15,7 +15,20 @@
     "conan"
   ],
   "author": "Free All Media, LLC",
-  "contributors": [],
+	"contributors": [
+    {
+      "name": "nicosommi",
+      "email": "nicosommi@gmail.com"
+    },
+    {
+      "name": "dcrockwell",
+      "email": "dcautomates@gmail.com"
+    },
+    {
+      "name": "paulgoggin",
+      "email": "pgoggin@gmail.com"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/FreeAllMedia/conan/issues"
