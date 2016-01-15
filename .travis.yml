@@ -10,7 +10,9 @@ node_js:
 script: npm test
 before_script:
 - gulp -v
+- rm -fR ./node_modules
 - npm i -g npm
+- npm -v
 - npm install
 after_success:
 - ./node_modules/coveralls/bin/coveralls.js < ./lcov.info
