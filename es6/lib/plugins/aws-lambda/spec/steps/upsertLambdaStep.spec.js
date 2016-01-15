@@ -111,7 +111,8 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 		mockLambdaSpy = sinon.spy();
 
-		const fileName = path.parse(parameters.filePath()).name;
+		const lambdaExtension = path.extname(parameters.filePath());
+		const fileName = path.basename(parameters.filePath(), lambdaExtension);
 		handlerString = `${fileName}.${parameters.handler()}`;
 
 		stepDone = (afterStepCallback) => {
