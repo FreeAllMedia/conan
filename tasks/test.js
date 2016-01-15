@@ -6,7 +6,7 @@ gulp.task("test", cb => {
 	const versionNumber = process.env.TRAVIS_NODE_VERSION || process.version;
 	console.log("VERSION NUMBER:", versionNumber);
 
-	if (compareVersion("4.0.0", versionNumber) >= 0) {
+	if (compareVersion(versionNumber, "4.0.0") >= 0) {
 		runSequence("test-es6", cb);
 	} else {
 		runSequence("test-es5", cb);
