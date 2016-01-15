@@ -1,7 +1,3 @@
-// if(!global._babelPolyfill) {
-// 	require("babel-polyfill");
-// }
-
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/FreeAllMedia/conan",
   "dependencies": {
+		"archiver": "^0.21.0",
     "aws-sdk": "^2.2.24",
     "cli-table": "^0.3.1",
     "flowsync": "^0.1.11",
@@ -29,11 +30,11 @@
     "hacher": "^0.1.4",
     "incognito": "^0.1.4",
     "jargon": "^0.1.22",
+    "run-sequence": "^1.1.5",
     "temp": "^0.8.3",
     "unzip2": "^0.2.5"
   },
   "devDependencies": {
-    "archiver": "^0.21.0",
     "babel": "^5.5.6",
     "babel-eslint": "^4.1.6",
     "babel-polyfill": "^6.3.14",
