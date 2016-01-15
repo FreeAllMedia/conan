@@ -17,21 +17,27 @@ function findLambdaByNameStep(conan, context, stepDone) {
 		lambdaName = context.parameters.lambda();
 	}
 
-	lambda.getFunction({
-		"FunctionName": lambdaName
-	}, function (error, responseData) {
-		if (error && error.statusCode === 404) {
-			stepDone(null, {
-				lambdaArn: null
-			});
-		} else if (error) {
-			stepDone(error);
-		} else {
-			stepDone(null, {
-				lambdaArn: responseData.Configuration.FunctionArn
-			});
-		}
-	});
+	if (lambdaName) {
+		lambda.getFunction({
+			"FunctionName": lambdaName
+		}, function (error, responseData) {
+			if (error && error.statusCode === 404) {
+				stepDone(null, {
+					lambdaArn: null
+				});
+			} else if (error) {
+				stepDone(error);
+			} else {
+				stepDone(null, {
+					lambdaArn: responseData.Configuration.FunctionArn
+				});
+			}
+		});
+	} else {
+		stepDone(null, {
+			lambdaArn: null
+		});
+	}
 }
 
 module.exports = exports["default"];

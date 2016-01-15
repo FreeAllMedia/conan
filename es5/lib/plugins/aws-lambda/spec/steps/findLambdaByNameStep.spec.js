@@ -22,6 +22,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 	var conan = undefined,
 	    context = undefined,
 	    stepDone = undefined,
+	    should = undefined,
 	    awsResponseError = undefined,
 	    awsResponseData = undefined,
 	    stepReturnError = undefined,
@@ -108,6 +109,42 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 		mockLambda.getFunction.calledWith({
 			FunctionName: context.parameters.name()
 		}).should.be["true"];
+	});
+
+	describe("(No Lambda parameter)", function () {
+		it("should skip the call entirely", function (done) {
+			parameters = new ((function () {
+				function MockConanAwsLambda() {
+					_classCallCheck(this, MockConanAwsLambda);
+				}
+
+				_createClass(MockConanAwsLambda, [{
+					key: "lambda",
+					value: function lambda() {
+						return null;
+					}
+				}]);
+
+				return MockConanAwsLambda;
+			})())();
+
+			context = {
+				parameters: parameters,
+				libraries: {
+					AWS: {
+						Lambda: function Lambda() {
+							_classCallCheck(this, Lambda);
+						}
+					}
+				},
+				results: {}
+			};
+
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, results) {
+				(results.lambdaArn === null).should.be["true"];
+				done();
+			});
+		});
 	});
 
 	describe("(Lambda is Found)", function () {

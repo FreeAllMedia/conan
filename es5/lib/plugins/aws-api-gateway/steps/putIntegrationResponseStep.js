@@ -11,26 +11,36 @@ var _flowsync = require("flowsync");
 
 var _flowsync2 = _interopRequireDefault(_flowsync);
 
-// HACK: parametrize napping template
 var responseTemplates = { "application/json": "" };
+
+function getResponseParameters(responseHeaders) {
+	var result = {};
+	Object.keys(responseHeaders).forEach(function (responseHeaderName) {
+		result["method.response.header." + responseHeaderName] = "'" + responseHeaders[responseHeaderName] + "'";
+	});
+	return result;
+}
 
 function putIntegrationResponseStep(conan, context, done) {
 	var restApiId = context.results.restApiId;
 	var resourceId = context.results.apiResourceId;
 	var statusCodes = context.parameters.statusCodes();
-	if (restApiId && resourceId && Array.isArray(statusCodes)) {
+	if (restApiId && resourceId && statusCodes) {
 		(function () {
 			var api = new context.libraries.AWS.APIGateway({
 				region: conan.config.region
 			});
 
-			_flowsync2["default"].eachSeries(statusCodes, function (statusCode, next) {
+			var responseParameters = getResponseParameters(context.parameters.responseHeaders());
+
+			_flowsync2["default"].eachSeries(Object.keys(statusCodes), function (statusCode, next) {
 				var apiParameters = {
 					restApiId: restApiId,
 					resourceId: resourceId,
 					httpMethod: context.parameters.method(),
-					selectionPattern: "",
+					selectionPattern: statusCodes[statusCode],
 					responseTemplates: responseTemplates,
+					responseParameters: responseParameters,
 					statusCode: "" + statusCode
 				};
 				api.putIntegrationResponse(apiParameters, function (error, response) {

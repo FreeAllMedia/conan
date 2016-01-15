@@ -1,5 +1,15 @@
 import flowsync from "flowsync";
 
+function getResponseParameters(responseHeaders) {
+	let result = {};
+	Object.keys(responseHeaders).forEach(
+		responseHeaderName => {
+			result[`method.response.header.${responseHeaderName}`] = false;
+		}
+	);
+	return result;
+}
+
 export default function putMethodResponseStep(conan, context, done) {
 	const restApiId = context.results.restApiId;
 	let resourceId = context.results.apiResourceId;
@@ -8,12 +18,14 @@ export default function putMethodResponseStep(conan, context, done) {
 	if(restApiId
 			&& resourceId
 			&& Array.isArray(responseStatusCodes)
-			&& Array.isArray(statusCodes)) {
+			&& statusCodes) {
 		const api = new context.libraries.AWS.APIGateway({
 			region: conan.config.region
 		});
-		// TODO: iterate async through param statuses
-		flowsync.eachSeries(statusCodes, (statusCode, next) => {
+
+		const responseParameters = getResponseParameters(context.parameters.responseHeaders());
+
+		flowsync.eachSeries(Object.keys(statusCodes), (statusCode, next) => {
 				const status = responseStatusCodes.find((currentStatusCode) => {
 					return currentStatusCode === `${statusCode}`;
 				});
@@ -24,7 +36,7 @@ export default function putMethodResponseStep(conan, context, done) {
 						resourceId,
 						httpMethod: context.parameters.method(),
 						statusCode: `${statusCode}`,
-						responseParameters: {}
+						responseParameters
 					};
 					api.putMethodResponse(apiParameters,
 						(error, response) => {

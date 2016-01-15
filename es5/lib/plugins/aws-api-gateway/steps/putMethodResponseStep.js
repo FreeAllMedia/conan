@@ -11,18 +11,28 @@ var _flowsync = require("flowsync");
 
 var _flowsync2 = _interopRequireDefault(_flowsync);
 
+function getResponseParameters(responseHeaders) {
+	var result = {};
+	Object.keys(responseHeaders).forEach(function (responseHeaderName) {
+		result["method.response.header." + responseHeaderName] = false;
+	});
+	return result;
+}
+
 function putMethodResponseStep(conan, context, done) {
 	var restApiId = context.results.restApiId;
 	var resourceId = context.results.apiResourceId;
 	var statusCodes = context.parameters.statusCodes();
 	var responseStatusCodes = context.results.responseStatusCodes;
-	if (restApiId && resourceId && Array.isArray(responseStatusCodes) && Array.isArray(statusCodes)) {
+	if (restApiId && resourceId && Array.isArray(responseStatusCodes) && statusCodes) {
 		(function () {
 			var api = new context.libraries.AWS.APIGateway({
 				region: conan.config.region
 			});
-			// TODO: iterate async through param statuses
-			_flowsync2["default"].eachSeries(statusCodes, function (statusCode, next) {
+
+			var responseParameters = getResponseParameters(context.parameters.responseHeaders());
+
+			_flowsync2["default"].eachSeries(Object.keys(statusCodes), function (statusCode, next) {
 				var status = responseStatusCodes.find(function (currentStatusCode) {
 					return currentStatusCode === "" + statusCode;
 				});
@@ -33,7 +43,7 @@ function putMethodResponseStep(conan, context, done) {
 						resourceId: resourceId,
 						httpMethod: context.parameters.method(),
 						statusCode: "" + statusCode,
-						responseParameters: {}
+						responseParameters: responseParameters
 					};
 					api.putMethodResponse(apiParameters, function (error, response) {
 						if (response) {

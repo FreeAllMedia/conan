@@ -7,6 +7,8 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 			context,
 			stepDone,
 
+			should,
+
 			awsResponseError,
 			awsResponseData,
 
@@ -84,6 +86,29 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 		mockLambda.getFunction.calledWith({
 			FunctionName: context.parameters.name()
 		}).should.be.true;
+	});
+
+	describe("(No Lambda parameter)", () => {
+		it("should skip the call entirely", done => {
+			parameters = new class MockConanAwsLambda {
+				lambda() { return null; }
+			}();
+
+			context = {
+				parameters: parameters,
+				libraries: {
+					AWS: {
+						Lambda: class Lambda {}
+					}
+				},
+				results: {}
+			};
+
+			findLambdaByNameStep(conan, context, (error, results) => {
+				(results.lambdaArn === null).should.be.true;
+				done();
+			});
+		});
 	});
 
 	describe("(Lambda is Found)", () => {

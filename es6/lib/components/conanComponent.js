@@ -46,6 +46,7 @@ export default class ConanComponent {
 				}
 			};
 
+			_.parameters[parameterName] = [];
 			this[parameterName] = getterSetterFunction;
 		});
 	}

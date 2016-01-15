@@ -81,12 +81,12 @@ describe("putIntegrationStep", function () {
 			}, {
 				key: "headers",
 				value: function headers() {
-					return undefined;
+					return [];
 				}
 			}, {
 				key: "queryStrings",
 				value: function queryStrings() {
-					return undefined;
+					return [];
 				}
 			}]);
 
@@ -148,7 +148,7 @@ describe("putIntegrationStep", function () {
 					}, {
 						key: "queryStrings",
 						value: function queryStrings() {
-							return undefined;
+							return [];
 						}
 					}]);
 
@@ -185,7 +185,7 @@ describe("putIntegrationStep", function () {
 					}, {
 						key: "headers",
 						value: function headers() {
-							return undefined;
+							return [];
 						}
 					}, {
 						key: "queryStrings",
@@ -227,12 +227,12 @@ describe("putIntegrationStep", function () {
 					}, {
 						key: "headers",
 						value: function headers() {
-							return undefined;
+							return [];
 						}
 					}, {
 						key: "queryStrings",
 						value: function queryStrings() {
-							return undefined;
+							return [];
 						}
 					}]);
 
@@ -325,12 +325,19 @@ describe("putIntegrationStep", function () {
 	describe("(lambda arn is not present)", function () {
 		beforeEach(function () {
 			delete context.results.lambdaArn;
-			putIntegrationSpy = _sinon2["default"].spy();
+			requestTemplates = { "application/json": "{\"statusCode\": 200}" };
 		});
 
-		it("should skip the function call entirely", function (done) {
+		it("should put a mock integration", function (done) {
 			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
-				putIntegrationSpy.called.should.be["false"];
+				putIntegrationSpy.firstCall.args[0].should.eql({
+					resourceId: apiResourceId,
+					httpMethod: parameters.method(),
+					type: "MOCK",
+					integrationHttpMethod: "POST",
+					requestTemplates: requestTemplates,
+					restApiId: restApiId
+				});
 				done();
 			});
 		});

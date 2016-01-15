@@ -1,12 +1,26 @@
 language: node_js
 node_js:
+- '5'
+- '4'
 - '0.12'
 - '0.11'
 - '0.10'
-- 'iojs-v1'
-- 'iojs-v2'
+- iojs-v1
+- iojs-v2
 script: npm test
 before_script:
+- gulp -v
+- rm -fR ./node_modules
+- npm i -g npm
+- npm -v
 - npm install
 after_success:
-  - ./node_modules/coveralls/bin/coveralls.js < ./lcov.info
+- ./node_modules/coveralls/bin/coveralls.js < ./lcov.info
+deploy:
+  provider: npm
+  email: fam-operations@freeallmedia.com
+  api_key:
+    secure: F27flRmOMzFMFGrG92X+5Wz5Q+jMhtrPIcPxuG752udq5nMvqbZ0CYJHo0qGL5vi87vpXI5gP5GVw5UFdBVuK2YcmeEK2QY2aesN7lqcr59tuUrq4cvaUYmxKX8hztCWWNjaZkfbYAZ8fIQoCbLxE/X+xhZML1r3PRJZb4veSxYtCmlu++N+uuFiEpsAaI7esi2fEIywMl1FRJUEt3YRIFUO89CVmeX3J89VsppsY0bA6kCAx8uxFTzGd9e7m0YhoskF0sv6MgGpa9dhkaL8uYEd1H4ld9jmdrQZlts8vkO+mpbkFHvlr4RO9p6SgEhxkcRu0bRJl82UhKWK1XVEMw5O24YzPImaR6UfVIGw19iY3y602s0gBzlVUj+yJj63Aamttt3Rws/l2MtnQlcIsDLbjy69CwP1aLjsUaYO2Je5xLITgY2TxvMffJQUWaeuI0rB4kf7oDImAA5/eQZWn7MxzyasRlVyFFcmIQP+5zfBzl4tnLIDj9MUe2aa0AQs/phDD30JZEBHHOOHiL8ezx6goMNLjMtiOl70U0ytRVuCnlVUV7BffExQmdVTeiqK4mpUFLxm6jJAHZA1USlVYmNIz5djuawjOOlM+1NKkhxMjAU5mDexHO7I9mrpbZqanYLpU2uyp2j/myOaBfG5uFWVmlGUcg69+227LlHrTjs=
+  on:
+    repo: FreeAllMedia/conan
+    branch: master
