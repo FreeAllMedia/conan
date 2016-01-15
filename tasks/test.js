@@ -3,10 +3,10 @@ import runSequence from "gulp-run-sequence";
 import compareVersion from "compare-version";
 
 gulp.task("test", cb => {
-	if (compareVersion("4.0.0", process.env.TRAVIS_NODE_VERSION) >= 0) {
-		if(!global._babelPolyfill) {
-			require("babel-polyfill");
-		}
+	const versionNumber = process.env.TRAVIS_NODE_VERSION || process.version;
+	console.log("VERSION NUMBER:", versionNumber);
+
+	if (compareVersion("4.0.0", versionNumber) >= 0) {
 		runSequence("test-es6", cb);
 	} else {
 		runSequence("test-es5", cb);

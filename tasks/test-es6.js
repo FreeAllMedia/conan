@@ -6,6 +6,10 @@ import paths from "../paths.json";
 import chai from "chai";
 chai.should(); // This enables should-style syntax
 
+if(!global._babelPolyfill) {
+	require("babel-polyfill");
+}
+
 gulp.task("test-es6", ["build"], (cb) => {
 	gulp.src(paths.source.lib)
 		.pipe(istanbul()) // Covering files
