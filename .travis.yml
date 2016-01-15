@@ -2,14 +2,13 @@ language: node_js
 node_js:
 - '4.1'
 - '4.0'
-- '0.12'
-- '0.11'
-- '0.10'
-- 'iojs-v1'
-- 'iojs-v2'
+# - '0.12'
+# - '0.11'
+# - '0.10'
+# - 'iojs-v1'
+# - 'iojs-v2'
 script: npm test
 before_script:
 - npm install
 after_success:
-	- gulp test-coverage
   - ./node_modules/coveralls/bin/coveralls.js < ./lcov.info
