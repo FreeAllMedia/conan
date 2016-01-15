@@ -36,7 +36,7 @@ describe("findMethodResponseStep", () => {
 
 		parameters = new class MockConanAwsParameters {
 			method() { return "GET"; }
-			statusCodes() { return [200, 404]; }
+			statusCodes() { return {"200": "", "404": "Not Found*"}; }
 		}();
 
 		restApiId = "23sysh";

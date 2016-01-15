@@ -6,9 +6,9 @@ var _conanJs = require("../../../../conan.js");
 
 var _conanJs2 = _interopRequireDefault(_conanJs);
 
-var _componentsConanAwsApiGatewayResourceJs = require("../../components/conanAwsApiGatewayResource.js");
+var _componentsConanAwsGatewayApiResourceJs = require("../../components/conanAwsGatewayApiResource.js");
 
-var _componentsConanAwsApiGatewayResourceJs2 = _interopRequireDefault(_componentsConanAwsApiGatewayResourceJs);
+var _componentsConanAwsGatewayApiResourceJs2 = _interopRequireDefault(_componentsConanAwsGatewayApiResourceJs);
 
 var _stepsFindApiStageByNameStepJs = require("../../steps/findApiStageByNameStep.js");
 
@@ -26,7 +26,7 @@ var _jargon = require("jargon");
 
 var _jargon2 = _interopRequireDefault(_jargon);
 
-describe("ConanAwsApiGatewayResource(conan)", function () {
+describe("ConanAwsGatewayApiResource(conan)", function () {
 	var apiResource = undefined;
 	var path = undefined;
 	var method = undefined;
@@ -37,7 +37,7 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 		method = "GET";
 
 		conan = new _conanJs2["default"]();
-		apiResource = new _componentsConanAwsApiGatewayResourceJs2["default"](conan, path, method);
+		apiResource = new _componentsConanAwsGatewayApiResourceJs2["default"](conan, path, method);
 	});
 
 	it("should extend ConanComponent", function () {
@@ -49,31 +49,15 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 	});
 
 	describe("(parameters)", function () {
-		["path", "method", "lambda", "statusCodes", "responseHeaders"].forEach(function (parameterName) {
+		["path", "method", "lambda", "statusCodes", "headers", "queryStrings", "responseHeaders"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
 				it("should save new" + parameterNamePascalCase, function () {
-					var component = new _componentsConanAwsApiGatewayResourceJs2["default"](conan);
+					var component = new _componentsConanAwsGatewayApiResourceJs2["default"](conan);
 					var testValue = "abc123";
 					component = component[parameterName](testValue);
 					component[parameterName]().should.eql(testValue);
-				});
-			});
-		});
-	});
-
-	describe("(multiple-value parameters)", function () {
-		["headers", "queryStrings"].forEach(function (parameterName) {
-			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
-
-			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
-				it("should save new" + parameterNamePascalCase, function () {
-					var component = new _componentsConanAwsApiGatewayResourceJs2["default"](conan);
-					var testValueOne = "abc123";
-					var testValueTwo = "abc123";
-					component = component[parameterName](testValueOne, testValueTwo);
-					component[parameterName]().should.eql([testValueOne, testValueTwo]);
 				});
 			});
 		});
@@ -84,7 +68,7 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 			beforeEach(function () {
 				conan = new _conanJs2["default"]();
 				conan.steps.add(_stepsFindApiStageByNameStepJs2["default"], {});
-				apiResource = new _componentsConanAwsApiGatewayResourceJs2["default"](conan, path, method);
+				apiResource = new _componentsConanAwsGatewayApiResourceJs2["default"](conan, path, method);
 			});
 
 			it("should insert all his steps before the find stage component step", function () {
@@ -160,22 +144,22 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 				path = "/testResource";
 				method = resourceMethod;
 
-				newResource = _componentsConanAwsApiGatewayResourceJs2["default"].prototype[methodFunctionName].call(apiResource, path);
+				newResource = _componentsConanAwsGatewayApiResourceJs2["default"].prototype[methodFunctionName].call(apiResource, path);
 			});
 
-			it("should return an instance of ConanAwsApiGatewayResource", function () {
-				newResource.should.be.instanceOf(_componentsConanAwsApiGatewayResourceJs2["default"]);
+			it("should return an instance of ConanAwsGatewayApiResource", function () {
+				newResource.should.be.instanceOf(_componentsConanAwsGatewayApiResourceJs2["default"]);
 			});
 
-			it("should pass conan to the ConanAwsApiGatewayResource constructor", function () {
+			it("should pass conan to the ConanAwsGatewayApiResource constructor", function () {
 				newResource.conan.should.eql(conan);
 			});
 
-			it("should pass the path to the ConanAwsApiGatewayResource constructor", function () {
+			it("should pass the path to the ConanAwsGatewayApiResource constructor", function () {
 				newResource.path().should.eql(path);
 			});
 
-			it("should pass the method to the ConanAwsApiGatewayResource constructor", function () {
+			it("should pass the method to the ConanAwsGatewayApiResource constructor", function () {
 				newResource.method().should.eql(method);
 			});
 		});

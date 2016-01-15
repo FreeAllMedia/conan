@@ -1,12 +1,19 @@
-export default function findRoleByNameStep(conan, context, stepDone) {
-	const AWS = context.libraries.AWS;
-	const iam = new AWS.IAM({
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports["default"] = findRoleByNameStep;
+
+function findRoleByNameStep(conan, context, stepDone) {
+	var AWS = context.libraries.AWS;
+	var iam = new AWS.IAM({
 		region: conan.config.region
 	});
 
 	iam.getRole({
 		"RoleName": context.parameters.role()
-	}, (error, responseData) => {
+	}, function (error, responseData) {
 		if (error && error.statusCode === 404) {
 			stepDone(null, {
 				roleArn: null
@@ -20,3 +27,5 @@ export default function findRoleByNameStep(conan, context, stepDone) {
 		}
 	});
 }
+
+module.exports = exports["default"];

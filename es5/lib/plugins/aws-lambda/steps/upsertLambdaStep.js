@@ -1,26 +1,40 @@
-import fileSystem from "fs";
-import path from "path";
+"use strict";
 
-export default function upsertLambdaStep(conan, context, stepDone) {
-	const conanAwsLambda = context.parameters;
-	const AWS = context.libraries.AWS;
-	const lambda = new AWS.Lambda({region: conan.config.region});
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports["default"] = upsertLambdaStep;
 
-	const lambdaArn = context.results.lambdaArn;
-	const roleArn = context.results.roleArn;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-	const lambdaIsNew = lambdaArn === null;
+var _fs = require("fs");
 
-	const lambdaZipBuffer = fileSystem.readFileSync(context.results.lambdaZipFilePath);
+var _fs2 = _interopRequireDefault(_fs);
 
-	const lambdaExtension = path.extname(conanAwsLambda.filePath());
-	const fileName = path.basename(conanAwsLambda.filePath(), lambdaExtension);
+var _path = require("path");
 
-	const handlerName = conanAwsLambda.handler()[0];
-	const handlerString = `${fileName}.${handlerName}`;
+var _path2 = _interopRequireDefault(_path);
+
+function upsertLambdaStep(conan, context, stepDone) {
+	var conanAwsLambda = context.parameters;
+	var AWS = context.libraries.AWS;
+	var lambda = new AWS.Lambda({ region: conan.config.region });
+
+	var lambdaArn = context.results.lambdaArn;
+	var roleArn = context.results.roleArn;
+
+	var lambdaIsNew = lambdaArn === null;
+
+	var lambdaZipBuffer = _fs2["default"].readFileSync(context.results.lambdaZipFilePath);
+
+	var lambdaExtension = _path2["default"].extname(conanAwsLambda.filePath());
+	var fileName = _path2["default"].basename(conanAwsLambda.filePath(), lambdaExtension);
+
+	var handlerName = conanAwsLambda.handler()[0];
+	var handlerString = fileName + "." + handlerName;
 
 	if (lambdaIsNew) {
-		const createFunctionParameters = {
+		var createFunctionParameters = {
 			FunctionName: conanAwsLambda.name(),
 			Handler: handlerString,
 			Role: roleArn,
@@ -33,7 +47,7 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 			}
 		};
 
-		lambda.createFunction(createFunctionParameters, (createFunctionError, data) => {
+		lambda.createFunction(createFunctionParameters, function (createFunctionError, data) {
 			if (createFunctionError) {
 				stepDone(createFunctionError);
 			} else {
@@ -43,7 +57,7 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 			}
 		});
 	} else {
-		const updateConfigurationParameters = {
+		var updateConfigurationParameters = {
 			FunctionName: conanAwsLambda.name(),
 			Handler: handlerString,
 			Role: roleArn,
@@ -51,16 +65,16 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 			MemorySize: conanAwsLambda.memorySize(),
 			Timeout: conanAwsLambda.timeout()
 		};
-		lambda.updateFunctionConfiguration(updateConfigurationParameters, (updateConfigurationError) => {
+		lambda.updateFunctionConfiguration(updateConfigurationParameters, function (updateConfigurationError) {
 			if (updateConfigurationError) {
 				stepDone(updateConfigurationError);
 			} else {
-				const updateCodeParameters = {
+				var updateCodeParameters = {
 					ZipFile: lambdaZipBuffer,
 					FunctionName: conanAwsLambda.name(),
 					Publish: conanAwsLambda.publish()
 				};
-				lambda.updateFunctionCode(updateCodeParameters, (updateCodeError) => {
+				lambda.updateFunctionCode(updateCodeParameters, function (updateCodeError) {
 					if (updateCodeError) {
 						stepDone(updateCodeError);
 					} else {
@@ -73,3 +87,5 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 		});
 	}
 }
+
+module.exports = exports["default"];

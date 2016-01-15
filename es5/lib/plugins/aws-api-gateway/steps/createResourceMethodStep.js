@@ -1,27 +1,33 @@
-export default function createResourceMethodStep(conan, context, done) {
-	const restApiId = context.results.restApiId;
-	let resourceId = context.results.apiResourceId;
-	if(restApiId
-			&& resourceId
-			&& !context.results.resourceHttpMethod) {
-		const api = new context.libraries.AWS.APIGateway({
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports["default"] = createResourceMethodStep;
+
+function createResourceMethodStep(conan, context, done) {
+	var restApiId = context.results.restApiId;
+	var resourceId = context.results.apiResourceId;
+	if (restApiId && resourceId && !context.results.resourceHttpMethod) {
+		var api = new context.libraries.AWS.APIGateway({
 			region: conan.config.region
 		});
-		const apiParameters = {
-			restApiId,
-			resourceId,
+		var apiParameters = {
+			restApiId: restApiId,
+			resourceId: resourceId,
 			httpMethod: context.parameters.method(),
 			authorizationType: "none"
 		};
-		api.putMethod(apiParameters,
-			(error, response) => {
-				if(response) {
-					done(null, { resourceHttpMethod: response.httpMethod });
-				} else {
-					done(error);
-				}
-			});
+		api.putMethod(apiParameters, function (error, response) {
+			if (response) {
+				done(null, { resourceHttpMethod: response.httpMethod });
+			} else {
+				done(error);
+			}
+		});
 	} else {
 		done(null, { resourceHttpMethod: null });
 	}
 }
+
+module.exports = exports["default"];

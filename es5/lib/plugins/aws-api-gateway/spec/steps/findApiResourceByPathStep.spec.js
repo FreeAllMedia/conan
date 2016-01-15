@@ -1,255 +1,315 @@
-import Conan from "../../../../conan.js";
-import sinon from "sinon";
-import chai from "chai";
-import findApiResourceByPathStep from "../../steps/findApiResourceByPathStep.js";
+"use strict";
 
-describe("findApiResourceByPathStep", () => {
-	let getResourcesSpy,
-		constructorSpy,
-		conan,
-		context,
-		parameters,
-		restApiId,
-		should;
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	class APIGateway {
-		constructor(constructorParameters) {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var _conanJs = require("../../../../conan.js");
+
+var _conanJs2 = _interopRequireDefault(_conanJs);
+
+var _sinon = require("sinon");
+
+var _sinon2 = _interopRequireDefault(_sinon);
+
+var _chai = require("chai");
+
+var _chai2 = _interopRequireDefault(_chai);
+
+var _stepsFindApiResourceByPathStepJs = require("../../steps/findApiResourceByPathStep.js");
+
+var _stepsFindApiResourceByPathStepJs2 = _interopRequireDefault(_stepsFindApiResourceByPathStepJs);
+
+describe("findApiResourceByPathStep", function () {
+	var getResourcesSpy = undefined,
+	    constructorSpy = undefined,
+	    conan = undefined,
+	    context = undefined,
+	    parameters = undefined,
+	    restApiId = undefined,
+	    should = undefined;
+
+	var APIGateway = (function () {
+		function APIGateway(constructorParameters) {
+			_classCallCheck(this, APIGateway);
+
 			constructorSpy(constructorParameters);
 		}
 
-		getResources(params, callback) {
-			getResourcesSpy(params, callback);
-		}
-	}
+		_createClass(APIGateway, [{
+			key: "getResources",
+			value: function getResources(params, callback) {
+				getResourcesSpy(params, callback);
+			}
+		}]);
 
-	beforeEach(() => {
-		conan = new Conan({
+		return APIGateway;
+	})();
+
+	beforeEach(function () {
+		conan = new _conanJs2["default"]({
 			region: "us-east-1"
 		});
 
-		constructorSpy = sinon.spy();
-		getResourcesSpy = sinon.spy((params, callback) => {
+		constructorSpy = _sinon2["default"].spy();
+		getResourcesSpy = _sinon2["default"].spy(function (params, callback) {
 			callback();
 		});
-		should = chai.should();
+		should = _chai2["default"].should();
 
-		parameters = new class MockConanAwsParameters {
-			path() { 				return "/testPath"; }
-		}();
+		parameters = new ((function () {
+			function MockConanAwsParameters() {
+				_classCallCheck(this, MockConanAwsParameters);
+			}
+
+			_createClass(MockConanAwsParameters, [{
+				key: "path",
+				value: function path() {
+					return "/testPath";
+				}
+			}]);
+
+			return MockConanAwsParameters;
+		})())();
 
 		restApiId = "23sysh";
 
 		context = {
-			parameters,
+			parameters: parameters,
 			results: {
-				restApiId
+				restApiId: restApiId
 			},
 			libraries: {
 				AWS: {
-					APIGateway
+					APIGateway: APIGateway
 				}
 			}
 		};
 	});
 
-	it("should be a function", () => {
-		(typeof findApiResourceByPathStep).should.equal("function");
+	it("should be a function", function () {
+		(typeof _stepsFindApiResourceByPathStepJs2["default"]).should.equal("function");
 	});
 
-	describe("(parameters)", () => {
-		beforeEach(done => {
-			findApiResourceByPathStep(conan, context, () => {
+	describe("(parameters)", function () {
+		beforeEach(function (done) {
+			(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function () {
 				done();
 			});
 		});
 
-		it("should send the appropiate parameters to the AWS get function call", () => {
+		it("should send the appropiate parameters to the AWS get function call", function () {
 			getResourcesSpy.firstCall.args[0].should.eql({
-				restApiId,
+				restApiId: restApiId,
 				limit: 500
 			});
 		});
 
-		it("should throw if there is no restApiId in the previous steps results", done => {
+		it("should throw if there is no restApiId in the previous steps results", function (done) {
 			delete context.results.restApiId;
-			findApiResourceByPathStep(conan, context, (error) => {
+			(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error) {
 				error.should.eql(new Error("There is no api defined as a previous step or there was an error o that step."));
 				done();
 			});
 		});
 
-		it("should set the constructor parameters", () => {
+		it("should set the constructor parameters", function () {
 			constructorSpy.firstCall.args[0].should.eql({
 				region: conan.config.region
 			});
 		});
 	});
 
-	describe("(api resource full path found)", () => {
-		let responseData;
+	describe("(api resource full path found)", function () {
+		var responseData = undefined;
 
-		describe("(on a completely new path)", () => {
-			beforeEach(() => {
-				context.parameters = new class MockConanAwsParameters {
-					path() { return "/accounts/items"; }
-				}();
+		describe("(on a completely new path)", function () {
+			beforeEach(function () {
+				context.parameters = new ((function () {
+					function MockConanAwsParameters() {
+						_classCallCheck(this, MockConanAwsParameters);
+					}
+
+					_createClass(MockConanAwsParameters, [{
+						key: "path",
+						value: function path() {
+							return "/accounts/items";
+						}
+					}]);
+
+					return MockConanAwsParameters;
+				})())();
 
 				responseData = {
-					items: [
-						{path: "/a/cool/resource"},
-						{path: "/different/item"},
-						{path: "/", id: "v6x4ma2fog"}
-					]
+					items: [{ path: "/a/cool/resource" }, { path: "/different/item" }, { path: "/", id: "v6x4ma2fog" }]
 				};
-				getResourcesSpy = sinon.spy((params, callback) => {
+				getResourcesSpy = _sinon2["default"].spy(function (params, callback) {
 					callback(null, responseData);
 				});
 			});
 
-			it("should queue the missing resources", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
+			it("should queue the missing resources", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.newApiResources.should.eql(["accounts", "items"]);
 					done();
 				});
 			});
 
-			it("should use the right parent id as the root resource", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
+			it("should use the right parent id as the root resource", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.apiResourceParentId.should.equal("v6x4ma2fog");
 					done();
 				});
 			});
 		});
 
-		describe("(when the resource leaf is missing)", () => {
-			beforeEach(() => {
-				context.parameters = new class MockConanAwsParameters {
-					path() { return "/accounts/items"; }
-				}();
+		describe("(when the resource leaf is missing)", function () {
+			beforeEach(function () {
+				context.parameters = new ((function () {
+					function MockConanAwsParameters() {
+						_classCallCheck(this, MockConanAwsParameters);
+					}
+
+					_createClass(MockConanAwsParameters, [{
+						key: "path",
+						value: function path() {
+							return "/accounts/items";
+						}
+					}]);
+
+					return MockConanAwsParameters;
+				})())();
 
 				responseData = {
-					items: [
-						{path: "/a/cool/resource"},
-						{path: "/different/item"},
-						{path: "/accounts", id: "v6x4ma2sss"},
-						{path: "/", id: "v6x4ma2fog"}
-					]
+					items: [{ path: "/a/cool/resource" }, { path: "/different/item" }, { path: "/accounts", id: "v6x4ma2sss" }, { path: "/", id: "v6x4ma2fog" }]
 				};
 
-				getResourcesSpy = sinon.spy((params, callback) => {
+				getResourcesSpy = _sinon2["default"].spy(function (params, callback) {
 					callback(null, responseData);
 				});
 			});
 
-			it("should explicitly set tu null the api resource id if it was not there", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
-					(result.apiResourceId === null).should.be.true;
+			it("should explicitly set tu null the api resource id if it was not there", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
+					(result.apiResourceId === null).should.be["true"];
 					done();
 				});
 			});
 
-			it("should queue the missing resource", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
+			it("should queue the missing resource", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.newApiResources.should.eql(["items"]);
 					done();
 				});
 			});
 
-			it("should use the right parent id for the missing resource", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
+			it("should use the right parent id for the missing resource", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.apiResourceParentId.should.equal("v6x4ma2sss");
 					done();
 				});
 			});
 		});
 
-		describe("(when there is two or more missing resources)", () => {
-			beforeEach(() => {
-				context.parameters = new class MockConanAwsParameters {
-					path() { return "/accounts/items/subItems"; }
-				}();
+		describe("(when there is two or more missing resources)", function () {
+			beforeEach(function () {
+				context.parameters = new ((function () {
+					function MockConanAwsParameters() {
+						_classCallCheck(this, MockConanAwsParameters);
+					}
+
+					_createClass(MockConanAwsParameters, [{
+						key: "path",
+						value: function path() {
+							return "/accounts/items/subItems";
+						}
+					}]);
+
+					return MockConanAwsParameters;
+				})())();
 
 				responseData = {
-					items: [
-						{path: "/a/cool/resource"},
-						{path: "/different/item"},
-						{path: "/accounts", id: "v6x4ma2sss"},
-						{path: "/", id: "v6x4ma2fog"}
-					]
+					items: [{ path: "/a/cool/resource" }, { path: "/different/item" }, { path: "/accounts", id: "v6x4ma2sss" }, { path: "/", id: "v6x4ma2fog" }]
 				};
 
-				getResourcesSpy = sinon.spy((params, callback) => {
+				getResourcesSpy = _sinon2["default"].spy(function (params, callback) {
 					callback(null, responseData);
 				});
 			});
 
-			it("should explicitly set tu null the api resource id if it was not there", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
-					(result.apiResourceId === null).should.be.true;
+			it("should explicitly set tu null the api resource id if it was not there", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
+					(result.apiResourceId === null).should.be["true"];
 					done();
 				});
 			});
 
-			it("should queue the missing resources", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
+			it("should queue the missing resources", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.newApiResources.should.eql(["items", "subItems"]);
 					done();
 				});
 			});
 
-			it("should use the right parent id for the first missing resource", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
+			it("should use the right parent id for the first missing resource", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.apiResourceParentId.should.equal("v6x4ma2sss");
 					done();
 				});
 			});
 
-			it("should return the array in the appropiate order", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
+			it("should return the array in the appropiate order", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.newApiResources[0].should.eql("items");
 					done();
 				});
 			});
 		});
 
-		describe("(on a existing path)", () => {
-			beforeEach(() => {
-				context.parameters = new class MockConanAwsParameters {
-					path() { return "/accounts/items/subItems"; }
-				}();
+		describe("(on a existing path)", function () {
+			beforeEach(function () {
+				context.parameters = new ((function () {
+					function MockConanAwsParameters() {
+						_classCallCheck(this, MockConanAwsParameters);
+					}
+
+					_createClass(MockConanAwsParameters, [{
+						key: "path",
+						value: function path() {
+							return "/accounts/items/subItems";
+						}
+					}]);
+
+					return MockConanAwsParameters;
+				})())();
 
 				responseData = {
-					items: [
-						{path: "/a/cool/resource"},
-						{path: "/different/item"},
-						{path: "/accounts", id: "v6x4ma2ss1", parentId: "v6x4ma2fog"},
-						{path: "/accounts/items", id: "v6x4ma2ss2", parentId: "v6x4ma2ss1"},
-						{path: "/accounts/items/subItems", id: "v6x4ma2ss3", parentId: "v6x4ma2ss2"},
-						{path: "/", id: "v6x4ma2fog"}
-					]
+					items: [{ path: "/a/cool/resource" }, { path: "/different/item" }, { path: "/accounts", id: "v6x4ma2ss1", parentId: "v6x4ma2fog" }, { path: "/accounts/items", id: "v6x4ma2ss2", parentId: "v6x4ma2ss1" }, { path: "/accounts/items/subItems", id: "v6x4ma2ss3", parentId: "v6x4ma2ss2" }, { path: "/", id: "v6x4ma2fog" }]
 				};
 
-				getResourcesSpy = sinon.spy((params, callback) => {
+				getResourcesSpy = _sinon2["default"].spy(function (params, callback) {
 					callback(null, responseData);
 				});
 			});
 
-			it("should return the existing resource id", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
+			it("should return the existing resource id", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.apiResourceId.should.equal("v6x4ma2ss3");
 					done();
 				});
 			});
 
-			it("should return the existing resource parent id", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
+			it("should return the existing resource parent id", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.apiResourceParentId.should.equal("v6x4ma2ss2");
 					done();
 				});
 			});
 
-			it("should return and empty resource queue to create", done => {
-				findApiResourceByPathStep(conan, context, (error, result) => {
+			it("should return and empty resource queue to create", function (done) {
+				(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
 					result.newApiResources.should.eql([]);
 					done();
 				});
@@ -257,23 +317,23 @@ describe("findApiResourceByPathStep", () => {
 		});
 	});
 
-	describe("(unknown error)", () => {
-		beforeEach(() => {
-			getResourcesSpy = sinon.spy((params, callback) => {
+	describe("(unknown error)", function () {
+		beforeEach(function () {
+			getResourcesSpy = _sinon2["default"].spy(function (params, callback) {
 				callback({ statusCode: 401 });
 			});
 		});
 
-		it("should return error", done => {
-			findApiResourceByPathStep(conan, context, (error) => {
+		it("should return error", function (done) {
+			(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error) {
 				should.exist(error);
 				done();
 			});
 		});
 
-		it("should explicitly set tu null the api resource id if it was not there", done => {
-			findApiResourceByPathStep(conan, context, (error, result) => {
-				(result.apiResourceId === null).should.be.true;
+		it("should explicitly set tu null the api resource id if it was not there", function (done) {
+			(0, _stepsFindApiResourceByPathStepJs2["default"])(conan, context, function (error, result) {
+				(result.apiResourceId === null).should.be["true"];
 				done();
 			});
 		});

@@ -107,6 +107,42 @@ describe("addPermissionStep", () => {
 		});
 	});
 
+	describe("(when no lambda)", () => {
+		beforeEach(done => {
+			parameters = new class MockConanAwsParameters {
+				path() { return "/accounts/items"; }
+				lambda() { return null; }
+				method() { return "GET"; }
+			}();
+
+			context = {
+				parameters,
+				results: {
+					restApiId,
+					accountId
+				},
+				libraries: {
+					AWS: {
+						Lambda
+					}
+				}
+			};
+
+			addPermissionSpy = sinon.spy();
+
+			addPermissionStep(conan, context, () => {
+				done();
+			});
+		});
+
+		it("should skip the function call entirely", done => {
+			addPermissionStep(conan, context, () => {
+				addPermissionSpy.called.should.be.false;
+				done();
+			});
+		});
+	});
+
 	describe("(permission added)", () => {
 		let responseData;
 

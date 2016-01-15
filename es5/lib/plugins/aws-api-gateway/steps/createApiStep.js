@@ -1,22 +1,30 @@
-export default function createApiStep(conan, context, done) {
-	if(!context.results.restApiId) {
-		const api = new context.libraries.AWS.APIGateway({
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports["default"] = createApiStep;
+
+function createApiStep(conan, context, done) {
+	if (!context.results.restApiId) {
+		var api = new context.libraries.AWS.APIGateway({
 			region: conan.config.region
 		});
-		const apiParameters = {
+		var apiParameters = {
 			name: context.parameters.name()
 		};
-		api.createRestApi(apiParameters,
-			(error, response) => {
-				if(response) {
-					done(error, {
-						restApiId: response.id
-					});
-				} else {
-					done(error);
-				}
-			});
+		api.createRestApi(apiParameters, function (error, response) {
+			if (response) {
+				done(error, {
+					restApiId: response.id
+				});
+			} else {
+				done(error);
+			}
+		});
 	} else {
 		done();
 	}
 }
+
+module.exports = exports["default"];

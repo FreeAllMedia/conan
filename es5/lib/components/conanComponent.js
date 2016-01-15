@@ -89,6 +89,7 @@ var ConanComponent = (function () {
 						}
 				};
 
+				_.parameters[parameterName] = [];
 				_this2[parameterName] = getterSetterFunction;
 			});
 		}

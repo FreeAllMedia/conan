@@ -1,41 +1,68 @@
-import Conan from "../../../../conan.js";
-import sinon from "sinon";
-import chai from "chai";
-import createApiResourcesStep from "../../steps/createApiResourcesStep.js";
+"use strict";
 
-describe("createApiResourcesStep", () => {
-	let createResourceSpy,
-		constructorSpy,
-		conan,
-		context,
-		parameters,
-		restApiId,
-		apiResourceParentId,
-		newApiResources,
-		should;
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	class APIGateway {
-		constructor(constructorParameters) {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var _conanJs = require("../../../../conan.js");
+
+var _conanJs2 = _interopRequireDefault(_conanJs);
+
+var _sinon = require("sinon");
+
+var _sinon2 = _interopRequireDefault(_sinon);
+
+var _chai = require("chai");
+
+var _chai2 = _interopRequireDefault(_chai);
+
+var _stepsCreateApiResourcesStepJs = require("../../steps/createApiResourcesStep.js");
+
+var _stepsCreateApiResourcesStepJs2 = _interopRequireDefault(_stepsCreateApiResourcesStepJs);
+
+describe("createApiResourcesStep", function () {
+	var createResourceSpy = undefined,
+	    constructorSpy = undefined,
+	    conan = undefined,
+	    context = undefined,
+	    parameters = undefined,
+	    restApiId = undefined,
+	    apiResourceParentId = undefined,
+	    newApiResources = undefined,
+	    should = undefined;
+
+	var APIGateway = (function () {
+		function APIGateway(constructorParameters) {
+			_classCallCheck(this, APIGateway);
+
 			constructorSpy(constructorParameters);
 		}
 
-		createResource(params, callback) {
-			createResourceSpy(params, callback);
-		}
-	}
+		_createClass(APIGateway, [{
+			key: "createResource",
+			value: function createResource(params, callback) {
+				createResourceSpy(params, callback);
+			}
+		}]);
 
-	beforeEach(() => {
-		conan = new Conan({
+		return APIGateway;
+	})();
+
+	beforeEach(function () {
+		conan = new _conanJs2["default"]({
 			region: "us-east-1"
 		});
 
-		constructorSpy = sinon.spy();
-		createResourceSpy = sinon.spy((params, callback) => {
+		constructorSpy = _sinon2["default"].spy();
+		createResourceSpy = _sinon2["default"].spy(function (params, callback) {
 			callback();
 		});
-		should = chai.should();
+		should = _chai2["default"].should();
 
-		parameters = new class MockConanAwsParameters {
+		parameters = new function MockConanAwsParameters() {
+			_classCallCheck(this, MockConanAwsParameters);
 		}();
 
 		restApiId = "23sysh";
@@ -43,123 +70,123 @@ describe("createApiResourcesStep", () => {
 		newApiResources = ["accounts"];
 
 		context = {
-			parameters,
+			parameters: parameters,
 			results: {
-				restApiId,
-				apiResourceParentId,
-				newApiResources
+				restApiId: restApiId,
+				apiResourceParentId: apiResourceParentId,
+				newApiResources: newApiResources
 			},
 			libraries: {
 				AWS: {
-					APIGateway
+					APIGateway: APIGateway
 				}
 			}
 		};
 	});
 
-	it("should be a function", () => {
-		(typeof createApiResourcesStep).should.equal("function");
+	it("should be a function", function () {
+		(typeof _stepsCreateApiResourcesStepJs2["default"]).should.equal("function");
 	});
 
-	describe("(parameters)", () => {
-		beforeEach(done => {
-			createApiResourcesStep(conan, context, () => {
+	describe("(parameters)", function () {
+		beforeEach(function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function () {
 				done();
 			});
 		});
 
-		it("should send the appropiate parameters to the AWS call", () => {
+		it("should send the appropiate parameters to the AWS call", function () {
 			createResourceSpy.firstCall.args[0].should.eql({
 				parentId: apiResourceParentId,
 				pathPart: "accounts",
-				restApiId
+				restApiId: restApiId
 			});
 		});
 
-		it("should set the constructor parameters", () => {
+		it("should set the constructor parameters", function () {
 			constructorSpy.firstCall.args[0].should.eql({
 				region: conan.config.region
 			});
 		});
 	});
 
-	describe("(rest api id is not present)", () => {
-		beforeEach(() => {
+	describe("(rest api id is not present)", function () {
+		beforeEach(function () {
 			delete context.results.restApiId;
-			createResourceSpy = sinon.spy();
+			createResourceSpy = _sinon2["default"].spy();
 		});
 
-		it("should skip the function call entirely", done => {
-			createApiResourcesStep(conan, context, () => {
-				createResourceSpy.called.should.be.false;
+		it("should skip the function call entirely", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function () {
+				createResourceSpy.called.should.be["false"];
 				done();
 			});
 		});
 	});
 
-	describe("(api resource parent id is not present)", () => {
-		beforeEach(() => {
+	describe("(api resource parent id is not present)", function () {
+		beforeEach(function () {
 			delete context.results.apiResourceParentId;
-			createResourceSpy = sinon.spy();
+			createResourceSpy = _sinon2["default"].spy();
 		});
 
-		it("should skip the function call entirely", done => {
-			createApiResourcesStep(conan, context, () => {
-				createResourceSpy.called.should.be.false;
+		it("should skip the function call entirely", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function () {
+				createResourceSpy.called.should.be["false"];
 				done();
 			});
 		});
 	});
 
-	describe("(new api resources is not an array)", () => {
-		beforeEach(() => {
+	describe("(new api resources is not an array)", function () {
+		beforeEach(function () {
 			delete context.results.newApiResources;
-			createResourceSpy = sinon.spy();
+			createResourceSpy = _sinon2["default"].spy();
 		});
 
-		it("should skip the function call entirely", done => {
-			createApiResourcesStep(conan, context, () => {
-				createResourceSpy.called.should.be.false;
+		it("should skip the function call entirely", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function () {
+				createResourceSpy.called.should.be["false"];
 				done();
 			});
 		});
 	});
 
-	describe("(everything good but no new api resources)", () => {
-		beforeEach(() => {
+	describe("(everything good but no new api resources)", function () {
+		beforeEach(function () {
 			context.results.newApiResources = [];
-			createResourceSpy = sinon.spy();
+			createResourceSpy = _sinon2["default"].spy();
 		});
 
-		it("should skip the function call entirely", done => {
-			createApiResourcesStep(conan, context, () => {
-				createResourceSpy.called.should.be.false;
+		it("should skip the function call entirely", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function () {
+				createResourceSpy.called.should.be["false"];
 				done();
 			});
 		});
 
-		it("should avoid deleting the api resource id for the resource found", done => {
-			createApiResourcesStep(conan, context, (error, results) => {
+		it("should avoid deleting the api resource id for the resource found", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function (error, results) {
 				results.should.not.have.property("apiResourceId");
 				done();
 			});
 		});
 	});
 
-	describe("(there are new api resources to create)", () => {
-		let responseData;
+	describe("(there are new api resources to create)", function () {
+		var responseData = undefined;
 
-		describe("(one new api resource)", () => {
-			describe("(normal response)", () => {
-				beforeEach(() => {
+		describe("(one new api resource)", function () {
+			describe("(normal response)", function () {
+				beforeEach(function () {
 					responseData = { id: "sjhd72k" };
-					createResourceSpy = sinon.spy((awsParameters, callback) => {
+					createResourceSpy = _sinon2["default"].spy(function (awsParameters, callback) {
 						callback(null, responseData);
 					});
 				});
 
-				it("should set the newly created api resource id", done => {
-					createApiResourcesStep(conan, context, (error, results) => {
+				it("should set the newly created api resource id", function (done) {
+					(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function (error, results) {
 						results.apiResourceId.should.equal(responseData.id);
 						done();
 					});
@@ -167,21 +194,21 @@ describe("createApiResourcesStep", () => {
 			});
 		});
 
-		describe("(two or more new api resources)", () => {
-			let secondResponseData;
-			let currentCall;
+		describe("(two or more new api resources)", function () {
+			var secondResponseData = undefined;
+			var currentCall = undefined;
 
-			describe("(normal response)", () => {
-				beforeEach(() => {
+			describe("(normal response)", function () {
+				beforeEach(function () {
 					context.results.newApiResources.push("items");
 
 					responseData = { id: "sjhd72k" };
 					secondResponseData = { id: "zksd872" };
 					currentCall = 0;
 
-					createResourceSpy = sinon.spy((awsParameters, callback) => {
-						let currentResponse;
-						if(currentCall === 0) {
+					createResourceSpy = _sinon2["default"].spy(function (awsParameters, callback) {
+						var currentResponse = undefined;
+						if (currentCall === 0) {
 							currentResponse = responseData;
 							currentCall++;
 						} else {
@@ -191,19 +218,19 @@ describe("createApiResourcesStep", () => {
 					});
 				});
 
-				it("should set the result id for the leaf - api resource", done => {
-					createApiResourcesStep(conan, context, (error, results) => {
+				it("should set the result id for the leaf - api resource", function (done) {
+					(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function (error, results) {
 						results.apiResourceId.should.equal(secondResponseData.id);
 						done();
 					});
 				});
 
-				it("should use the parent id from the previous resource on the next one", done => {
-					createApiResourcesStep(conan, context, () => {
+				it("should use the parent id from the previous resource on the next one", function (done) {
+					(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function () {
 						createResourceSpy.secondCall.args[0].should.eql({
 							parentId: "sjhd72k",
 							pathPart: "items",
-							restApiId
+							restApiId: restApiId
 						});
 						done();
 					});
@@ -212,23 +239,23 @@ describe("createApiResourcesStep", () => {
 		});
 	});
 
-	describe("(unknown error)", () => {
-		beforeEach(() => {
-			createResourceSpy = sinon.spy((params, callback) => {
+	describe("(unknown error)", function () {
+		beforeEach(function () {
+			createResourceSpy = _sinon2["default"].spy(function (params, callback) {
 				callback({ statusCode: 401 });
 			});
 		});
 
-		it("should return an error when is just one", done => {
-			createApiResourcesStep(conan, context, (error) => {
+		it("should return an error when is just one", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function (error) {
 				should.exist(error);
 				done();
 			});
 		});
 
-		it("should explicitly set tu null the api resource id", done => {
-			createApiResourcesStep(conan, context, (error, result) => {
-				(result.apiResourceId === null).should.be.true;
+		it("should explicitly set tu null the api resource id", function (done) {
+			(0, _stepsCreateApiResourcesStepJs2["default"])(conan, context, function (error, result) {
+				(result.apiResourceId === null).should.be["true"];
 				done();
 			});
 		});

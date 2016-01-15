@@ -66,30 +66,28 @@ var _stepsFindApiStageByNameStepJs = require("../steps/findApiStageByNameStep.js
 
 var _stepsFindApiStageByNameStepJs2 = _interopRequireDefault(_stepsFindApiStageByNameStepJs);
 
-var ConanAwsApiGatewayResource = (function (_ConanComponent) {
-	_inherits(ConanAwsApiGatewayResource, _ConanComponent);
+var ConanAwsGatewayApiResource = (function (_ConanComponent) {
+	_inherits(ConanAwsGatewayApiResource, _ConanComponent);
 
-	function ConanAwsApiGatewayResource() {
-		_classCallCheck(this, ConanAwsApiGatewayResource);
+	function ConanAwsGatewayApiResource() {
+		_classCallCheck(this, ConanAwsGatewayApiResource);
 
-		_get(Object.getPrototypeOf(ConanAwsApiGatewayResource.prototype), "constructor", this).apply(this, arguments);
+		_get(Object.getPrototypeOf(ConanAwsGatewayApiResource.prototype), "constructor", this).apply(this, arguments);
 	}
 
-	_createClass(ConanAwsApiGatewayResource, [{
+	_createClass(ConanAwsGatewayApiResource, [{
 		key: "initialize",
 		value: function initialize(conan, path, method) {
 			this.conan = conan;
 
-			this.parameters("path", "method", "lambda", "statusCodes", "responseHeaders");
-
-			this.multipleValueParameters("headers", "queryStrings");
+			this.parameters("path", "method", "lambda", "statusCodes", "headers", "queryStrings", "responseHeaders");
 
 			this.path(path);
 			this.method(method);
-			this.headers();
-			this.queryStrings();
-			this.statusCodes({ "200": "" });
+			this.headers([]);
+			this.queryStrings([]);
 			this.responseHeaders({});
+			this.statusCodes({ "200": "default" });
 
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _awsLambdaStepsFindLambdaByNameStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindApiResourceByPathStepJs2["default"], this);
@@ -97,41 +95,41 @@ var ConanAwsApiGatewayResource = (function (_ConanComponent) {
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindResourceMethodStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsCreateResourceMethodStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationResponseStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindMethodResponseStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutMethodResponseStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationResponseStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsGetAccountIdStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsAddPermissionStepJs2["default"], this);
 		}
 	}, {
 		key: "get",
 		value: function get(path) {
-			return new ConanAwsApiGatewayResource(this.conan, path, "GET");
+			return new ConanAwsGatewayApiResource(this.conan, path, "GET");
 		}
 	}, {
 		key: "post",
 		value: function post(path) {
-			return new ConanAwsApiGatewayResource(this.conan, path, "POST");
+			return new ConanAwsGatewayApiResource(this.conan, path, "POST");
 		}
 	}, {
 		key: "put",
 		value: function put(path) {
-			return new ConanAwsApiGatewayResource(this.conan, path, "PUT");
+			return new ConanAwsGatewayApiResource(this.conan, path, "PUT");
 		}
 	}, {
 		key: "delete",
 		value: function _delete(path) {
-			return new ConanAwsApiGatewayResource(this.conan, path, "DELETE");
+			return new ConanAwsGatewayApiResource(this.conan, path, "DELETE");
 		}
 	}, {
 		key: "options",
 		value: function options(path) {
-			return new ConanAwsApiGatewayResource(this.conan, path, "OPTIONS");
+			return new ConanAwsGatewayApiResource(this.conan, path, "OPTIONS");
 		}
 	}]);
 
-	return ConanAwsApiGatewayResource;
+	return ConanAwsGatewayApiResource;
 })(_componentsConanComponentJs2["default"]);
 
-exports["default"] = ConanAwsApiGatewayResource;
+exports["default"] = ConanAwsGatewayApiResource;
 module.exports = exports["default"];

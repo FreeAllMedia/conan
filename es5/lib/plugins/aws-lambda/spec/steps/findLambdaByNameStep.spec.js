@@ -1,46 +1,71 @@
-import Conan from "../../../../conan.js";
-import findLambdaByNameStep from "../../steps/findLambdaByNameStep.js";
-import sinon from "sinon";
+"use strict";
 
-describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
-	let conan,
-			context,
-			stepDone,
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-			awsResponseError,
-			awsResponseData,
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-			stepReturnError,
-			stepReturnData,
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-			parameters,
-			mockLambdaSpy;
+var _conanJs = require("../../../../conan.js");
 
-	const mockLambda = {
-		getFunction: sinon.spy((params, callback) => {
+var _conanJs2 = _interopRequireDefault(_conanJs);
+
+var _stepsFindLambdaByNameStepJs = require("../../steps/findLambdaByNameStep.js");
+
+var _stepsFindLambdaByNameStepJs2 = _interopRequireDefault(_stepsFindLambdaByNameStepJs);
+
+var _sinon = require("sinon");
+
+var _sinon2 = _interopRequireDefault(_sinon);
+
+describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
+	var conan = undefined,
+	    context = undefined,
+	    stepDone = undefined,
+	    should = undefined,
+	    awsResponseError = undefined,
+	    awsResponseData = undefined,
+	    stepReturnError = undefined,
+	    stepReturnData = undefined,
+	    parameters = undefined,
+	    mockLambdaSpy = undefined;
+
+	var mockLambda = {
+		getFunction: _sinon2["default"].spy(function (params, callback) {
 			callback(awsResponseError, awsResponseData);
 		})
 	};
 
-	class MockLambda {
-		constructor(config) {
-			mockLambdaSpy(config);
-			return mockLambda;
-		}
-	}
+	var MockLambda = function MockLambda(config) {
+		_classCallCheck(this, MockLambda);
 
-	const MockAWS = {
+		mockLambdaSpy(config);
+		return mockLambda;
+	};
+
+	var MockAWS = {
 		Lambda: MockLambda
 	};
 
-	beforeEach(done => {
-		conan = new Conan({
+	beforeEach(function (done) {
+		conan = new _conanJs2["default"]({
 			region: "us-east-1"
 		});
 
-		parameters = new class MockConanAwsLambda {
-			name() { return "TestFunction"; }
-		}();
+		parameters = new ((function () {
+			function MockConanAwsLambda() {
+				_classCallCheck(this, MockConanAwsLambda);
+			}
+
+			_createClass(MockConanAwsLambda, [{
+				key: "name",
+				value: function name() {
+					return "TestFunction";
+				}
+			}]);
+
+			return MockConanAwsLambda;
+		})())();
 
 		context = {
 			parameters: parameters,
@@ -57,46 +82,93 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 		};
 		awsResponseError = null;
 
-		mockLambdaSpy = sinon.spy();
+		mockLambdaSpy = _sinon2["default"].spy();
 
-		stepDone = (afterStepCallback) => {
-			return (error, data) => {
+		stepDone = function (afterStepCallback) {
+			return function (error, data) {
 				stepReturnError = error;
 				stepReturnData = data;
 				afterStepCallback();
 			};
 		};
 
-		findLambdaByNameStep(conan, context, stepDone(done));
+		(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, stepDone(done));
 	});
 
-	it("should be a function", () => {
-		(typeof findLambdaByNameStep).should.equal("function");
+	it("should be a function", function () {
+		(typeof _stepsFindLambdaByNameStepJs2["default"]).should.equal("function");
 	});
 
-	it("should set the designated region on the lambda client", () => {
+	it("should set the designated region on the lambda client", function () {
 		mockLambdaSpy.calledWith({
 			region: conan.config.region
-		}).should.be.true;
+		}).should.be["true"];
 	});
 
-	it("should call AWS with the designated lambda name parameter", () => {
+	it("should call AWS with the designated lambda name parameter", function () {
 		mockLambda.getFunction.calledWith({
 			FunctionName: context.parameters.name()
-		}).should.be.true;
+		}).should.be["true"];
 	});
 
-	describe("(Lambda is Found)", () => {
-		it("should return the found lambda id", () => {
+	describe("(No Lambda parameter)", function () {
+		it("should skip the call entirely", function (done) {
+			parameters = new ((function () {
+				function MockConanAwsLambda() {
+					_classCallCheck(this, MockConanAwsLambda);
+				}
+
+				_createClass(MockConanAwsLambda, [{
+					key: "lambda",
+					value: function lambda() {
+						return null;
+					}
+				}]);
+
+				return MockConanAwsLambda;
+			})())();
+
+			context = {
+				parameters: parameters,
+				libraries: {
+					AWS: {
+						Lambda: function Lambda() {
+							_classCallCheck(this, Lambda);
+						}
+					}
+				},
+				results: {}
+			};
+
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, results) {
+				(results.lambdaArn === null).should.be["true"];
+				done();
+			});
+		});
+	});
+
+	describe("(Lambda is Found)", function () {
+		it("should return the found lambda id", function () {
 			stepReturnData.should.eql({
 				lambdaArn: awsResponseData.Configuration.FunctionArn
 			});
 		});
 
-		it("should work indistinctly with a lambda parameters instead of a name parameter", done => {
-			parameters = new class MockConanAwsLambda {
-				lambda() { return "TestFunctionWithLambda"; }
-			}();
+		it("should work indistinctly with a lambda parameters instead of a name parameter", function (done) {
+			parameters = new ((function () {
+				function MockConanAwsLambda() {
+					_classCallCheck(this, MockConanAwsLambda);
+				}
+
+				_createClass(MockConanAwsLambda, [{
+					key: "lambda",
+					value: function lambda() {
+						return "TestFunctionWithLambda";
+					}
+				}]);
+
+				return MockConanAwsLambda;
+			})())();
 
 			context = {
 				parameters: parameters,
@@ -104,7 +176,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 				results: {}
 			};
 
-			findLambdaByNameStep(conan, context, (error, results) => {
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, results) {
 				results.should.eql({
 					lambdaArn: awsResponseData.Configuration.FunctionArn
 				});
@@ -113,28 +185,28 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 		});
 	});
 
-	describe("(Lambda is not Found)", () => {
-		beforeEach(done => {
+	describe("(Lambda is not Found)", function () {
+		beforeEach(function (done) {
 			awsResponseError = { statusCode: 404 };
-			findLambdaByNameStep(conan, context, stepDone(done));
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, stepDone(done));
 		});
 
-		it("should return the lambda arn as null", () => {
-			const expectedData = { lambdaArn: null };
+		it("should return the lambda arn as null", function () {
+			var expectedData = { lambdaArn: null };
 			stepReturnData.should.eql(expectedData);
 		});
 	});
 
-	describe("(Unknown Error is Returned)", () => {
-		let errorMessage;
+	describe("(Unknown Error is Returned)", function () {
+		var errorMessage = undefined;
 
-		beforeEach(done => {
+		beforeEach(function (done) {
 			errorMessage = "AWS returned status code 401";
 			awsResponseError = { statusCode: 401, message: errorMessage };
-			findLambdaByNameStep(conan, context, stepDone(done));
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, stepDone(done));
 		});
 
-		it("should return an error which stops the step runner", () => {
+		it("should return an error which stops the step runner", function () {
 			stepReturnError.message.should.eql(errorMessage);
 		});
 	});
