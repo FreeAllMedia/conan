@@ -1,7 +1,7 @@
 {
   "generatorVersion": "0.2.21",
   "name": "conan",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Barbarically simple deployment system.",
   "main": "es5/lib/conan.js",
   "scripts": {
@@ -12,7 +12,20 @@
     "url": "https://github.com/FreeAllMedia/conan.git"
   },
   "keywords": [
-    "conan"
+    "conan",
+		"aws",
+		"lambda",
+		"deploy",
+		"deployment",
+		"deployer",
+		"serverless",
+		"api",
+		"gateway",
+		"amazon",
+		"web",
+		"services",
+		"aurora",
+		"dynamodb"
   ],
   "author": "Free All Media, LLC",
 	"contributors": [
