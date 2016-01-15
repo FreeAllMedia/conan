@@ -1,46 +1,37 @@
-"use strict";
+import flowsync from "flowsync";
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports["default"] = findMethodResponseStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-var _flowsync = require("flowsync");
-
-var _flowsync2 = _interopRequireDefault(_flowsync);
-
-function findMethodResponseStep(conan, context, done) {
-	var restApiId = context.results.restApiId;
-	var resourceId = context.results.apiResourceId;
-	var statusCodes = context.parameters.statusCodes();
-	var existingStatusCodes = [];
-	if (restApiId && resourceId && Array.isArray(statusCodes)) {
-		(function () {
-			var api = new context.libraries.AWS.APIGateway({
+export default function findMethodResponseStep(conan, context, done) {
+	const restApiId = context.results.restApiId;
+	const resourceId = context.results.apiResourceId;
+	const statusCodes = context.parameters.statusCodes();
+	const existingStatusCodes = [];
+	if(restApiId
+		&& resourceId
+		&& Array.isArray(statusCodes)) {
+			const api = new context.libraries.AWS.APIGateway({
 				region: conan.config.region
 			});
 
-			_flowsync2["default"].eachSeries(statusCodes, function (statusCode, next) {
-				var apiParameters = {
+			flowsync.eachSeries(statusCodes, (statusCode, next) => {
+				const apiParameters = {
 					httpMethod: context.parameters.method(),
-					resourceId: resourceId,
-					restApiId: restApiId,
-					statusCode: "" + statusCode
+					resourceId,
+					restApiId,
+					statusCode: `${statusCode}`
 				};
-				api.getMethodResponse(apiParameters, function (error, response) {
-					if (response) {
-						existingStatusCodes.push(response.statusCode);
-						next();
-					} else if (error && error.statusCode === 404) {
-						next();
-					} else {
-						next(error);
-					}
-				});
-			}, function (error) {
-				if (error) {
+				api.getMethodResponse(apiParameters,
+					(error, response) => {
+						if(response) {
+							existingStatusCodes.push(response.statusCode);
+							next();
+						} else if(error && error.statusCode === 404) {
+							next();
+						} else{
+							next(error);
+						}
+					});
+			}, (error) => {
+				if(error) {
 					done(error);
 				} else {
 					done(null, {
@@ -48,10 +39,7 @@ function findMethodResponseStep(conan, context, done) {
 					});
 				}
 			});
-		})();
 	} else {
 		done();
 	}
 }
-
-module.exports = exports["default"];

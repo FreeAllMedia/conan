@@ -3,73 +3,65 @@
 * If it's necessary it builds a queue with resource tokens that needs to be created
 * and returns the id of the closest existing parent resource, or the root
 */
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports["default"] = findApiResourceByPathStep;
-
-function findApiResourceByPathStep(conan, context, done) {
-	var restApiId = context.results.restApiId;
-	var resourceFullPath = context.parameters.path();
-	var newApiResources = [];
-	if (restApiId) {
-		var api = new context.libraries.AWS.APIGateway({
+export default function findApiResourceByPathStep(conan, context, done) {
+	const restApiId = context.results.restApiId;
+	const resourceFullPath = context.parameters.path();
+	const newApiResources = [];
+	if(restApiId) {
+		const api = new context.libraries.AWS.APIGateway({
 			region: conan.config.region
 		});
-		var apiParameters = {
-			restApiId: restApiId,
+		const apiParameters = {
+			restApiId,
 			limit: 500
 		};
-		api.getResources(apiParameters, function (error, response) {
-			if (response && response.items) {
-				var resource = response.items.find(function (currentResource) {
-					return currentResource.path === resourceFullPath;
-				});
-				if (resource) {
-					var results = { newApiResources: newApiResources, apiResourceId: resource.id, apiResourceParentId: resource.parentId };
-					done(null, results);
-				} else {
-					(function () {
+		api.getResources(apiParameters,
+			(error, response) => {
+				if(response && response.items) {
+					const resource = response.items.find((currentResource) => {
+						return (currentResource.path === resourceFullPath);
+					});
+					if(resource) {
+						const results = { newApiResources, apiResourceId: resource.id, apiResourceParentId: resource.parentId };
+						done(null, results);
+					} else {
 						// partial matching
-						var pathTokens = resourceFullPath.split("/");
-						var accumulatedResourcePath = "";
-						var lastResourceFound = undefined;
-						pathTokens.forEach(function (pathToken) {
-							if (pathToken !== "") {
-								accumulatedResourcePath += "/" + pathToken;
-								var lastResourceFoundTmp = response.items.find(function (currentResource) {
-									return currentResource.path === accumulatedResourcePath;
-								});
-								if (lastResourceFoundTmp) {
-									lastResourceFound = lastResourceFoundTmp;
-								} else {
-									newApiResources.push(pathToken);
+						const pathTokens = resourceFullPath.split("/");
+						let accumulatedResourcePath = "";
+						let lastResourceFound;
+						pathTokens.forEach(
+							(pathToken) => {
+								if(pathToken !== "") {
+									accumulatedResourcePath += `/${pathToken}`;
+									const lastResourceFoundTmp = response.items.find((currentResource) => {
+										return (currentResource.path === accumulatedResourcePath);
+									});
+									if(lastResourceFoundTmp) {
+										lastResourceFound = lastResourceFoundTmp;
+									} else {
+										newApiResources.push(pathToken);
+									}
 								}
 							}
-						});
-						var results = { newApiResources: newApiResources };
-						if (lastResourceFound) {
+						);
+						const results = { newApiResources };
+						if(lastResourceFound) {
 							results.apiResourceParentId = lastResourceFound.id;
 						} else {
 							// resource unexisting at all, find root
-							var rootResource = response.items.find(function (currentResource) {
-								return currentResource.path === "/";
+							const rootResource = response.items.find((currentResource) => {
+								return (currentResource.path === "/");
 							});
 							results.apiResourceParentId = rootResource.id;
 						}
 						results.apiResourceId = null;
 						done(null, results);
-					})();
+					}
+				} else {
+					done(error, {apiResourceId: null});
 				}
-			} else {
-				done(error, { apiResourceId: null });
-			}
-		});
+			});
 	} else {
 		done(new Error("There is no api defined as a previous step or there was an error o that step."));
 	}
 }
-
-module.exports = exports["default"];

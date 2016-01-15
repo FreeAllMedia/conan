@@ -1,55 +1,39 @@
-"use strict";
+import Conan from "../../../../conan.js";
+import ConanAwsApiGateway from "../../components/conanAwsApiGateway.js";
+import ConanAwsApiGatewayStage from "../../components/conanAwsApiGatewayStage.js";
+import ConanComponent from "../../../../components/conanComponent.js";
+import inflect from "jargon";
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+describe("ConanAwsApiGateway(conan, name)", () => {
+	let api;
+	let name;
+	let conan;
 
-var _conanJs = require("../../../../conan.js");
-
-var _conanJs2 = _interopRequireDefault(_conanJs);
-
-var _componentsConanAwsApiGatewayJs = require("../../components/conanAwsApiGateway.js");
-
-var _componentsConanAwsApiGatewayJs2 = _interopRequireDefault(_componentsConanAwsApiGatewayJs);
-
-var _componentsConanAwsApiGatewayStageJs = require("../../components/conanAwsApiGatewayStage.js");
-
-var _componentsConanAwsApiGatewayStageJs2 = _interopRequireDefault(_componentsConanAwsApiGatewayStageJs);
-
-var _componentsConanComponentJs = require("../../../../components/conanComponent.js");
-
-var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
-
-var _jargon = require("jargon");
-
-var _jargon2 = _interopRequireDefault(_jargon);
-
-describe("ConanAwsApiGateway(conan, name)", function () {
-	var api = undefined;
-	var name = undefined;
-	var conan = undefined;
-
-	beforeEach(function () {
+	beforeEach(() => {
 		name = "MyAPI";
 
-		conan = new _conanJs2["default"]();
-		api = new _componentsConanAwsApiGatewayJs2["default"](conan, name);
+		conan = new Conan();
+		api = new ConanAwsApiGateway(conan, name);
 	});
 
-	it("should extend ConanComponent", function () {
-		api.should.be.instanceOf(_componentsConanComponentJs2["default"]);
+	it("should extend ConanComponent", () => {
+		api.should.be.instanceOf(ConanComponent);
 	});
 
-	it("should save conan to .conan", function () {
+	it("should save conan to .conan", () => {
 		api.conan.should.eql(conan);
 	});
 
-	describe("(parameters)", function () {
-		["name"].forEach(function (parameterName) {
-			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
+	describe("(parameters)", () => {
+		[
+			"name"
+		].forEach((parameterName) => {
+			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
 
-			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
-				it("should save new" + parameterNamePascalCase, function () {
-					var component = new _componentsConanAwsApiGatewayJs2["default"](conan);
-					var testValue = "abc123";
+			describe(`.${parameterName}(new${parameterNamePascalCase})`, () => {
+				it(`should save new${parameterNamePascalCase}`, () => {
+					let component = new ConanAwsApiGateway(conan);
+					const testValue = "abc123";
 					component = component[parameterName](testValue);
 					component[parameterName]().should.eql(testValue);
 				});
@@ -57,61 +41,61 @@ describe("ConanAwsApiGateway(conan, name)", function () {
 		});
 	});
 
-	describe("(steps)", function () {
-		it("should add a find api by name step", function () {
-			var step = conan.steps.findByName("findApiByNameStep");
+	describe("(steps)", () => {
+		it("should add a find api by name step", () => {
+			const step = conan.steps.findByName("findApiByNameStep");
 			step.parameters.should.eql(api);
 		});
 
-		it("should add a update api step", function () {
-			var step = conan.steps.findByName("updateApiStep");
+		it("should add a update api step", () => {
+			const step = conan.steps.findByName("updateApiStep");
 			step.parameters.should.eql(api);
 		});
 
-		it("should add a create api step", function () {
-			var step = conan.steps.findByName("createApiStep");
+		it("should add a create api step", () => {
+			const step = conan.steps.findByName("createApiStep");
 			step.parameters.should.eql(api);
 		});
 	});
 
-	describe("api.stage(name)", function () {
-		var stage = undefined;
+	describe("api.stage(name)", () => {
+		let stage;
 
-		beforeEach(function () {
+		beforeEach(() => {
 			name = "MyStage";
 
 			stage = api.stage(name);
 		});
 
-		it("should return an instance of ConanAwsApiGatewayStage", function () {
-			stage.should.be.instanceOf(_componentsConanAwsApiGatewayStageJs2["default"]);
+		it("should return an instance of ConanAwsApiGatewayStage", () => {
+			stage.should.be.instanceOf(ConanAwsApiGatewayStage);
 		});
 
-		it("should pass conan to the ConanAwsApiGatewayStage constructor", function () {
+		it("should pass conan to the ConanAwsApiGatewayStage constructor", () => {
 			stage.conan.should.eql(conan);
 		});
 
-		it("should pass the stage name to the ConanAwsApiGateway constructor", function () {
+		it("should pass the stage name to the ConanAwsApiGateway constructor", () => {
 			stage.name().should.eql(name);
 		});
 	});
 
-	describe("api.api(name)", function () {
-		beforeEach(function () {
+	describe("api.api(name)", () => {
+		beforeEach(() => {
 			name = "MyAPI";
 
 			api = api.api(name);
 		});
 
-		it("should return an instance of ConanAwsApiGateway", function () {
-			api.should.be.instanceOf(_componentsConanAwsApiGatewayJs2["default"]);
+		it("should return an instance of ConanAwsApiGateway", () => {
+			api.should.be.instanceOf(ConanAwsApiGateway);
 		});
 
-		it("should pass conan to the ConanAwsApiGateway constructor", function () {
+		it("should pass conan to the ConanAwsApiGateway constructor", () => {
 			api.conan.should.eql(conan);
 		});
 
-		it("should pass the api name to the ConanAwsApiGateway constructor", function () {
+		it("should pass the api name to the ConanAwsApiGateway constructor", () => {
 			api.name().should.eql(name);
 		});
 	});

@@ -1,64 +1,40 @@
-"use strict";
+import Conan from "../../../../conan.js";
+import findRoleByNameStep from "../../steps/findRoleByNameStep.js";
+import sinon from "sinon";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+describe(".findRoleByNameStep(conan, context, stepDone)", () => {
+	let conan,
+			context,
+			stepDone,
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+			awsResponseError,
+			awsResponseData,
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+			stepReturnError,
+			stepReturnData,
 
-var _conanJs = require("../../../../conan.js");
+			parameters;
 
-var _conanJs2 = _interopRequireDefault(_conanJs);
-
-var _stepsFindRoleByNameStepJs = require("../../steps/findRoleByNameStep.js");
-
-var _stepsFindRoleByNameStepJs2 = _interopRequireDefault(_stepsFindRoleByNameStepJs);
-
-var _sinon = require("sinon");
-
-var _sinon2 = _interopRequireDefault(_sinon);
-
-describe(".findRoleByNameStep(conan, context, stepDone)", function () {
-	var conan = undefined,
-	    context = undefined,
-	    stepDone = undefined,
-	    awsResponseError = undefined,
-	    awsResponseData = undefined,
-	    stepReturnError = undefined,
-	    stepReturnData = undefined,
-	    parameters = undefined;
-
-	var mockIam = {
-		getRole: _sinon2["default"].spy(function (params, callback) {
+	const mockIam = {
+		getRole: sinon.spy((params, callback) => {
 			callback(awsResponseError, awsResponseData);
 		})
 	};
 
-	var MockAWS = {
-		IAM: _sinon2["default"].spy(function () {
+	const MockAWS = {
+		IAM: sinon.spy(() => {
 			return mockIam;
 		})
 	};
 
-	beforeEach(function (done) {
-		conan = new _conanJs2["default"]({
+	beforeEach(done => {
+		conan = new Conan({
 			region: "us-east-1"
 		});
 
-		parameters = new ((function () {
-			function MockConanAwsLambda() {
-				_classCallCheck(this, MockConanAwsLambda);
-			}
-
-			_createClass(MockConanAwsLambda, [{
-				key: "role",
-				value: function role() {
-					return "TestFunction";
-				}
-			}]);
-
-			return MockConanAwsLambda;
-		})())();
+		parameters = new class MockConanAwsLambda {
+			role() { return "TestFunction"; }
+		}();
 
 		context = {
 			parameters: parameters,
@@ -74,63 +50,63 @@ describe(".findRoleByNameStep(conan, context, stepDone)", function () {
 		};
 		awsResponseError = null;
 
-		stepDone = function (afterStepCallback) {
-			return function (error, data) {
+		stepDone = (afterStepCallback) => {
+			return (error, data) => {
 				stepReturnError = error;
 				stepReturnData = data;
 				afterStepCallback();
 			};
 		};
 
-		(0, _stepsFindRoleByNameStepJs2["default"])(conan, context, stepDone(done));
+		findRoleByNameStep(conan, context, stepDone(done));
 	});
 
-	it("should be a function", function () {
-		(typeof _stepsFindRoleByNameStepJs2["default"]).should.equal("function");
+	it("should be a function", () => {
+		(typeof findRoleByNameStep).should.equal("function");
 	});
 
-	it("should set the designated region on the lambda client", function () {
+	it("should set the designated region on the lambda client", () => {
 		MockAWS.IAM.calledWith({
 			region: conan.config.region
-		}).should.be["true"];
+		}).should.be.true;
 	});
 
-	it("should call AWS with the designated role name parameter", function () {
+	it("should call AWS with the designated role name parameter", () => {
 		mockIam.getRole.calledWith({
 			RoleName: context.parameters.role()
-		}).should.be["true"];
+		}).should.be.true;
 	});
 
-	describe("(Role is Found)", function () {
-		it("should return the found role id", function () {
+	describe("(Role is Found)", () => {
+		it("should return the found role id", () => {
 			stepReturnData.should.eql({
 				roleArn: awsResponseData.Role.Arn
 			});
 		});
 	});
 
-	describe("(Role is not Found)", function () {
-		beforeEach(function (done) {
+	describe("(Role is not Found)", () => {
+		beforeEach(done => {
 			awsResponseError = { statusCode: 404 };
-			(0, _stepsFindRoleByNameStepJs2["default"])(conan, context, stepDone(done));
+			findRoleByNameStep(conan, context, stepDone(done));
 		});
 
-		it("should return the lambda id as null", function () {
-			var expectedData = { roleArn: null };
+		it("should return the lambda id as null", () => {
+			const expectedData = { roleArn: null };
 			stepReturnData.should.eql(expectedData);
 		});
 	});
 
-	describe("(Unknown Error is Returned)", function () {
-		var errorMessage = undefined;
+	describe("(Unknown Error is Returned)", () => {
+		let errorMessage;
 
-		beforeEach(function (done) {
+		beforeEach(done => {
 			errorMessage = "AWS returned status code 401";
 			awsResponseError = { statusCode: 401, message: errorMessage };
-			(0, _stepsFindRoleByNameStepJs2["default"])(conan, context, stepDone(done));
+			findRoleByNameStep(conan, context, stepDone(done));
 		});
 
-		it("should return an error which stops the step runner", function () {
+		it("should return an error which stops the step runner", () => {
 			stepReturnError.message.should.eql(errorMessage);
 		});
 	});

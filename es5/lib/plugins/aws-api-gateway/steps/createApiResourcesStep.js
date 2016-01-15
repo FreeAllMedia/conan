@@ -1,50 +1,40 @@
-"use strict";
+import flowsync from "flowsync";
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports["default"] = createApiResourcesStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-var _flowsync = require("flowsync");
-
-var _flowsync2 = _interopRequireDefault(_flowsync);
-
-function createApiResourcesStep(conan, context, done) {
-	var restApiId = context.results.restApiId;
-	var parentId = context.results.apiResourceParentId;
-	var leafResourceId = null;
-	if (restApiId && parentId && Array.isArray(context.results.newApiResources)) {
-		(function () {
-			var api = new context.libraries.AWS.APIGateway({
-				region: conan.config.region
-			});
-			_flowsync2["default"].eachSeries(context.results.newApiResources, function (pathPart, nextResource) {
-				var apiParameters = {
-					restApiId: restApiId,
-					parentId: parentId,
-					pathPart: pathPart
-				};
-				api.createResource(apiParameters, function (error, response) {
-					if (response) {
-						leafResourceId = response.id;
-						// override with the new parent id for the next resource
-						parentId = response.id;
+export default function createApiResourcesStep(conan, context, done) {
+	const restApiId = context.results.restApiId;
+	let parentId = context.results.apiResourceParentId;
+	let leafResourceId = null;
+	if(restApiId
+			&& parentId
+			&& Array.isArray(context.results.newApiResources)) {
+		const api = new context.libraries.AWS.APIGateway({
+			region: conan.config.region
+		});
+		flowsync.eachSeries(context.results.newApiResources,
+				(pathPart, nextResource) => {
+					const apiParameters = {
+						restApiId,
+						parentId,
+						pathPart
+					};
+					api.createResource(apiParameters,
+						(error, response) => {
+							if(response) {
+								leafResourceId = response.id;
+								// override with the new parent id for the next resource
+								parentId = response.id;
+							}
+							nextResource(error);
+						});
+				},
+				(error) => {
+					let results = {};
+					if(leafResourceId || error) {
+						results.apiResourceId = leafResourceId;
 					}
-					nextResource(error);
+					done(error, results);
 				});
-			}, function (error) {
-				var results = {};
-				if (leafResourceId || error) {
-					results.apiResourceId = leafResourceId;
-				}
-				done(error, results);
-			});
-		})();
 	} else {
 		done(null, { apiResourceId: null });
 	}
 }
-
-module.exports = exports["default"];

@@ -1,61 +1,50 @@
-"use strict";
+import flowsync from "flowsync";
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports["default"] = putMethodResponseStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-var _flowsync = require("flowsync");
-
-var _flowsync2 = _interopRequireDefault(_flowsync);
-
-function putMethodResponseStep(conan, context, done) {
-	var restApiId = context.results.restApiId;
-	var resourceId = context.results.apiResourceId;
-	var statusCodes = context.parameters.statusCodes();
-	var responseStatusCodes = context.results.responseStatusCodes;
-	if (restApiId && resourceId && Array.isArray(responseStatusCodes) && Array.isArray(statusCodes)) {
-		(function () {
-			var api = new context.libraries.AWS.APIGateway({
-				region: conan.config.region
-			});
-			// TODO: iterate async through param statuses
-			_flowsync2["default"].eachSeries(statusCodes, function (statusCode, next) {
-				var status = responseStatusCodes.find(function (currentStatusCode) {
-					return currentStatusCode === "" + statusCode;
+export default function putMethodResponseStep(conan, context, done) {
+	const restApiId = context.results.restApiId;
+	let resourceId = context.results.apiResourceId;
+	const statusCodes = context.parameters.statusCodes();
+	const responseStatusCodes = context.results.responseStatusCodes;
+	if(restApiId
+			&& resourceId
+			&& Array.isArray(responseStatusCodes)
+			&& Array.isArray(statusCodes)) {
+		const api = new context.libraries.AWS.APIGateway({
+			region: conan.config.region
+		});
+		// TODO: iterate async through param statuses
+		flowsync.eachSeries(statusCodes, (statusCode, next) => {
+				const status = responseStatusCodes.find((currentStatusCode) => {
+					return currentStatusCode === `${statusCode}`;
 				});
 				//if the specified status is new
-				if (!status) {
-					var apiParameters = {
-						restApiId: restApiId,
-						resourceId: resourceId,
+				if(!status) {
+					const apiParameters = {
+						restApiId,
+						resourceId,
 						httpMethod: context.parameters.method(),
-						statusCode: "" + statusCode,
+						statusCode: `${statusCode}`,
 						responseParameters: {}
 					};
-					api.putMethodResponse(apiParameters, function (error, response) {
-						if (response) {
-							next();
-						} else {
-							next(error);
-						}
-					});
+					api.putMethodResponse(apiParameters,
+						(error, response) => {
+							if(response) {
+								next();
+							} else {
+								next(error);
+							}
+						});
 				} else {
 					next();
 				}
-			}, function (error) {
-				if (error) {
+			}, (error) => {
+				if(error) {
 					done(error);
 				} else {
 					done(null, {});
 				}
 			});
-		})();
 	} else {
-		done(null, {});
+		done(null, { });
 	}
 }
-
-module.exports = exports["default"];

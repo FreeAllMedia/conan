@@ -1,17 +1,10 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports["default"] = findLambdaByNameStep;
-
-function findLambdaByNameStep(conan, context, stepDone) {
-	var AWS = context.libraries.AWS;
-	var lambda = new AWS.Lambda({
+export default function findLambdaByNameStep(conan, context, stepDone) {
+	const AWS = context.libraries.AWS;
+	const lambda = new AWS.Lambda({
 		region: conan.config.region
 	});
-	var lambdaName = undefined;
-	if (typeof context.parameters.name === "function") {
+	let lambdaName;
+	if(typeof context.parameters.name === "function") {
 		lambdaName = context.parameters.name();
 	} else {
 		lambdaName = context.parameters.lambda();
@@ -19,7 +12,7 @@ function findLambdaByNameStep(conan, context, stepDone) {
 
 	lambda.getFunction({
 		"FunctionName": lambdaName
-	}, function (error, responseData) {
+	}, (error, responseData) => {
 		if (error && error.statusCode === 404) {
 			stepDone(null, {
 				lambdaArn: null
@@ -33,5 +26,3 @@ function findLambdaByNameStep(conan, context, stepDone) {
 		}
 	});
 }
-
-module.exports = exports["default"];
