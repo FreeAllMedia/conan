@@ -1,3 +1,7 @@
+if(!global._babelPolyfill) {
+	require("babel-polyfill");
+}
+
 import ConanSteps from "./components/conanSteps.js";
 import ConanComponent from "./components/conanComponent.js";
 

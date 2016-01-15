@@ -9,6 +9,7 @@ node_js:
 # - 'iojs-v2'
 script: npm test
 before_script:
+- gulp -v
 - npm install
 after_success:
 - ./node_modules/coveralls/bin/coveralls.js < ./lcov.info
