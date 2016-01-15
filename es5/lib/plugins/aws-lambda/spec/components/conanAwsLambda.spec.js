@@ -55,7 +55,7 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 	});
 
 	describe("(parameters)", function () {
-		["name", "filePath", "role", "runtime", "handler", "description", "memorySize", "timeout", "publish", "packages", "bucket", "dependencies"].forEach(function (parameterName) {
+		["name", "filePath", "role", "runtime", "description", "memorySize", "timeout", "publish", "packages", "bucket"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function describeComponentParameter() {
@@ -69,10 +69,44 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 		});
 	});
 
+	describe("(multiple-value parameters)", function () {
+		["handler"].forEach(function (parameterName) {
+			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
+
+			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
+				it("should save new" + parameterNamePascalCase, function () {
+					var component = new _componentsConanAwsLambdaJs2["default"](conan);
+					var testValueOne = "abc123";
+					var testValueTwo = "abc123";
+					component = component[parameterName](testValueOne, testValueTwo);
+					component[parameterName]().should.eql([testValueOne, testValueTwo]);
+				});
+			});
+		});
+	});
+
+	describe("(aggregate-value parameters)", function () {
+		["dependencies"].forEach(function (parameterName) {
+			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
+
+			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
+				it("should save new" + parameterNamePascalCase, function () {
+					var component = new _componentsConanAwsLambdaJs2["default"](conan);
+					var testValueOne = "abc123";
+					var testValueTwo = "abc123";
+					var testValueThree = "abc123";
+					component[parameterName](testValueOne, testValueTwo);
+					component[parameterName](testValueThree);
+					component[parameterName]().should.eql([testValueOne, testValueTwo, testValueThree]);
+				});
+			});
+		});
+	});
+
 	describe("(default values)", function () {
 		it("should set the handler to 'handler' by default", function () {
 			lambda = new _componentsConanAwsLambdaJs2["default"](conan, name, filePath);
-			lambda.handler().should.eql("handler");
+			lambda.handler().should.eql(["handler"]);
 		});
 		it("should set the runtime to 'nodejs' by default", function () {
 			lambda.runtime().should.eql("nodejs");

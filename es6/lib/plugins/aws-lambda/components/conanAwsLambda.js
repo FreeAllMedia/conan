@@ -12,7 +12,6 @@ export default class ConanAwsLambda extends ConanComponent {
 		this.parameters(
 			"name",
 			"filePath",
-			"handler",
 			"runtime",
 			"role",
 			"description",
@@ -20,7 +19,14 @@ export default class ConanAwsLambda extends ConanComponent {
 			"timeout",
 			"publish",
 			"bucket",
-			"packages",
+			"packages"
+		);
+
+		this.multipleValueParameters(
+			"handler"
+		);
+
+		this.aggregateValueParameters(
 			"dependencies"
 		);
 

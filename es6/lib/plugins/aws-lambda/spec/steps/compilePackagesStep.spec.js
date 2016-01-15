@@ -33,7 +33,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", () => {
 
 	const mockS3GetObjectRequest = {
 		createReadStream: () => {
-			return fileSystem.createReadStream(__dirname + "/fixtures/packages.zip");
+			return fileSystem.createReadStream(__dirname + "/../fixtures/packages.zip");
 		}
 	};
 

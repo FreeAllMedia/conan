@@ -27,8 +27,11 @@ function upsertLambdaStep(conan, context, stepDone) {
 
 	var lambdaZipBuffer = _fs2["default"].readFileSync(context.results.lambdaZipFilePath);
 
-	var fileName = _path2["default"].parse(conanAwsLambda.filePath()).name;
-	var handlerString = fileName + "." + conanAwsLambda.handler();
+	var lambdaExtension = _path2["default"].extname(conanAwsLambda.filePath());
+	var fileName = _path2["default"].basename(conanAwsLambda.filePath(), lambdaExtension);
+
+	var handlerName = conanAwsLambda.handler()[0];
+	var handlerString = fileName + "." + handlerName;
 
 	if (lambdaIsNew) {
 		var createFunctionParameters = {
@@ -46,11 +49,12 @@ function upsertLambdaStep(conan, context, stepDone) {
 
 		lambda.createFunction(createFunctionParameters, function (createFunctionError, data) {
 			if (createFunctionError) {
-				throw createFunctionError;
+				stepDone(createFunctionError);
+			} else {
+				stepDone(null, {
+					lambdaArn: data.FunctionArn
+				});
 			}
-			stepDone(null, {
-				lambdaArn: data.FunctionArn
-			});
 		});
 	} else {
 		var updateConfigurationParameters = {
@@ -63,21 +67,23 @@ function upsertLambdaStep(conan, context, stepDone) {
 		};
 		lambda.updateFunctionConfiguration(updateConfigurationParameters, function (updateConfigurationError) {
 			if (updateConfigurationError) {
-				throw updateConfigurationError;
-			}
-			var updateCodeParameters = {
-				ZipFile: lambdaZipBuffer,
-				FunctionName: conanAwsLambda.name(),
-				Publish: conanAwsLambda.publish()
-			};
-			lambda.updateFunctionCode(updateCodeParameters, function (updateCodeError, data) {
-				if (updateCodeError) {
-					throw updateCodeError;
-				}
-				stepDone(null, {
-					lambdaArn: lambdaArn
+				stepDone(updateConfigurationError);
+			} else {
+				var updateCodeParameters = {
+					ZipFile: lambdaZipBuffer,
+					FunctionName: conanAwsLambda.name(),
+					Publish: conanAwsLambda.publish()
+				};
+				lambda.updateFunctionCode(updateCodeParameters, function (updateCodeError) {
+					if (updateCodeError) {
+						stepDone(updateCodeError);
+					} else {
+						stepDone(null, {
+							lambdaArn: lambdaArn
+						});
+					}
 				});
-			});
+			}
 		});
 	}
 }

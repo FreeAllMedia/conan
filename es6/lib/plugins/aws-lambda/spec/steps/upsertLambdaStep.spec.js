@@ -36,7 +36,6 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 			createFunctionParameters,
 
-			fileName,
 			handlerString;
 
 	const mockLambda = {
@@ -71,12 +70,12 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 		lambdaArn = "arn:aws:lambda:us-east-1:123895237541:function:SomeLambda";
 		roleArn = "arn:aws:lambda:us-east-1:123895237541:role:SomeRole";
 
-		lambdaFilePath = __dirname + "/fixtures/lambda.js";
-		lambdaZipFilePath = __dirname + "/fixtures/lambda.zip";
+		lambdaFilePath = __dirname + "/../fixtures/lambda.js";
+		lambdaZipFilePath = __dirname + "/../fixtures/lambda.zip";
 
 		parameters = new class MockConanAwsLambda {
 			name() { 				return "TestFunction"; }
-			handler() { 		return "handler"; }
+			handler() { 		return ["handler"]; }
 			description() { return "This is my Lambda!"; }
 			memorySize() { 	return 128; }
 			publish() { 		return true; }
@@ -112,7 +111,8 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 		mockLambdaSpy = sinon.spy();
 
-		fileName = path.parse(parameters.filePath()).name;
+		const lambdaExtension = path.extname(parameters.filePath());
+		const fileName = path.basename(parameters.filePath(), lambdaExtension);
 		handlerString = `${fileName}.${parameters.handler()}`;
 
 		stepDone = (afterStepCallback) => {
@@ -142,7 +142,6 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 
 	describe("(When Lambda is NOT New)", () => {
 		it("should call AWS to update the lambda configuration with the designated parameters", () => {
-
 			const updateConfigurationParameters = {
 				FunctionName: parameters.name(),
 				Handler: handlerString,
@@ -184,10 +183,10 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 				updateFunctionCodeError.statusCode = 400;
 			});
 
-			it("should throw an error", () => {
-				() => {
-					upsertLambdaStep(conan, context);
-				}.should.throw();
+			it("should return an error", () => {
+				upsertLambdaStep(conan, context, (error) => {
+					error.should.eql(updateFunctionCodeError);
+				});
 			});
 		});
 
@@ -197,10 +196,10 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 				updateFunctionConfigurationError.statusCode = 400;
 			});
 
-			it("should throw an error", () => {
-				() => {
-					upsertLambdaStep(conan, context);
-				}.should.throw();
+			it("should return an error", () => {
+				upsertLambdaStep(conan, context, (error) => {
+					error.should.eql(updateFunctionConfigurationError);
+				});
 			});
 		});
 	});
@@ -228,7 +227,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 		});
 
 		it("should call AWS with the designated lambda code", () => {
-			const expectedCodeBuffer = fileSystem.readFileSync(__dirname + "/fixtures/lambda.zip");
+			const expectedCodeBuffer = fileSystem.readFileSync(__dirname + "/../fixtures/lambda.zip");
 
 			const codeBuffer = createFunctionParameters.Code.ZipFile;
 
@@ -249,10 +248,10 @@ describe(".upsertLambdaStep(conan, context, stepDone)", () => {
 				createFunctionError.statusCode = 400;
 			});
 
-			it("should throw an error", () => {
-				() => {
-					upsertLambdaStep(conan, context);
-				}.should.throw();
+			it("should return an error", () => {
+				upsertLambdaStep(conan, context, (error) => {
+					error.should.eql(createFunctionError);
+				});
 			});
 		});
 

@@ -79,8 +79,7 @@ describe("conanSteps.start(callback)", () => {
 		beforeEach(() => {
 			conan = new Conan();
 			steps = new ConanSteps(conan);
-			stepError = new Error("a step error");
-
+			stepError = new Error("Some step error");
 
 			stepOne = sinon.spy((parentConan, context, stepDone) => {
 				stepDone(stepError);

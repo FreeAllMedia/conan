@@ -95,7 +95,7 @@ describe("conanSteps.start(callback)", function () {
 		beforeEach(function () {
 			conan = new _libConanJs2["default"]();
 			steps = new _libComponentsConanStepsJs2["default"](conan);
-			stepError = new Error("a step error");
+			stepError = new Error("Some step error");
 
 			stepOne = _sinon2["default"].spy(function (parentConan, context, stepDone) {
 				stepDone(stepError);

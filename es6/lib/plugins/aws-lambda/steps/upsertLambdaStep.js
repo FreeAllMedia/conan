@@ -13,8 +13,11 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 
 	const lambdaZipBuffer = fileSystem.readFileSync(context.results.lambdaZipFilePath);
 
-	const fileName = path.parse(conanAwsLambda.filePath()).name;
-	const handlerString = `${fileName}.${conanAwsLambda.handler()}`;
+	const lambdaExtension = path.extname(conanAwsLambda.filePath());
+	const fileName = path.basename(conanAwsLambda.filePath(), lambdaExtension);
+
+	const handlerName = conanAwsLambda.handler()[0];
+	const handlerString = `${fileName}.${handlerName}`;
 
 	if (lambdaIsNew) {
 		const createFunctionParameters = {
@@ -32,11 +35,12 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 
 		lambda.createFunction(createFunctionParameters, (createFunctionError, data) => {
 			if (createFunctionError) {
-				throw createFunctionError;
+				stepDone(createFunctionError);
+			} else {
+				stepDone(null, {
+					lambdaArn: data.FunctionArn
+				});
 			}
-			stepDone(null, {
-				lambdaArn: data.FunctionArn
-			});
 		});
 	} else {
 		const updateConfigurationParameters = {
@@ -48,18 +52,24 @@ export default function upsertLambdaStep(conan, context, stepDone) {
 			Timeout: conanAwsLambda.timeout()
 		};
 		lambda.updateFunctionConfiguration(updateConfigurationParameters, (updateConfigurationError) => {
-			if (updateConfigurationError) { throw updateConfigurationError; }
-			const updateCodeParameters = {
-				ZipFile: lambdaZipBuffer,
-				FunctionName: conanAwsLambda.name(),
-				Publish: conanAwsLambda.publish()
-			};
-			lambda.updateFunctionCode(updateCodeParameters, (updateCodeError, data) => {
-				if (updateCodeError) { throw updateCodeError; }
-				stepDone(null, {
-					lambdaArn: lambdaArn
+			if (updateConfigurationError) {
+				stepDone(updateConfigurationError);
+			} else {
+				const updateCodeParameters = {
+					ZipFile: lambdaZipBuffer,
+					FunctionName: conanAwsLambda.name(),
+					Publish: conanAwsLambda.publish()
+				};
+				lambda.updateFunctionCode(updateCodeParameters, (updateCodeError) => {
+					if (updateCodeError) {
+						stepDone(updateCodeError);
+					} else {
+						stepDone(null, {
+							lambdaArn: lambdaArn
+						});
+					}
 				});
-			});
+			}
 		});
 	}
 }

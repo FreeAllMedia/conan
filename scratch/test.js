@@ -1,7 +1,11 @@
 /* eslint-disable no-console */
-const Conan = require("../es5/lib/conan.js");
-const ConanAwsLambdaPlugin = require("../es5/lib/plugins/aws-lambda/conanAwsLambdaPlugin.js");
-const ConanAwsGatewayApiPlugin = require("../es5/lib/plugins/aws-gateway-api/conanAwsGatewayApiPlugin.js");
+const ConanLib = require("../es5/lib/conan.js");
+
+console.log(ConanLib);
+
+const Conan = ConanLib.default;
+const ConanAwsLambdaPlugin = ConanLib.ConanAwsLambdaPlugin;
+const ConanAwsApiGatewayPlugin = ConanLib.ConanAwsApiGatewayPlugin;
 
 const conan = new Conan({
 	region: "us-east-1",
@@ -9,12 +13,17 @@ const conan = new Conan({
 });
 
 conan.use(ConanAwsLambdaPlugin);
-conan.use(ConanAwsGatewayApiPlugin);
+conan.use(ConanAwsApiGatewayPlugin);
 
 conan
 	.lambda("SomeLambda", __dirname + "/lambda.js", "AWSLambda")
-	.lambda("PythonLambda", __dirname + "/lambda.py", "AWSLambda")
-		.runtime("python2.7");
+		.handler("handler", __dirname + "/customHandler.js");
+
+conan
+	.api("MyAPI v1")
+		.stage("development")
+			.get("/someResource/{id}")
+				.lambda("SomeLambda");
 
 conan.deploy(() => {
 	console.log("Deployment complete.");
