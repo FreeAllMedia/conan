@@ -1,9 +1,9 @@
 {
   "generatorVersion": "0.2.21",
   "name": "conan",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "It cuts fries. It dices onions.",
-  "main": "index.js",
+  "main": "es5/lib/conan.js",
   "scripts": {
     "test": "gulp test"
   },
