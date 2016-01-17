@@ -119,13 +119,15 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 			// If glob matching works normal paths will, too.
 			dependencyFilePaths = [
 				__dirname + "/../fixtures/**/s*e.js",
-				__dirname + "/../fixtures/**/d*y.js"
+				__dirname + "/../fixtures/**/d*y.js",
+				__dirname + "/../fixtures/emptyDirectory",
+				__dirname + "/../fixtures/directory/file.js"
 			];
 
 			compileLambdaZipStep(conan, context, stepDone(done));
 		});
 
-		it("should insert the lambda file, the dependency, and its packages into the zip file", done => {
+		it("should insert the lambda file, the dependencies, and its packages into the zip file", done => {
 			let zipFilePaths = [];
 
 			fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
@@ -136,11 +138,13 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 				.on("close", () => {
 					const expectedFilePaths = [
 						"lambda.js",
+						"emptyDirectory/",
+						"directory/file.js",
 						"save.js",
 						"destroy.js"
 					];
 
-					zipFilePaths.should.have.members(expectedFilePaths);
+					zipFilePaths.should.eql(expectedFilePaths);
 
 					done();
 				});
