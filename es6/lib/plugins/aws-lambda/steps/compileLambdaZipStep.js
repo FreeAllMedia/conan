@@ -58,9 +58,7 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 		function appendGlobFiles(globString, callback) {
 			glob(globString, (error, filePaths) => {
 				filePaths.forEach((filePath) => {
-					const fileReadStream = fileSystem.createReadStream(filePath);
-					const relativeFilePath = path.relative(lambdaDirectory, filePath);
-					lambdaZip.append(fileReadStream, { name: relativeFilePath });
+					addPathToZip(filePath);
 				});
 				callback();
 			});
@@ -88,6 +86,19 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 			lambdaZipWriteStream.on("close", done);
 			lambdaZip.pipe(lambdaZipWriteStream);
 			lambdaZip.finalize();
+		}
+	}
+
+	function addPathToZip(filePath) {
+		const fileStats = fileSystem.statSync(filePath);
+		const isDirectory = fileStats.isDirectory();
+		let relativeFilePath = path.relative(lambdaDirectory, filePath);
+		if (!isDirectory) {
+			const fileReadStream = fileSystem.createReadStream(filePath);
+			lambdaZip.append(fileReadStream, { name: relativeFilePath, stats: fileStats });
+		} else {
+			relativeFilePath = `${relativeFilePath}/`;
+			lambdaZip.append("", { name: relativeFilePath, stats: fileStats });
 		}
 	}
 }
