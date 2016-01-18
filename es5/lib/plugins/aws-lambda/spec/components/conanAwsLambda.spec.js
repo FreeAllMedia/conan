@@ -130,6 +130,16 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 			step.parameters.should.eql(lambda);
 		});
 
+		it("should add a create role step", function () {
+			var step = conan.steps.findByName("createRoleStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add a attach role policy step", function () {
+			var step = conan.steps.findByName("attachRolePolicyStep");
+			step.parameters.should.eql(lambda);
+		});
+
 		it("should add a compile packages step", function () {
 			var step = conan.steps.findByName("buildPackageStep");
 			step.parameters.should.eql(lambda);
