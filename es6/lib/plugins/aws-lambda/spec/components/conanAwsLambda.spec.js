@@ -134,6 +134,16 @@ describe("ConanAwsLambda(conan, name, filePath, role)", () => {
 			step.parameters.should.eql(lambda);
 		});
 
+		it("should add a create role step", () => {
+			const step = conan.steps.findByName("createRoleStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add a attach role policy step", () => {
+			const step = conan.steps.findByName("attachRolePolicyStep");
+			step.parameters.should.eql(lambda);
+		});
+
 		it("should add a compile packages step", () => {
 			const step = conan.steps.findByName("buildPackageStep");
 			step.parameters.should.eql(lambda);

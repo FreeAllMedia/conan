@@ -26,6 +26,14 @@ var _stepsFindRoleByNameStepJs = require("../steps/findRoleByNameStep.js");
 
 var _stepsFindRoleByNameStepJs2 = _interopRequireDefault(_stepsFindRoleByNameStepJs);
 
+var _stepsCreateRoleStepJs = require("../steps/createRoleStep.js");
+
+var _stepsCreateRoleStepJs2 = _interopRequireDefault(_stepsCreateRoleStepJs);
+
+var _stepsAttachRolePolicyStepJs = require("../steps/attachRolePolicyStep.js");
+
+var _stepsAttachRolePolicyStepJs2 = _interopRequireDefault(_stepsAttachRolePolicyStepJs);
+
 var _stepsBuildPackageStepJs = require("../steps/buildPackageStep.js");
 
 var _stepsBuildPackageStepJs2 = _interopRequireDefault(_stepsBuildPackageStepJs);
@@ -70,6 +78,8 @@ var ConanAwsLambda = (function (_ConanComponent) {
 			// attach steps to conan
 			this.conan.steps.add(_stepsFindLambdaByNameStepJs2["default"], this);
 			this.conan.steps.add(_stepsFindRoleByNameStepJs2["default"], this);
+			this.conan.steps.add(_stepsCreateRoleStepJs2["default"], this);
+			this.conan.steps.add(_stepsAttachRolePolicyStepJs2["default"], this);
 			this.conan.steps.add(_stepsBuildPackageStepJs2["default"], this);
 			this.conan.steps.add(_stepsCompileLambdaZipStepJs2["default"], this);
 			this.conan.steps.add(_stepsUpsertLambdaStepJs2["default"], this);
