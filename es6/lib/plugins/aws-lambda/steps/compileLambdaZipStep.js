@@ -20,7 +20,7 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 	}
 
 	const lambdaFilePath = conanAwsLambda.filePath();
-	const lambdaDirectory = path.dirname(lambdaFilePath);
+	const lambdaDirectoryPath = path.dirname(lambdaFilePath);
 	const lambdaFileName = path.basename(lambdaFilePath);
 	const lambdaReadStream = fileSystem.createReadStream(lambdaFilePath);
 
@@ -28,7 +28,7 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 	const lambdaZipFilePath = `${context.temporaryDirectoryPath}/${lambdaZipFileName}.zip`;
 	const lambdaZipWriteStream = fileSystem.createWriteStream(lambdaZipFilePath);
 
-	const dependencyGlobOrGlobs = conanAwsLambda.dependencies();
+	const dependencies = conanAwsLambda.dependencies();
 
 	const lambdaZip = archiver("zip", {});
 	lambdaZip.append(lambdaReadStream, {name: lambdaFileName});
@@ -43,22 +43,19 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 	});
 
 	function appendDependencies(done) {
-		if (dependencyGlobOrGlobs) {
-			if (dependencyGlobOrGlobs.constructor === Array) {
-				const dependencyGlobs = dependencyGlobOrGlobs;
-				Async.mapParallel(dependencyGlobs, appendGlobFiles, done);
-			} else {
-				const dependencyGlob = dependencyGlobOrGlobs;
-				appendGlobFiles(dependencyGlob, done);
-			}
+		if (dependencies.length > 0) {
+			Async.mapParallel(dependencies, appendDependencyGlob, done);
 		} else {
 			done();
 		}
 
-		function appendGlobFiles(globString, callback) {
-			glob(globString, (error, filePaths) => {
+		function appendDependencyGlob(dependency, callback) {
+			const dependencyGlob = dependency[0];
+			const dependencyZipPath = dependency[1];
+
+			glob(dependencyGlob, (error, filePaths) => {
 				filePaths.forEach((filePath) => {
-					addPathToZip(filePath);
+					addPathToZip(filePath, dependencyZipPath);
 				});
 				callback();
 			});
@@ -89,10 +86,18 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 		}
 	}
 
-	function addPathToZip(filePath) {
+	function addPathToZip(filePath, relativeZipPath) {
 		const fileStats = fileSystem.statSync(filePath);
 		const isDirectory = fileStats.isDirectory();
-		let relativeFilePath = path.relative(lambdaDirectory, filePath);
+
+		let relativeFilePath;
+
+		if (relativeZipPath) {
+			relativeFilePath = `${relativeZipPath}/${path.basename(filePath)}`;
+		} else {
+			relativeFilePath = path.relative(lambdaDirectoryPath, filePath);
+		}
+
 		if (!isDirectory) {
 			const fileReadStream = fileSystem.createReadStream(filePath);
 			lambdaZip.append(fileReadStream, { name: relativeFilePath, stats: fileStats });

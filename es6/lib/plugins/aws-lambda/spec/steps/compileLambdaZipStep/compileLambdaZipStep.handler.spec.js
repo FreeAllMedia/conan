@@ -41,7 +41,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 		let dependencies = [];
 		conanAwsLambda.dependencies = sinon.spy((newDependencies) => {
 			if (newDependencies) {
-				dependencies.push(newDependencies);
+				dependencies.push([newDependencies]);
 			}
 			return dependencies;
 		});
