@@ -3,6 +3,7 @@ import compileLambdaZipStep from "../../steps/compileLambdaZipStep.js";
 import fileSystem from "fs";
 import unzip from "unzip2";
 import temp from "temp";
+import sinon from "sinon";
 
 describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 	let conan,
@@ -12,6 +13,8 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 			lambdaFilePath,
 			dependencyFilePaths,
 			packageZipFilePath,
+
+			dependenciesSpy,
 
 			stepReturnData,
 
@@ -23,6 +26,8 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 			region: "us-east-1"
 		});
 
+		dependenciesSpy = sinon.spy();
+
 		dependencyFilePaths = [];
 		packageZipFilePath = undefined;
 
@@ -31,7 +36,12 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 		conanAwsLambda = new class MockConanAwsLambda {
 			filePath() 			{	return lambdaFilePath; }
 			name() 		 			{	return "TestFunction"; }
-			dependencies() 	{ return dependencyFilePaths; }
+			dependencies(value) 	{
+				if(value) {
+					dependenciesSpy(value);
+				}
+				return dependencyFilePaths;
+			}
 			handler() 			{ return ["handler"]; }
 		}();
 
@@ -94,6 +104,27 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 			compileLambdaZipStep(conan, context, stepDone(done));
 		});
 
+		it("should create a conan handler on the root of the zipFile", done => {
+			/* eslint-disable new-cap */
+			let zipFilePaths = [];
+
+			fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
+				.pipe(unzip.Parse())
+				.on("entry", (entry) => {
+					if(entry.path.match(/conanHandler\-[a-zA-Z0-9.]*/)) {
+						zipFilePaths.push(entry.path);
+					}
+				})
+				.on("close", () => {
+					zipFilePaths.length.should.equal(1);
+					done();
+				});
+		});
+
+		it("should add the lambda file as a dependency", () => {
+			dependenciesSpy.calledWith(lambdaFilePath).should.be.true;
+		});
+
 		it("should insert the lambda file, the dependencies, and its packages into the zip file", done => {
 			/* eslint-disable new-cap */
 			let zipFilePaths = [];
@@ -101,11 +132,12 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 			fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
 				.pipe(unzip.Parse())
 				.on("entry", (entry) => {
-					zipFilePaths.push(entry.path);
+					if(!entry.path.match(/conanHandler\-[a-zA-Z0-9.]*/)) {
+						zipFilePaths.push(entry.path);
+					}
 				})
 				.on("close", () => {
 					const expectedFilePaths = [
-						"lambda.js",
 						"aws-lambda/spec/fixtures/emptyDirectory/",
 						"aws-lambda/spec/fixtures/directory/file.js",
 						"aws-lambda/conanAwsLambdaPlugin.js",
@@ -133,11 +165,12 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 			fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
 				.pipe(unzip.Parse())
 				.on("entry", (entry) => {
-					zipFilePaths.push(entry.path);
+					if(!entry.path.match(/conanHandler\-[a-zA-Z0-9.]*/)) {
+						zipFilePaths.push(entry.path);
+					}
 				})
 				.on("close", () => {
 					const expectedFilePaths = [
-						"lambda.js",
 						"node_modules/async/.jshintrc",
 						"node_modules/async/.travis.yml",
 						"node_modules/async/CHANGELOG.md",

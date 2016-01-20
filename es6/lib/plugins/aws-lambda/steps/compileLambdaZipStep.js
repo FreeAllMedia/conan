@@ -5,6 +5,11 @@ import unzip from "unzip2";
 import inflect from "jargon";
 import glob from "glob";
 import Async from "flowsync";
+import hacher from "hacher";
+
+function buildZipPath(fullPath, basePath) {
+	return fullPath.replace(`${path.normalize(basePath)}/`, "");
+}
 
 export default function compileLambdaZipStep(conan, context, stepDone) {
 	/* eslint-disable new-cap */
@@ -13,24 +18,34 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 	const packageZipFilePath = context.results.packageZipFilePath;
 
 	const handlerFilePath = conanAwsLambda.handler()[1];
+	const handlerName = conanAwsLambda.handler()[0];
+
+	//the lambda file path is another dependency
+	conanAwsLambda.dependencies(conanAwsLambda.filePath());
+
+	const lambdaZip = archiver("zip", {});
 
 	if (fileSystem.existsSync(handlerFilePath)) {
-		conanAwsLambda.dependencies(conanAwsLambda.filePath());
 		conanAwsLambda.filePath(handlerFilePath);
-	}
+		const lambdaFilePath = conanAwsLambda.filePath();
+		const lambdaFileName = path.basename(lambdaFilePath);
+		const lambdaReadStream = fileSystem.createReadStream(lambdaFilePath);
 
-	const lambdaFilePath = conanAwsLambda.filePath();
-	const lambdaFileName = path.basename(lambdaFilePath);
-	const lambdaReadStream = fileSystem.createReadStream(lambdaFilePath);
+		lambdaZip.append(lambdaReadStream, {name: lambdaFileName});
+	} else {
+		const lambdaFilePath = buildZipPath(conanAwsLambda.filePath(), conan.config.basePath);
+		const conanHandlerContent = `module.exports = {\n\t${handlerName}: require("./${lambdaFilePath}").${handlerName}\n};`;
+		const conanHandlerFileName = `conanHandler-${hacher.getUUID()}.js`;
+
+		conanAwsLambda.filePath(conanHandlerFileName);
+		lambdaZip.append(conanHandlerContent, {name: conanHandlerFileName});
+	}
 
 	const lambdaZipFileName = inflect(conanAwsLambda.name()).snake.toString();
 	const lambdaZipFilePath = `${context.temporaryDirectoryPath}/${lambdaZipFileName}.zip`;
 	const lambdaZipWriteStream = fileSystem.createWriteStream(lambdaZipFilePath);
 
 	const dependencies = conanAwsLambda.dependencies();
-
-	const lambdaZip = archiver("zip", {});
-	lambdaZip.append(lambdaReadStream, {name: lambdaFileName});
 
 	Async.series([
 		appendDependencies,
@@ -90,7 +105,7 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 		const isDirectory = fileStats.isDirectory();
 
 		let relativeFilePath;
-		let finalFilePath = filePath.replace(`${path.normalize(conan.config.basePath)}/`, "");
+		let finalFilePath = buildZipPath(filePath, conan.config.basePath);
 
 		if (relativeZipPath) {
 			relativeFilePath = `${relativeZipPath}/${finalFilePath}`;
