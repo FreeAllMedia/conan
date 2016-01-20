@@ -19,6 +19,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 
 	beforeEach(done => {
 		conan = new Conan({
+			basePath: `${__dirname}../../../..`,
 			region: "us-east-1"
 		});
 
@@ -105,12 +106,12 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 				.on("close", () => {
 					const expectedFilePaths = [
 						"lambda.js",
-						"emptyDirectory/",
-						"directory/file.js",
-						"conanAwsLambdaPlugin.js",
-						"lib/conanAwsLambdaPlugin.js",
-						"save.js",
-						"lib/destroy.js"
+						"aws-lambda/spec/fixtures/emptyDirectory/",
+						"aws-lambda/spec/fixtures/directory/file.js",
+						"aws-lambda/conanAwsLambdaPlugin.js",
+						"lib/aws-lambda/conanAwsLambdaPlugin.js",
+						"aws-lambda/spec/fixtures/save.js",
+						"lib/aws-lambda/spec/fixtures/destroy.js"
 					];
 
 					zipFilePaths.should.eql(expectedFilePaths);

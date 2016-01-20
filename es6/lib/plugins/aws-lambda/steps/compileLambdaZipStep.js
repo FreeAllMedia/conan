@@ -20,7 +20,6 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 	}
 
 	const lambdaFilePath = conanAwsLambda.filePath();
-	const lambdaDirectoryPath = path.dirname(lambdaFilePath);
 	const lambdaFileName = path.basename(lambdaFilePath);
 	const lambdaReadStream = fileSystem.createReadStream(lambdaFilePath);
 
@@ -91,11 +90,12 @@ export default function compileLambdaZipStep(conan, context, stepDone) {
 		const isDirectory = fileStats.isDirectory();
 
 		let relativeFilePath;
+		let finalFilePath = filePath.replace(`${path.normalize(conan.config.basePath)}/`, "");
 
 		if (relativeZipPath) {
-			relativeFilePath = `${relativeZipPath}/${path.basename(filePath)}`;
+			relativeFilePath = `${relativeZipPath}/${finalFilePath}`;
 		} else {
-			relativeFilePath = path.relative(lambdaDirectoryPath, filePath);
+			relativeFilePath = finalFilePath;
 		}
 
 		if (!isDirectory) {
