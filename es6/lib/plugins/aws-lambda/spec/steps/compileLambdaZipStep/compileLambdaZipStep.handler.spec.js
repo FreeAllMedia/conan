@@ -21,6 +21,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 
 	beforeEach(done => {
 		conan = new Conan({
+			basePath: `${__dirname}../../../../..`,
 			region: "us-east-1"
 		});
 
@@ -41,7 +42,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 		let dependencies = [];
 		conanAwsLambda.dependencies = sinon.spy((newDependencies) => {
 			if (newDependencies) {
-				dependencies.push(newDependencies);
+				dependencies.push([newDependencies]);
 			}
 			return dependencies;
 		});
@@ -83,7 +84,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 				})
 				.on("close", () => {
 					const expectedFilePaths = [
-						"lambda.js",
+						"aws-lambda/spec/fixtures/lambda.js",
 						"customHandler.js"
 					];
 

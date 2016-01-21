@@ -23,6 +23,7 @@ var ConanAwsLambdaPlugin = (function () {
 		_classCallCheck(this, ConanAwsLambdaPlugin);
 
 		conan.config.region = conan.config.region || "us-east-1";
+		conan.config.basePath = conan.config.basePath || process.cwd();
 		conan.lambdas = {};
 		conan.lambda = this.lambda;
 		conan.steps.library("AWS", _awsSdk2["default"]);

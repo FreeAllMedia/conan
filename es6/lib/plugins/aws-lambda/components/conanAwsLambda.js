@@ -28,7 +28,7 @@ export default class ConanAwsLambda extends ConanComponent {
 			"handler"
 		);
 
-		this.aggregateValueParameters(
+		this.multipleValueAggregateParameters(
 			"dependencies"
 		);
 

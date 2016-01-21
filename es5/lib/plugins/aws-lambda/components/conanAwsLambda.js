@@ -64,7 +64,7 @@ var ConanAwsLambda = (function (_ConanComponent) {
 
 			this.multipleValueParameters("handler");
 
-			this.aggregateValueParameters("dependencies");
+			this.multipleValueAggregateParameters("dependencies");
 
 			this.name(name);
 			this.filePath(filePath);

@@ -83,7 +83,7 @@ describe("ConanAwsLambda(conan, name, filePath, role)", () => {
 		});
 	});
 
-	describe("(aggregate-value parameters)", () => {
+	describe("(multiple-value-aggregate parameters)", () => {
 		[
 			"dependencies"
 		].forEach((parameterName) => {
@@ -92,15 +92,18 @@ describe("ConanAwsLambda(conan, name, filePath, role)", () => {
 			describe(`.${parameterName}(new${parameterNamePascalCase})`, () => {
 				it(`should save new${parameterNamePascalCase}`, () => {
 					let component = new ConanAwsLambda(conan);
+
 					const testValueOne = "abc123";
-					const testValueTwo = "abc123";
-					const testValueThree = "abc123";
-					component[parameterName](testValueOne, testValueTwo);
-					component[parameterName](testValueThree);
+					const testValueTwo = "123abc";
+					const testValueThree = "1a2b3c";
+					const testValueFour = "c1b2a3";
+
+					component = component[parameterName](testValueOne, testValueTwo);
+					component = component[parameterName](testValueThree, testValueFour);
+
 					component[parameterName]().should.eql([
-						testValueOne,
-						testValueTwo,
-						testValueThree
+						[testValueOne, testValueTwo],
+						[testValueThree, testValueFour]
 					]);
 				});
 			});

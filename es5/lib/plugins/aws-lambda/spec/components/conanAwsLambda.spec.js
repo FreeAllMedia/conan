@@ -85,19 +85,23 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 		});
 	});
 
-	describe("(aggregate-value parameters)", function () {
+	describe("(multiple-value-aggregate parameters)", function () {
 		["dependencies"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
 				it("should save new" + parameterNamePascalCase, function () {
 					var component = new _componentsConanAwsLambdaJs2["default"](conan);
+
 					var testValueOne = "abc123";
-					var testValueTwo = "abc123";
-					var testValueThree = "abc123";
-					component[parameterName](testValueOne, testValueTwo);
-					component[parameterName](testValueThree);
-					component[parameterName]().should.eql([testValueOne, testValueTwo, testValueThree]);
+					var testValueTwo = "123abc";
+					var testValueThree = "1a2b3c";
+					var testValueFour = "c1b2a3";
+
+					component = component[parameterName](testValueOne, testValueTwo);
+					component = component[parameterName](testValueThree, testValueFour);
+
+					component[parameterName]().should.eql([[testValueOne, testValueTwo], [testValueThree, testValueFour]]);
 				});
 			});
 		});
