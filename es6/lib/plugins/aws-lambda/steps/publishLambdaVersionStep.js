@@ -5,7 +5,7 @@ export default function publishLambdaVersionStep(conan, context, stepDone) {
 	});
 
 	iam.publishVersion({
-		"FunctionName": context.parameters.lambda(),
+		"FunctionName": context.parameters.name(),
 		"Description": "conan autopublish step"
 	}, (error, responseData) => {
 		if (error) {

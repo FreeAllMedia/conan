@@ -17,14 +17,25 @@ export default function findLambdaAliasStep(conan, context, stepDone) {
 			} else {
 				aliasVersion = "$LATEST";
 			}
-			console.log("calling get aalias for " + aliasName);
+
 			iam.getAlias({
-				"FunctionName": context.parameters.lambda(),
+				"FunctionName": context.parameters.name(),
 				"Name": aliasName
 			}, (error, responseData) => {
-				console.log("get alias returns ", {error, responseData});
 				if(responseData && responseData.FunctionVersion === aliasVersion) {
-					result[aliasName] = responseData.AliasArn;
+					// alias exists
+					result[aliasName] = {
+						aliasArn: responseData.AliasArn,
+						functionVersion: responseData.FunctionVersion
+					};
+					next();
+				} else if(responseData && responseData.FunctionVersion) {
+					// needs version update
+					result[aliasName] = {
+						aliasArn: responseData.AliasArn
+					};
+					next();
+				} else if(error && error.statusCode === 404) {
 					next();
 				} else {
 					next(error);

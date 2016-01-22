@@ -86,7 +86,7 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 	});
 
 	describe("(multiple-value-aggregate parameters)", function () {
-		["dependencies"].forEach(function (parameterName) {
+		["dependencies", "alias"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
@@ -154,8 +154,28 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 			step.parameters.should.eql(lambda);
 		});
 
-		it("should add an upsert lambda step step", function () {
+		it("should add an upsert lambda step", function () {
 			var step = conan.steps.findByName("upsertLambdaStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add an publish lambda version step", function () {
+			var step = conan.steps.findByName("publishLambdaVersionStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add an find lambda alias step", function () {
+			var step = conan.steps.findByName("findLambdaAliasStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add an create lambda alias step", function () {
+			var step = conan.steps.findByName("createLambdaAliasStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add an update lambda alias step", function () {
+			var step = conan.steps.findByName("updateLambdaAliasStep");
 			step.parameters.should.eql(lambda);
 		});
 	});

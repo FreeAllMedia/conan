@@ -177,6 +177,24 @@ describe("putIntegrationStep", () => {
 		});
 	});
 
+	describe("(resource method created with version)", () => {
+		let responseData;
+
+		beforeEach(() => {
+			responseData = {};
+			putIntegrationSpy = sinon.spy((awsParameters, callback) => {
+				callback(null, responseData);
+			});
+		});
+
+		it("should return with no error", done => {
+			putIntegrationStep(conan, context, (error) => {
+				should.not.exist(error);
+				done();
+			});
+		});
+	});
+
 	describe("(rest api id is not present)", () => {
 		beforeEach(() => {
 			delete context.results.restApiId;

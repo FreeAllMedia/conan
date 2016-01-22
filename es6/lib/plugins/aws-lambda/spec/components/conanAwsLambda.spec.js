@@ -172,6 +172,16 @@ describe("ConanAwsLambda(conan, name, filePath, role)", () => {
 			const step = conan.steps.findByName("findLambdaAliasStep");
 			step.parameters.should.eql(lambda);
 		});
+
+		it("should add an create lambda alias step", () => {
+			const step = conan.steps.findByName("createLambdaAliasStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add an update lambda alias step", () => {
+			const step = conan.steps.findByName("updateLambdaAliasStep");
+			step.parameters.should.eql(lambda);
+		});
 	});
 
 	describe(".lambda(name)", () => {

@@ -33,7 +33,7 @@ describe(".publishLambdaVersionStep(conan, context, stepDone)", () => {
 		});
 
 		parameters = new class MockConanAwsLambda {
-			lambda() { return "TestFunction"; }
+			name() { return "TestFunction"; }
 		}();
 
 		context = {
@@ -75,7 +75,7 @@ describe(".publishLambdaVersionStep(conan, context, stepDone)", () => {
 
 		it("should call AWS with the designated function name parameter", () => {
 			mockLambda.publishVersion.calledWith({
-				"FunctionName": context.parameters.lambda(),
+				"FunctionName": context.parameters.name(),
 				"Description": "conan autopublish step"
 			}).should.be.true;
 		});
