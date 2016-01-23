@@ -22,7 +22,6 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 	var conan = undefined,
 	    context = undefined,
 	    stepDone = undefined,
-	    should = undefined,
 	    awsResponseError = undefined,
 	    awsResponseData = undefined,
 	    stepReturnError = undefined,
@@ -121,7 +120,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 				_createClass(MockConanAwsLambda, [{
 					key: "lambda",
 					value: function lambda() {
-						return null;
+						return [];
 					}
 				}]);
 
@@ -163,7 +162,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 				_createClass(MockConanAwsLambda, [{
 					key: "lambda",
 					value: function lambda() {
-						return "TestFunctionWithLambda";
+						return ["TestFunctionWithLambda"];
 					}
 				}]);
 

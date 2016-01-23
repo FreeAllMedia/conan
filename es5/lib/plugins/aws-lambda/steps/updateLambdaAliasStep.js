@@ -28,7 +28,7 @@ function updateLambdaAliasStep(conan, context, stepDone) {
 			aliasVersion = "$LATEST";
 		}
 
-		if (context.results.aliases && !context.results.aliases[aliasName].functionVersion) {
+		if (context.results.aliases && context.results.aliases[aliasName] && !context.results.aliases[aliasName].functionVersion) {
 			iam.updateAlias({
 				"FunctionName": context.parameters.name(),
 				"FunctionVersion": aliasVersion,

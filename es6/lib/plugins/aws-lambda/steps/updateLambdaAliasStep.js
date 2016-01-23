@@ -19,6 +19,7 @@ export default function updateLambdaAliasStep(conan, context, stepDone) {
 			}
 
 			if(context.results.aliases
+				&& context.results.aliases[aliasName]
 				&& !context.results.aliases[aliasName].functionVersion) {
 				iam.updateAlias({
 					"FunctionName": context.parameters.name(),

@@ -49,7 +49,7 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 	});
 
 	describe("(parameters)", function () {
-		["path", "method", "lambda", "statusCodes", "responseHeaders"].forEach(function (parameterName) {
+		["path", "method", "statusCodes", "responseHeaders"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
@@ -64,7 +64,7 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 	});
 
 	describe("(multiple-value parameters)", function () {
-		["headers", "queryStrings"].forEach(function (parameterName) {
+		["headers", "lambda", "queryStrings"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {

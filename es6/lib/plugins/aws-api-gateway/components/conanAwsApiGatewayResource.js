@@ -20,12 +20,12 @@ export default class ConanAwsApiGatewayResource extends ConanComponent {
 		this.parameters(
 			"path",
 			"method",
-			"lambda",
 			"statusCodes",
 			"responseHeaders"
 		);
 
 		this.multipleValueParameters(
+			"lambda",
 			"headers",
 			"queryStrings"
 		);
