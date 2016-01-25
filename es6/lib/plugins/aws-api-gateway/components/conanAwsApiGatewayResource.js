@@ -43,9 +43,9 @@ export default class ConanAwsApiGatewayResource extends ConanComponent {
 		this.conan.steps.before(findApiStageByNameStep, findResourceMethodStep, this);
 		this.conan.steps.before(findApiStageByNameStep, createResourceMethodStep, this);
 		this.conan.steps.before(findApiStageByNameStep, putIntegrationStep, this);
-		this.conan.steps.before(findApiStageByNameStep, putIntegrationResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, findMethodResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, putMethodResponseStep, this);
+		this.conan.steps.before(findApiStageByNameStep, putIntegrationResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, getAccountIdStep, this);
 		this.conan.steps.before(findApiStageByNameStep, addPermissionStep, this);
 	}
