@@ -21,7 +21,7 @@ function addPermissionStep(conan, context, stepDone) {
 	});
 	if (typeof context.parameters.lambda === "function" && typeof context.parameters.method === "function" && typeof context.parameters.path === "function" && accountId && restApiId) {
 		(function () {
-			var lambdaName = context.parameters.lambda();
+			var lambdaName = context.parameters.lambda()[0];
 			var method = context.parameters.method();
 			var path = context.parameters.path();
 			if (lambdaName) {
@@ -45,13 +45,17 @@ function addPermissionStep(conan, context, stepDone) {
 						}
 					}
 					if (!statement) {
-						lambda.addPermission({
+						var apiParameters = {
 							"FunctionName": lambdaName,
 							"SourceArn": sourceArn,
 							"Action": "lambda:InvokeFunction",
 							"Principal": "apigateway.amazonaws.com",
 							"StatementId": _hacher2["default"].getUUID()
-						}, function (error) {
+						};
+						if (context.parameters.lambda().length > 1) {
+							apiParameters.Qualifier = context.parameters.lambda()[1];
+						}
+						lambda.addPermission(apiParameters, function (error) {
 							if (error && error.statusCode === 409) {
 								stepDone(null);
 							} else if (error) {

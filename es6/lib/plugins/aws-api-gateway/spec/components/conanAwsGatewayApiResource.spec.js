@@ -31,7 +31,6 @@ describe("ConanAwsApiGatewayResource(conan)", () => {
 		[
 			"path",
 			"method",
-			"lambda",
 			"statusCodes",
 			"responseHeaders"
 		].forEach((parameterName) => {
@@ -51,6 +50,7 @@ describe("ConanAwsApiGatewayResource(conan)", () => {
 	describe("(multiple-value parameters)", () => {
 		[
 			"headers",
+			"lambda",
 			"queryStrings"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();

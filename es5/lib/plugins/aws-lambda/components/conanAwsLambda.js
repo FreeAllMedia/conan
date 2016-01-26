@@ -46,6 +46,22 @@ var _stepsUpsertLambdaStepJs = require("../steps/upsertLambdaStep.js");
 
 var _stepsUpsertLambdaStepJs2 = _interopRequireDefault(_stepsUpsertLambdaStepJs);
 
+var _stepsPublishLambdaVersionStepJs = require("../steps/publishLambdaVersionStep.js");
+
+var _stepsPublishLambdaVersionStepJs2 = _interopRequireDefault(_stepsPublishLambdaVersionStepJs);
+
+var _stepsFindLambdaAliasStepJs = require("../steps/findLambdaAliasStep.js");
+
+var _stepsFindLambdaAliasStepJs2 = _interopRequireDefault(_stepsFindLambdaAliasStepJs);
+
+var _stepsCreateLambdaAliasStepJs = require("../steps/createLambdaAliasStep.js");
+
+var _stepsCreateLambdaAliasStepJs2 = _interopRequireDefault(_stepsCreateLambdaAliasStepJs);
+
+var _stepsUpdateLambdaAliasStepJs = require("../steps/updateLambdaAliasStep.js");
+
+var _stepsUpdateLambdaAliasStepJs2 = _interopRequireDefault(_stepsUpdateLambdaAliasStepJs);
+
 var ConanAwsLambda = (function (_ConanComponent) {
 	_inherits(ConanAwsLambda, _ConanComponent);
 
@@ -64,7 +80,7 @@ var ConanAwsLambda = (function (_ConanComponent) {
 
 			this.multipleValueParameters("handler");
 
-			this.multipleValueAggregateParameters("dependencies");
+			this.multipleValueAggregateParameters("dependencies", "alias");
 
 			this.name(name);
 			this.filePath(filePath);
@@ -83,6 +99,10 @@ var ConanAwsLambda = (function (_ConanComponent) {
 			this.conan.steps.add(_stepsBuildPackageStepJs2["default"], this);
 			this.conan.steps.add(_stepsCompileLambdaZipStepJs2["default"], this);
 			this.conan.steps.add(_stepsUpsertLambdaStepJs2["default"], this);
+			this.conan.steps.add(_stepsPublishLambdaVersionStepJs2["default"], this);
+			this.conan.steps.add(_stepsFindLambdaAliasStepJs2["default"], this);
+			this.conan.steps.add(_stepsCreateLambdaAliasStepJs2["default"], this);
+			this.conan.steps.add(_stepsUpdateLambdaAliasStepJs2["default"], this);
 		}
 	}, {
 		key: "lambda",

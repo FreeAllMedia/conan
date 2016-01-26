@@ -87,7 +87,7 @@ describe("addPermissionStep", function () {
 			}, {
 				key: "lambda",
 				value: function lambda() {
-					return "listAccountItems";
+					return ["listAccountItems"];
 				}
 			}, {
 				key: "method",
@@ -168,7 +168,7 @@ describe("addPermissionStep", function () {
 				}, {
 					key: "lambda",
 					value: function lambda() {
-						return null;
+						return [];
 					}
 				}, {
 					key: "method",
@@ -221,6 +221,76 @@ describe("addPermissionStep", function () {
 		it("should return with no error", function (done) {
 			(0, _stepsAddPermissionStepJs2["default"])(conan, context, function (error) {
 				should.not.exist(error);
+				done();
+			});
+		});
+	});
+
+	describe("(permission added to an aliased lambda)", function () {
+		var responseData = undefined;
+
+		beforeEach(function () {
+			parameters = new ((function () {
+				function MockConanAwsParameters() {
+					_classCallCheck(this, MockConanAwsParameters);
+				}
+
+				_createClass(MockConanAwsParameters, [{
+					key: "path",
+					value: function path() {
+						return "/accounts/items";
+					}
+				}, {
+					key: "lambda",
+					value: function lambda() {
+						return ["listAccountItems", "development"];
+					}
+				}, {
+					key: "method",
+					value: function method() {
+						return "GET";
+					}
+				}]);
+
+				return MockConanAwsParameters;
+			})())();
+
+			context = {
+				parameters: parameters,
+				results: {
+					restApiId: restApiId,
+					accountId: accountId
+				},
+				libraries: {
+					AWS: {
+						Lambda: Lambda
+					}
+				}
+			};
+			responseData = {};
+			addPermissionSpy = _sinon2["default"].spy(function (awsParameters, callback) {
+				callback(null, responseData);
+			});
+		});
+
+		it("should return with no error", function (done) {
+			(0, _stepsAddPermissionStepJs2["default"])(conan, context, function (error) {
+				should.not.exist(error);
+				done();
+			});
+		});
+
+		it("should use the version qualifier", function (done) {
+			(0, _stepsAddPermissionStepJs2["default"])(conan, context, function () {
+				var params = addPermissionSpy.firstCall.args[0];
+				delete params.StatementId;
+				params.should.eql({
+					SourceArn: "arn:aws:execute-api:us-east-1:" + accountId + ":" + restApiId + "/*/GET/accounts/items",
+					Action: "lambda:InvokeFunction",
+					Principal: "apigateway.amazonaws.com",
+					FunctionName: "listAccountItems",
+					Qualifier: "development"
+				});
 				done();
 			});
 		});

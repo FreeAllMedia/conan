@@ -49,7 +49,7 @@ describe("addPermissionStep", () => {
 
 		parameters = new class MockConanAwsParameters {
 			path() { return "/accounts/items"; }
-			lambda() { return "listAccountItems"; }
+			lambda() { return ["listAccountItems"]; }
 			method() { return "GET"; }
 		}();
 
@@ -111,7 +111,7 @@ describe("addPermissionStep", () => {
 		beforeEach(done => {
 			parameters = new class MockConanAwsParameters {
 				path() { return "/accounts/items"; }
-				lambda() { return null; }
+				lambda() { return []; }
 				method() { return "GET"; }
 			}();
 
@@ -156,6 +156,57 @@ describe("addPermissionStep", () => {
 		it("should return with no error", done => {
 			addPermissionStep(conan, context, (error) => {
 				should.not.exist(error);
+				done();
+			});
+		});
+	});
+
+	describe("(permission added to an aliased lambda)", () => {
+		let responseData;
+
+		beforeEach(() => {
+			parameters = new class MockConanAwsParameters {
+				path() { return "/accounts/items"; }
+				lambda() { return ["listAccountItems", "development"]; }
+				method() { return "GET"; }
+			}();
+
+			context = {
+				parameters,
+				results: {
+					restApiId,
+					accountId
+				},
+				libraries: {
+					AWS: {
+						Lambda
+					}
+				}
+			};
+			responseData = {};
+			addPermissionSpy = sinon.spy((awsParameters, callback) => {
+				callback(null, responseData);
+			});
+		});
+
+		it("should return with no error", done => {
+			addPermissionStep(conan, context, (error) => {
+				should.not.exist(error);
+				done();
+			});
+		});
+
+		it("should use the version qualifier", done => {
+			addPermissionStep(conan, context, () => {
+				let params = addPermissionSpy.firstCall.args[0];
+				delete params.StatementId;
+				params.should.eql({
+					SourceArn: `arn:aws:execute-api:us-east-1:${accountId}:${restApiId}/*/GET/accounts/items`,
+					Action: "lambda:InvokeFunction",
+					Principal: "apigateway.amazonaws.com",
+					FunctionName: "listAccountItems",
+					Qualifier: "development"
+				});
 				done();
 			});
 		});

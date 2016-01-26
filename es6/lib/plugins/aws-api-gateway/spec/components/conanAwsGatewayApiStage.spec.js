@@ -86,7 +86,8 @@ describe("ConanAwsApiGatewayStage(conan, name)", () => {
 		"GET",
 		"POST",
 		"PUT",
-		"DELETE"
+		"DELETE",
+		"OPTIONS"
 	].forEach((resourceMethod) => {
 		const methodFunctionName = resourceMethod.toLowerCase();
 		describe(`stage.${methodFunctionName}(path)`, () => {

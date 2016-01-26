@@ -100,7 +100,7 @@ describe("ConanAwsApiGatewayStage(conan, name)", function () {
 		});
 	});
 
-	["GET", "POST", "PUT", "DELETE"].forEach(function (resourceMethod) {
+	["GET", "POST", "PUT", "DELETE", "OPTIONS"].forEach(function (resourceMethod) {
 		var methodFunctionName = resourceMethod.toLowerCase();
 		describe("stage." + methodFunctionName + "(path)", function () {
 			var newResource = undefined;

@@ -52,8 +52,12 @@ function putIntegrationStep(conan, context, done) {
 		};
 
 		if (lambdaArn) {
+			var aliasSuffix = "";
+			if (context.parameters.lambda().length > 1) {
+				aliasSuffix = ":" + context.parameters.lambda()[1];
+			}
 			apiParameters.type = "AWS";
-			apiParameters.uri = "arn:aws:apigateway:" + conan.config.region + ":lambda:path/2015-03-31/functions/" + lambdaArn + "/invocations";
+			apiParameters.uri = "arn:aws:apigateway:" + conan.config.region + ":lambda:path/2015-03-31/functions/" + lambdaArn + aliasSuffix + "/invocations";
 			apiParameters.requestTemplates = requestTemplates;
 		}
 

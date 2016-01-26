@@ -4,19 +4,17 @@ import sinon from "sinon";
 
 describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 	let conan,
-			context,
-			stepDone,
+		context,
+		stepDone,
 
-			should,
+		awsResponseError,
+		awsResponseData,
 
-			awsResponseError,
-			awsResponseData,
+		stepReturnError,
+		stepReturnData,
 
-			stepReturnError,
-			stepReturnData,
-
-			parameters,
-			mockLambdaSpy;
+		parameters,
+		mockLambdaSpy;
 
 	const mockLambda = {
 		getFunction: sinon.spy((params, callback) => {
@@ -91,7 +89,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 	describe("(No Lambda parameter)", () => {
 		it("should skip the call entirely", done => {
 			parameters = new class MockConanAwsLambda {
-				lambda() { return null; }
+				lambda() { return []; }
 			}();
 
 			context = {
@@ -120,7 +118,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 
 		it("should work indistinctly with a lambda parameters instead of a name parameter", done => {
 			parameters = new class MockConanAwsLambda {
-				lambda() { return "TestFunctionWithLambda"; }
+				lambda() { return ["TestFunctionWithLambda"]; }
 			}();
 
 			context = {

@@ -13,7 +13,7 @@ export default function addPermissionStep(conan, context, stepDone) {
 		&& typeof context.parameters.path === "function"
 		&& accountId
 		&& restApiId) {
-		const lambdaName = context.parameters.lambda();
+		const lambdaName = context.parameters.lambda()[0];
 		const method = context.parameters.method();
 		const path = context.parameters.path();
 		if(lambdaName) {
@@ -37,13 +37,17 @@ export default function addPermissionStep(conan, context, stepDone) {
 					}
 				}
 				if(!statement) {
-					lambda.addPermission({
+					const apiParameters = {
 						"FunctionName": lambdaName,
 						"SourceArn": sourceArn,
 						"Action": "lambda:InvokeFunction",
 						"Principal": "apigateway.amazonaws.com",
 						"StatementId": hacher.getUUID()
-					}, (error) => {
+					};
+					if(context.parameters.lambda().length > 1) {
+						apiParameters.Qualifier = context.parameters.lambda()[1];
+					}
+					lambda.addPermission(apiParameters, (error) => {
 						if (error && error.statusCode === 409) {
 							stepDone(null);
 						} else if (error) {
