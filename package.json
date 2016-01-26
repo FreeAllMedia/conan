@@ -1,5 +1,5 @@
 {
-  "generatorVersion": "0.2.21",
+  "generatorVersion": "0.2.22",
   "name": "conan",
   "version": "0.0.14",
   "description": "Barbarically simple deployment system.",
