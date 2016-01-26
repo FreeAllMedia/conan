@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = compilePackagesStep;
+exports["default"] = buildPackageStep;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -15,7 +15,7 @@ var _jargon = require("jargon");
 
 var _jargon2 = _interopRequireDefault(_jargon);
 
-function compilePackagesStep(conan, context, stepDone) {
+function buildPackageStep(conan, context, stepDone) {
 	var conanAwsLambda = context.parameters;
 
 	if (conanAwsLambda.packages() !== undefined) {

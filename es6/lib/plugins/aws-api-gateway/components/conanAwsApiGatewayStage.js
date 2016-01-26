@@ -41,4 +41,8 @@ export default class ConanAwsApiGatewayStage extends ConanComponent {
 	delete(path) {
 		return new ConanAwsApiGatewayResource(this.conan, path, "DELETE");
 	}
+
+	options(path) {
+		return new ConanAwsApiGatewayResource(this.conan, path, "OPTIONS");
+	}
 }

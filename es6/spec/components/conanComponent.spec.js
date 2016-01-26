@@ -89,4 +89,26 @@ describe("ConanComponent()", () => {
 			]);
 		});
 	});
+
+	describe(".multipleValueAggregateParameters(...parameterNames)", () => {
+		it("should create a getter and setter function for each new parameter with multiple arguments", () => {
+			const valueOne = "SomeValue";
+			const valueTwo = "AnotherValue";
+			const valueThree = "SomeValueAgain";
+			const valueFour = "AnotherValueAgain";
+
+			component.multipleValueAggregateParameters("handler");
+			component.handler(valueOne, valueTwo);
+			component.handler(valueThree, valueFour);
+			component.handler().should.eql([
+				[ valueOne,	valueTwo ],
+				[	valueThree,	valueFour	]
+			]);
+		});
+
+		it("should initialize with an empty array as the value", () => {
+			component.multipleValueAggregateParameters("handler");
+			component.handler().should.eql([]);
+		});
+	});
 });

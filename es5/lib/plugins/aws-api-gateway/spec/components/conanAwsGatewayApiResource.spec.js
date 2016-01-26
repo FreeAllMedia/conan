@@ -48,20 +48,8 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 		apiResource.conan.should.eql(conan);
 	});
 
-	describe("(default parameter values)", function () {
-		it("should set path to the value provided by the constructor", function () {
-			apiResource.path().should.eql(path);
-		});
-		it("should set method to the value provided by the constructor", function () {
-			apiResource.method().should.eql(method);
-		});
-		it("should set status codes to 200 by default", function () {
-			apiResource.statusCodes().should.eql([200]);
-		});
-	});
-
 	describe("(parameters)", function () {
-		["path", "method", "lambda"].forEach(function (parameterName) {
+		["path", "method", "statusCodes", "responseHeaders"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
@@ -76,7 +64,7 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 	});
 
 	describe("(multiple-value parameters)", function () {
-		["statusCodes", "headers", "queryStrings"].forEach(function (parameterName) {
+		["headers", "lambda", "queryStrings"].forEach(function (parameterName) {
 			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
@@ -164,7 +152,7 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 		});
 	});
 
-	["GET", "POST", "PUT", "DELETE"].forEach(function (resourceMethod) {
+	["GET", "POST", "PUT", "DELETE", "OPTIONS"].forEach(function (resourceMethod) {
 		var methodFunctionName = resourceMethod.toLowerCase();
 		describe("apiResource." + methodFunctionName + "(path)", function () {
 			var newResource = undefined;

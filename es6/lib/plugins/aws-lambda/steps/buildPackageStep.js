@@ -1,7 +1,7 @@
 import fileSystem from "fs";
 import inflect from "jargon";
 
-export default function compilePackagesStep(conan, context, stepDone) {
+export default function buildPackageStep(conan, context, stepDone) {
 	const conanAwsLambda = context.parameters;
 
 	if (conanAwsLambda.packages() !== undefined) {

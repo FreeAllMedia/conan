@@ -40,8 +40,9 @@ describe("putIntegrationStep", () => {
 		parameters = new class MockConanAwsParameters {
 			method() { return "GET"; }
 			path() { return "/account/items"; }
-			headers() { return undefined; }
-			queryStrings() { return undefined; }
+			headers() { return []; }
+			queryStrings() { return []; }
+			lambda() { return []; }
 		}();
 
 
@@ -81,7 +82,8 @@ describe("putIntegrationStep", () => {
 					path() { return "/accounts/items"; }
 					method() { return "GET"; }
 					headers() { return ["Access-Token"]; }
-					queryStrings() { return undefined; }
+					queryStrings() { return []; }
+					lambda() { return []; }
 				}();
 				requestTemplates = {"application/json": "{\n  \"params\": {\n \"header\": {\n\"accessToken\": \"$input.params('Access-Token')\"\n},\n \"queryString\": {\n},\n \"path\": {\n}},\n \"data\": $input.json('$')\n}"};
 				putIntegrationStep(conan, context, () => {
@@ -99,8 +101,9 @@ describe("putIntegrationStep", () => {
 				context.parameters = new class MockConanAwsParameters {
 					method() { return "GET"; }
 					path() { return "/accounts/items"; }
-					headers() { return undefined; }
+					headers() { return []; }
 					queryStrings() { return ["pageSize"]; }
+					lambda() { return []; }
 				}();
 				requestTemplates = {"application/json": "{\n  \"params\": {\n \"header\": {\n},\n \"queryString\": {\n\"pageSize\": \"$input.params('pageSize')\"\n},\n \"path\": {\n}},\n \"data\": $input.json('$')\n}"};
 				putIntegrationStep(conan, context, () => {
@@ -118,8 +121,9 @@ describe("putIntegrationStep", () => {
 				context.parameters = new class MockConanAwsParameters {
 					method() { return "GET"; }
 					path() { return "/account/{id}"; }
-					headers() { return undefined; }
-					queryStrings() { return undefined; }
+					headers() { return []; }
+					queryStrings() { return []; }
+					lambda() { return []; }
 				}();
 				requestTemplates = {"application/json": "{\n  \"params\": {\n \"header\": {\n},\n \"queryString\": {\n},\n \"path\": {\n\"id\": \"$input.params('id')\"\n}},\n \"data\": $input.json('$')\n}"};
 				putIntegrationStep(conan, context, () => {
@@ -177,6 +181,60 @@ describe("putIntegrationStep", () => {
 		});
 	});
 
+	describe("(resource method created with alias)", () => {
+		let responseData;
+
+		beforeEach(() => {
+			parameters = new class MockConanAwsParameters {
+				method() { return "GET"; }
+				path() { return "/account/items"; }
+				headers() { return []; }
+				queryStrings() { return []; }
+				lambda() { return ["testFunction", "development"]; }
+			}();
+			context = {
+				parameters,
+				results: {
+					restApiId,
+					apiResourceId,
+					lambdaArn
+				},
+				libraries: {
+					AWS: {
+						APIGateway
+					}
+				}
+			};
+			responseData = {};
+			uri = `arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${lambdaArn}:development/invocations`;
+			putIntegrationSpy = sinon.spy((awsParameters, callback) => {
+				callback(null, responseData);
+			});
+		});
+
+		it("should return with no error", done => {
+			putIntegrationStep(conan, context, (error) => {
+				should.not.exist(error);
+				done();
+			});
+		});
+
+		it("should use the alias on the uri", done => {
+			putIntegrationStep(conan, context, () => {
+				putIntegrationSpy.firstCall.args[0].should.eql({
+					resourceId: apiResourceId,
+					httpMethod: parameters.method(),
+					type: "AWS",
+					integrationHttpMethod: "POST",
+					uri,
+					requestTemplates,
+					restApiId
+				});
+				done();
+			});
+		});
+	});
+
 	describe("(rest api id is not present)", () => {
 		beforeEach(() => {
 			delete context.results.restApiId;
@@ -208,12 +266,19 @@ describe("putIntegrationStep", () => {
 	describe("(lambda arn is not present)", () => {
 		beforeEach(() => {
 			delete context.results.lambdaArn;
-			putIntegrationSpy = sinon.spy();
+			requestTemplates = {"application/json": "{\"statusCode\": 200}"};
 		});
 
-		it("should skip the function call entirely", done => {
+		it("should put a mock integration", done => {
 			putIntegrationStep(conan, context, () => {
-				putIntegrationSpy.called.should.be.false;
+				putIntegrationSpy.firstCall.args[0].should.eql({
+					resourceId: apiResourceId,
+					httpMethod: parameters.method(),
+					type: "MOCK",
+					integrationHttpMethod: "POST",
+					requestTemplates,
+					restApiId
+				});
 				done();
 			});
 		});

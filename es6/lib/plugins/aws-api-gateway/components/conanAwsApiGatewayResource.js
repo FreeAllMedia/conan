@@ -20,18 +20,22 @@ export default class ConanAwsApiGatewayResource extends ConanComponent {
 		this.parameters(
 			"path",
 			"method",
-			"lambda"
+			"statusCodes",
+			"responseHeaders"
 		);
 
 		this.multipleValueParameters(
-			"statusCodes",
+			"lambda",
 			"headers",
 			"queryStrings"
 		);
 
 		this.path(path);
 		this.method(method);
-		this.statusCodes(200);
+		this.headers();
+		this.queryStrings();
+		this.statusCodes({"200": ""});
+		this.responseHeaders({});
 
 		this.conan.steps.before(findApiStageByNameStep, findLambdaByNameStep, this);
 		this.conan.steps.before(findApiStageByNameStep, findApiResourceByPathStep, this);
@@ -39,9 +43,9 @@ export default class ConanAwsApiGatewayResource extends ConanComponent {
 		this.conan.steps.before(findApiStageByNameStep, findResourceMethodStep, this);
 		this.conan.steps.before(findApiStageByNameStep, createResourceMethodStep, this);
 		this.conan.steps.before(findApiStageByNameStep, putIntegrationStep, this);
-		this.conan.steps.before(findApiStageByNameStep, putIntegrationResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, findMethodResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, putMethodResponseStep, this);
+		this.conan.steps.before(findApiStageByNameStep, putIntegrationResponseStep, this);
 		this.conan.steps.before(findApiStageByNameStep, getAccountIdStep, this);
 		this.conan.steps.before(findApiStageByNameStep, addPermissionStep, this);
 	}
@@ -60,5 +64,9 @@ export default class ConanAwsApiGatewayResource extends ConanComponent {
 
 	delete(path) {
 		return new ConanAwsApiGatewayResource(this.conan, path, "DELETE");
+	}
+
+	options(path) {
+		return new ConanAwsApiGatewayResource(this.conan, path, "OPTIONS");
 	}
 }

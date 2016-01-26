@@ -24,6 +24,18 @@ describe("ConanAwsLambdaPlugin(conan)", () => {
 		conan.config.region.should.eql("us-west-2");
 	});
 
+	it("should set conan.config.basePath to process.cwd if not already set", () => {
+		conan.config.basePath.should.eql(process.cwd());
+	});
+
+	it("should NOT set conan.config.basePath to process.cwd if already set", () => {
+		conan = new Conan({
+			basePath: "myCustomPath"
+		});
+		conan.use(ConanAwsLambdaPlugin);
+		conan.config.basePath.should.eql("myCustomPath");
+	});
+
   it("should setup conan.lambda()", () => {
 		(typeof conan.lambda).should.eql("function");
 	});

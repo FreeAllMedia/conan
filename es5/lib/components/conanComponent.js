@@ -89,6 +89,7 @@ var ConanComponent = (function () {
 						}
 				};
 
+				_.parameters[parameterName] = [];
 				_this2[parameterName] = getterSetterFunction;
 			});
 		}
@@ -120,6 +121,37 @@ var ConanComponent = (function () {
 				};
 
 				_this3[parameterName] = getterSetterFunction;
+			});
+		}
+	}, {
+		key: "multipleValueAggregateParameters",
+		value: function multipleValueAggregateParameters() {
+			var _this4 = this;
+
+			var _ = (0, _incognito2["default"])(this);
+
+			for (var _len7 = arguments.length, newParameters = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+				newParameters[_key7] = arguments[_key7];
+			}
+
+			newParameters.forEach(function (parameterName) {
+				_.parameters[parameterName] = _.parameters[parameterName] || [];
+
+				var getterSetterFunction = function getterSetterFunction() {
+					for (var _len8 = arguments.length, newValues = Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+						newValues[_key8] = arguments[_key8];
+					}
+
+					if (newValues.length > 0) {
+						_.parameters[parameterName].push(newValues);
+						return _this4; // For chaining
+					} else {
+							return _.parameters[parameterName];
+						}
+				};
+
+				_.parameters[parameterName] = [];
+				_this4[parameterName] = getterSetterFunction;
 			});
 		}
 	}]);

@@ -87,6 +87,11 @@ var ConanAwsApiGatewayStage = (function (_ConanComponent) {
 		value: function _delete(path) {
 			return new _conanAwsApiGatewayResourceJs2["default"](this.conan, path, "DELETE");
 		}
+	}, {
+		key: "options",
+		value: function options(path) {
+			return new _conanAwsApiGatewayResourceJs2["default"](this.conan, path, "OPTIONS");
+		}
 	}]);
 
 	return ConanAwsApiGatewayStage;

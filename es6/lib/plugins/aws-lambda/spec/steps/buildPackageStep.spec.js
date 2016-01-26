@@ -1,5 +1,5 @@
 import Conan from "../../../../conan.js";
-import compilePackagesStep from "../../steps/compilePackagesStep.js";
+import buildPackageStep from "../../steps/buildPackageStep.js";
 import sinon from "sinon";
 import fileSystem from "fs";
 import path from "path";
@@ -9,7 +9,7 @@ import inflect from "jargon";
 
 temp.track();
 
-describe(".compilePackagesStep(conan, context, stepDone)", () => {
+describe(".buildPackageStep(conan, context, stepDone)", () => {
 	let conan,
 			context,
 			stepDone,
@@ -108,7 +108,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", () => {
 				};
 			};
 
-			compilePackagesStep(conan, context, stepDone(done));
+			buildPackageStep(conan, context, stepDone(done));
 		});
 	});
 
@@ -117,7 +117,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", () => {
 	});
 
 	it("should be a function", () => {
-		(typeof compilePackagesStep).should.equal("function");
+		(typeof buildPackageStep).should.equal("function");
 	});
 
 	describe("(When packages are set to be compiled)", () => {
@@ -197,7 +197,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", () => {
 	describe("(When packages are NOT set to be compiled)", () => {
 		it("should return with the package zip file path set to null", done => {
 			packages = undefined;
-			compilePackagesStep(conan, context, (error, results) => {
+			buildPackageStep(conan, context, (error, results) => {
 				(results.packageZipFilePath === null).should.be.true;
 				done();
 			});

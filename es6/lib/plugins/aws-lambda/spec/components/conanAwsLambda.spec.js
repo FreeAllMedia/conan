@@ -83,24 +83,28 @@ describe("ConanAwsLambda(conan, name, filePath, role)", () => {
 		});
 	});
 
-	describe("(aggregate-value parameters)", () => {
+	describe("(multiple-value-aggregate parameters)", () => {
 		[
-			"dependencies"
+			"dependencies",
+			"alias"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
 
 			describe(`.${parameterName}(new${parameterNamePascalCase})`, () => {
 				it(`should save new${parameterNamePascalCase}`, () => {
 					let component = new ConanAwsLambda(conan);
+
 					const testValueOne = "abc123";
-					const testValueTwo = "abc123";
-					const testValueThree = "abc123";
-					component[parameterName](testValueOne, testValueTwo);
-					component[parameterName](testValueThree);
+					const testValueTwo = "123abc";
+					const testValueThree = "1a2b3c";
+					const testValueFour = "c1b2a3";
+
+					component = component[parameterName](testValueOne, testValueTwo);
+					component = component[parameterName](testValueThree, testValueFour);
+
 					component[parameterName]().should.eql([
-						testValueOne,
-						testValueTwo,
-						testValueThree
+						[testValueOne, testValueTwo],
+						[testValueThree, testValueFour]
 					]);
 				});
 			});
@@ -134,8 +138,18 @@ describe("ConanAwsLambda(conan, name, filePath, role)", () => {
 			step.parameters.should.eql(lambda);
 		});
 
+		it("should add a create role step", () => {
+			const step = conan.steps.findByName("createRoleStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add a attach role policy step", () => {
+			const step = conan.steps.findByName("attachRolePolicyStep");
+			step.parameters.should.eql(lambda);
+		});
+
 		it("should add a compile packages step", () => {
-			const step = conan.steps.findByName("compilePackagesStep");
+			const step = conan.steps.findByName("buildPackageStep");
 			step.parameters.should.eql(lambda);
 		});
 
@@ -144,8 +158,28 @@ describe("ConanAwsLambda(conan, name, filePath, role)", () => {
 			step.parameters.should.eql(lambda);
 		});
 
-		it("should add an upsert lambda step step", () => {
+		it("should add an upsert lambda step", () => {
 			const step = conan.steps.findByName("upsertLambdaStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add an publish lambda version step", () => {
+			const step = conan.steps.findByName("publishLambdaVersionStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add an find lambda alias step", () => {
+			const step = conan.steps.findByName("findLambdaAliasStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add an create lambda alias step", () => {
+			const step = conan.steps.findByName("createLambdaAliasStep");
+			step.parameters.should.eql(lambda);
+		});
+
+		it("should add an update lambda alias step", () => {
+			const step = conan.steps.findByName("updateLambdaAliasStep");
 			step.parameters.should.eql(lambda);
 		});
 	});

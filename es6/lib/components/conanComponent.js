@@ -46,6 +46,7 @@ export default class ConanComponent {
 				}
 			};
 
+			_.parameters[parameterName] = [];
 			this[parameterName] = getterSetterFunction;
 		});
 	}
@@ -65,6 +66,26 @@ export default class ConanComponent {
 				}
 			};
 
+			this[parameterName] = getterSetterFunction;
+		});
+	}
+
+	multipleValueAggregateParameters(...newParameters) {
+		const _ = privateData(this);
+
+		newParameters.forEach(parameterName => {
+			_.parameters[parameterName] = _.parameters[parameterName] || [];
+
+			const getterSetterFunction = (...newValues) => {
+				if (newValues.length > 0) {
+					_.parameters[parameterName].push(newValues);
+					return this; // For chaining
+				} else {
+					return _.parameters[parameterName];
+				}
+			};
+
+			_.parameters[parameterName] = [];
 			this[parameterName] = getterSetterFunction;
 		});
 	}

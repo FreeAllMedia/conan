@@ -16,13 +16,13 @@ function findMethodResponseStep(conan, context, done) {
 	var resourceId = context.results.apiResourceId;
 	var statusCodes = context.parameters.statusCodes();
 	var existingStatusCodes = [];
-	if (restApiId && resourceId && Array.isArray(statusCodes)) {
+	if (restApiId && resourceId && statusCodes) {
 		(function () {
 			var api = new context.libraries.AWS.APIGateway({
 				region: conan.config.region
 			});
 
-			_flowsync2["default"].eachSeries(statusCodes, function (statusCode, next) {
+			_flowsync2["default"].eachSeries(Object.keys(statusCodes), function (statusCode, next) {
 				var apiParameters = {
 					httpMethod: context.parameters.method(),
 					resourceId: resourceId,

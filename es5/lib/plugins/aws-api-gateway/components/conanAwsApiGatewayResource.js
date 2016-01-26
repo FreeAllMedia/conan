@@ -80,13 +80,16 @@ var ConanAwsApiGatewayResource = (function (_ConanComponent) {
 		value: function initialize(conan, path, method) {
 			this.conan = conan;
 
-			this.parameters("path", "method", "lambda");
+			this.parameters("path", "method", "statusCodes", "responseHeaders");
 
-			this.multipleValueParameters("statusCodes", "headers", "queryStrings");
+			this.multipleValueParameters("lambda", "headers", "queryStrings");
 
 			this.path(path);
 			this.method(method);
-			this.statusCodes(200);
+			this.headers();
+			this.queryStrings();
+			this.statusCodes({ "200": "" });
+			this.responseHeaders({});
 
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _awsLambdaStepsFindLambdaByNameStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindApiResourceByPathStepJs2["default"], this);
@@ -94,9 +97,9 @@ var ConanAwsApiGatewayResource = (function (_ConanComponent) {
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindResourceMethodStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsCreateResourceMethodStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationResponseStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindMethodResponseStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutMethodResponseStepJs2["default"], this);
+			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationResponseStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsGetAccountIdStepJs2["default"], this);
 			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsAddPermissionStepJs2["default"], this);
 		}
@@ -119,6 +122,11 @@ var ConanAwsApiGatewayResource = (function (_ConanComponent) {
 		key: "delete",
 		value: function _delete(path) {
 			return new ConanAwsApiGatewayResource(this.conan, path, "DELETE");
+		}
+	}, {
+		key: "options",
+		value: function options(path) {
+			return new ConanAwsApiGatewayResource(this.conan, path, "OPTIONS");
 		}
 	}]);
 

@@ -27,23 +27,12 @@ describe("ConanAwsApiGatewayResource(conan)", () => {
 		apiResource.conan.should.eql(conan);
 	});
 
-	describe("(default parameter values)", () => {
-		it("should set path to the value provided by the constructor", () => {
-			apiResource.path().should.eql(path);
-		});
-		it("should set method to the value provided by the constructor", () => {
-			apiResource.method().should.eql(method);
-		});
-		it("should set status codes to 200 by default", () => {
-			apiResource.statusCodes().should.eql([200]);
-		});
-	});
-
 	describe("(parameters)", () => {
 		[
 			"path",
 			"method",
-			"lambda"
+			"statusCodes",
+			"responseHeaders"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
 
@@ -60,8 +49,8 @@ describe("ConanAwsApiGatewayResource(conan)", () => {
 
 	describe("(multiple-value parameters)", () => {
 		[
-			"statusCodes",
 			"headers",
+			"lambda",
 			"queryStrings"
 		].forEach((parameterName) => {
 			const parameterNamePascalCase = inflect(parameterName).pascal.toString();
@@ -155,7 +144,8 @@ describe("ConanAwsApiGatewayResource(conan)", () => {
 		"GET",
 		"POST",
 		"PUT",
-		"DELETE"
+		"DELETE",
+		"OPTIONS"
 	].forEach((resourceMethod) => {
 		const methodFunctionName = resourceMethod.toLowerCase();
 		describe(`apiResource.${methodFunctionName}(path)`, () => {

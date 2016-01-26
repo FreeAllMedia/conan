@@ -43,6 +43,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 
 	beforeEach(function (done) {
 		conan = new _conanJs2["default"]({
+			basePath: __dirname + "../../../../..",
 			region: "us-east-1"
 		});
 
@@ -80,7 +81,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 		var dependencies = [];
 		conanAwsLambda.dependencies = _sinon2["default"].spy(function (newDependencies) {
 			if (newDependencies) {
-				dependencies.push(newDependencies);
+				dependencies.push([newDependencies]);
 			}
 			return dependencies;
 		});
@@ -118,7 +119,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 			_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
 				zipFilePaths.push(entry.path);
 			}).on("close", function () {
-				var expectedFilePaths = ["lambda.js", "customHandler.js"];
+				var expectedFilePaths = ["aws-lambda/spec/fixtures/lambda.js", "customHandler.js"];
 
 				zipFilePaths.should.have.members(expectedFilePaths);
 

@@ -4,17 +4,17 @@ import sinon from "sinon";
 
 describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 	let conan,
-			context,
-			stepDone,
+		context,
+		stepDone,
 
-			awsResponseError,
-			awsResponseData,
+		awsResponseError,
+		awsResponseData,
 
-			stepReturnError,
-			stepReturnData,
+		stepReturnError,
+		stepReturnData,
 
-			parameters,
-			mockLambdaSpy;
+		parameters,
+		mockLambdaSpy;
 
 	const mockLambda = {
 		getFunction: sinon.spy((params, callback) => {
@@ -86,6 +86,29 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 		}).should.be.true;
 	});
 
+	describe("(No Lambda parameter)", () => {
+		it("should skip the call entirely", done => {
+			parameters = new class MockConanAwsLambda {
+				lambda() { return []; }
+			}();
+
+			context = {
+				parameters: parameters,
+				libraries: {
+					AWS: {
+						Lambda: class Lambda {}
+					}
+				},
+				results: {}
+			};
+
+			findLambdaByNameStep(conan, context, (error, results) => {
+				(results.lambdaArn === null).should.be.true;
+				done();
+			});
+		});
+	});
+
 	describe("(Lambda is Found)", () => {
 		it("should return the found lambda id", () => {
 			stepReturnData.should.eql({
@@ -95,7 +118,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", () => {
 
 		it("should work indistinctly with a lambda parameters instead of a name parameter", done => {
 			parameters = new class MockConanAwsLambda {
-				lambda() { return "TestFunctionWithLambda"; }
+				lambda() { return ["TestFunctionWithLambda"]; }
 			}();
 
 			context = {

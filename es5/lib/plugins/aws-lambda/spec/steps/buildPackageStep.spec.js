@@ -10,9 +10,9 @@ var _conanJs = require("../../../../conan.js");
 
 var _conanJs2 = _interopRequireDefault(_conanJs);
 
-var _stepsCompilePackagesStepJs = require("../../steps/compilePackagesStep.js");
+var _stepsBuildPackageStepJs = require("../../steps/buildPackageStep.js");
 
-var _stepsCompilePackagesStepJs2 = _interopRequireDefault(_stepsCompilePackagesStepJs);
+var _stepsBuildPackageStepJs2 = _interopRequireDefault(_stepsBuildPackageStepJs);
 
 var _sinon = require("sinon");
 
@@ -40,7 +40,7 @@ var _jargon2 = _interopRequireDefault(_jargon);
 
 _temp2["default"].track();
 
-describe(".compilePackagesStep(conan, context, stepDone)", function () {
+describe(".buildPackageStep(conan, context, stepDone)", function () {
 	var conan = undefined,
 	    context = undefined,
 	    stepDone = undefined,
@@ -148,7 +148,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 				};
 			};
 
-			(0, _stepsCompilePackagesStepJs2["default"])(conan, context, stepDone(done));
+			(0, _stepsBuildPackageStepJs2["default"])(conan, context, stepDone(done));
 		});
 	});
 
@@ -157,7 +157,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 	});
 
 	it("should be a function", function () {
-		(typeof _stepsCompilePackagesStepJs2["default"]).should.equal("function");
+		(typeof _stepsBuildPackageStepJs2["default"]).should.equal("function");
 	});
 
 	describe("(When packages are set to be compiled)", function () {
@@ -221,7 +221,7 @@ describe(".compilePackagesStep(conan, context, stepDone)", function () {
 	describe("(When packages are NOT set to be compiled)", function () {
 		it("should return with the package zip file path set to null", function (done) {
 			_packages = undefined;
-			(0, _stepsCompilePackagesStepJs2["default"])(conan, context, function (error, results) {
+			(0, _stepsBuildPackageStepJs2["default"])(conan, context, function (error, results) {
 				(results.packageZipFilePath === null).should.be["true"];
 				done();
 			});

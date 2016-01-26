@@ -7,22 +7,28 @@ export default function findLambdaByNameStep(conan, context, stepDone) {
 	if(typeof context.parameters.name === "function") {
 		lambdaName = context.parameters.name();
 	} else {
-		lambdaName = context.parameters.lambda();
+		lambdaName = context.parameters.lambda()[0];
 	}
 
-	lambda.getFunction({
-		"FunctionName": lambdaName
-	}, (error, responseData) => {
-		if (error && error.statusCode === 404) {
-			stepDone(null, {
-				lambdaArn: null
-			});
-		} else if (error) {
-			stepDone(error);
-		} else {
-			stepDone(null, {
-				lambdaArn: responseData.Configuration.FunctionArn
-			});
-		}
-	});
+	if(lambdaName) {
+		lambda.getFunction({
+			"FunctionName": lambdaName
+		}, (error, responseData) => {
+			if (error && error.statusCode === 404) {
+				stepDone(null, {
+					lambdaArn: null
+				});
+			} else if (error) {
+				stepDone(error);
+			} else {
+				stepDone(null, {
+					lambdaArn: responseData.Configuration.FunctionArn
+				});
+			}
+		});
+	} else {
+		stepDone(null, {
+			lambdaArn: null
+		});
+	}
 }

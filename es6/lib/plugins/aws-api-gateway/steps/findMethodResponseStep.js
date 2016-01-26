@@ -7,12 +7,12 @@ export default function findMethodResponseStep(conan, context, done) {
 	const existingStatusCodes = [];
 	if(restApiId
 		&& resourceId
-		&& Array.isArray(statusCodes)) {
+		&& statusCodes) {
 			const api = new context.libraries.AWS.APIGateway({
 				region: conan.config.region
 			});
 
-			flowsync.eachSeries(statusCodes, (statusCode, next) => {
+			flowsync.eachSeries(Object.keys(statusCodes), (statusCode, next) => {
 				const apiParameters = {
 					httpMethod: context.parameters.method(),
 					resourceId,

@@ -81,12 +81,17 @@ describe("putIntegrationStep", function () {
 			}, {
 				key: "headers",
 				value: function headers() {
-					return undefined;
+					return [];
 				}
 			}, {
 				key: "queryStrings",
 				value: function queryStrings() {
-					return undefined;
+					return [];
+				}
+			}, {
+				key: "lambda",
+				value: function lambda() {
+					return [];
 				}
 			}]);
 
@@ -148,7 +153,12 @@ describe("putIntegrationStep", function () {
 					}, {
 						key: "queryStrings",
 						value: function queryStrings() {
-							return undefined;
+							return [];
+						}
+					}, {
+						key: "lambda",
+						value: function lambda() {
+							return [];
 						}
 					}]);
 
@@ -185,12 +195,17 @@ describe("putIntegrationStep", function () {
 					}, {
 						key: "headers",
 						value: function headers() {
-							return undefined;
+							return [];
 						}
 					}, {
 						key: "queryStrings",
 						value: function queryStrings() {
 							return ["pageSize"];
+						}
+					}, {
+						key: "lambda",
+						value: function lambda() {
+							return [];
 						}
 					}]);
 
@@ -227,12 +242,17 @@ describe("putIntegrationStep", function () {
 					}, {
 						key: "headers",
 						value: function headers() {
-							return undefined;
+							return [];
 						}
 					}, {
 						key: "queryStrings",
 						value: function queryStrings() {
-							return undefined;
+							return [];
+						}
+					}, {
+						key: "lambda",
+						value: function lambda() {
+							return [];
 						}
 					}]);
 
@@ -294,6 +314,87 @@ describe("putIntegrationStep", function () {
 		});
 	});
 
+	describe("(resource method created with alias)", function () {
+		var responseData = undefined;
+
+		beforeEach(function () {
+			parameters = new ((function () {
+				function MockConanAwsParameters() {
+					_classCallCheck(this, MockConanAwsParameters);
+				}
+
+				_createClass(MockConanAwsParameters, [{
+					key: "method",
+					value: function method() {
+						return "GET";
+					}
+				}, {
+					key: "path",
+					value: function path() {
+						return "/account/items";
+					}
+				}, {
+					key: "headers",
+					value: function headers() {
+						return [];
+					}
+				}, {
+					key: "queryStrings",
+					value: function queryStrings() {
+						return [];
+					}
+				}, {
+					key: "lambda",
+					value: function lambda() {
+						return ["testFunction", "development"];
+					}
+				}]);
+
+				return MockConanAwsParameters;
+			})())();
+			context = {
+				parameters: parameters,
+				results: {
+					restApiId: restApiId,
+					apiResourceId: apiResourceId,
+					lambdaArn: lambdaArn
+				},
+				libraries: {
+					AWS: {
+						APIGateway: APIGateway
+					}
+				}
+			};
+			responseData = {};
+			uri = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/" + lambdaArn + ":development/invocations";
+			putIntegrationSpy = _sinon2["default"].spy(function (awsParameters, callback) {
+				callback(null, responseData);
+			});
+		});
+
+		it("should return with no error", function (done) {
+			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function (error) {
+				should.not.exist(error);
+				done();
+			});
+		});
+
+		it("should use the alias on the uri", function (done) {
+			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+				putIntegrationSpy.firstCall.args[0].should.eql({
+					resourceId: apiResourceId,
+					httpMethod: parameters.method(),
+					type: "AWS",
+					integrationHttpMethod: "POST",
+					uri: uri,
+					requestTemplates: requestTemplates,
+					restApiId: restApiId
+				});
+				done();
+			});
+		});
+	});
+
 	describe("(rest api id is not present)", function () {
 		beforeEach(function () {
 			delete context.results.restApiId;
@@ -325,12 +426,19 @@ describe("putIntegrationStep", function () {
 	describe("(lambda arn is not present)", function () {
 		beforeEach(function () {
 			delete context.results.lambdaArn;
-			putIntegrationSpy = _sinon2["default"].spy();
+			requestTemplates = { "application/json": "{\"statusCode\": 200}" };
 		});
 
-		it("should skip the function call entirely", function (done) {
+		it("should put a mock integration", function (done) {
 			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
-				putIntegrationSpy.called.should.be["false"];
+				putIntegrationSpy.firstCall.args[0].should.eql({
+					resourceId: apiResourceId,
+					httpMethod: parameters.method(),
+					type: "MOCK",
+					integrationHttpMethod: "POST",
+					requestTemplates: requestTemplates,
+					restApiId: restApiId
+				});
 				done();
 			});
 		});

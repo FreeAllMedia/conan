@@ -3,6 +3,7 @@ import compileLambdaZipStep from "../../steps/compileLambdaZipStep.js";
 import fileSystem from "fs";
 import unzip from "unzip2";
 import temp from "temp";
+import sinon from "sinon";
 
 describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 	let conan,
@@ -11,8 +12,9 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 
 			lambdaFilePath,
 			dependencyFilePaths,
-
 			packageZipFilePath,
+
+			dependenciesSpy,
 
 			stepReturnData,
 
@@ -20,10 +22,13 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 
 	beforeEach(done => {
 		conan = new Conan({
+			basePath: `${__dirname}../../../..`,
 			region: "us-east-1"
 		});
 
-		dependencyFilePaths = undefined;
+		dependenciesSpy = sinon.spy();
+
+		dependencyFilePaths = [];
 		packageZipFilePath = undefined;
 
 		lambdaFilePath = __dirname + "/../fixtures/lambda.js";
@@ -31,7 +36,12 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 		conanAwsLambda = new class MockConanAwsLambda {
 			filePath() 			{	return lambdaFilePath; }
 			name() 		 			{	return "TestFunction"; }
-			dependencies() 	{ return dependencyFilePaths; }
+			dependencies(value) 	{
+				if(value) {
+					dependenciesSpy(value);
+				}
+				return dependencyFilePaths;
+			}
 			handler() 			{ return ["handler"]; }
 		}();
 
@@ -64,83 +74,79 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 		fileSystem.existsSync(stepReturnData.lambdaZipFilePath).should.be.true;
 	});
 
-	describe("(One dependency file)", () => {
-		beforeEach(done => {
-			// Testing that glob matching works.
-			// If glob matching works normal paths will, too.
-			dependencyFilePaths = __dirname + "/../fixtures/**/s*e.js";
-			compileLambdaZipStep(conan, context, stepDone(done));
-		});
-
-		it("should insert the lambda file, the dependency, and its packages into the zip file", done => {
-			/* eslint-disable new-cap */
-			let zipFilePaths = [];
-
-			fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
-				.pipe(unzip.Parse())
-				.on("entry", (entry) => {
-					zipFilePaths.push(entry.path);
-				})
-				.on("close", () => {
-					const expectedFilePaths = [
-						"lambda.js",
-						"save.js"
-					];
-
-					zipFilePaths.should.have.members(expectedFilePaths);
-
-					done();
-				});
-		});
-
-		it("should insert the correct data for the designated lambda into the zip file", done => {
-			/* eslint-disable new-cap */
-			const lambdaFileData = fileSystem.readFileSync(lambdaFilePath);
-
-			fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
-				.pipe(unzip.Parse())
-				.on("entry", (entry) => {
-					if (entry.path === "lambda.js") {
-						const Writable = require("stream").Writable;
-						const writableStream = Writable({ objectMode: true });
-						writableStream._write = (chunk) => {
-							chunk.should.eql(lambdaFileData);
-							done();
-						};
-						entry.pipe(writableStream);
-					}
-				});
-		});
-	});
-
 	describe("(Multiple dependency file)", () => {
 		beforeEach(done => {
 			// Testing that glob matching works.
 			// If glob matching works normal paths will, too.
 			dependencyFilePaths = [
-				__dirname + "/../fixtures/**/s*e.js",
-				__dirname + "/../fixtures/**/d*y.js"
+				[
+					__dirname + "/../fixtures/**/s*e.js"
+				],
+				[
+					__dirname + "/../fixtures/**/d*y.js",
+					"lib"
+				],
+				[
+					__dirname + "/../fixtures/emptyDirectory"
+				],
+				[
+					__dirname + "/../fixtures/directory/file.js"
+				],
+				[
+					__dirname + "/../../conanAwsLambdaPlugin.js"
+				],
+				[
+					__dirname + "/../../conanAwsLambdaPlugin.js",
+					"lib"
+				]
 			];
 
 			compileLambdaZipStep(conan, context, stepDone(done));
 		});
 
-		it("should insert the lambda file, the dependency, and its packages into the zip file", done => {
+		it("should create a conan handler on the root of the zipFile", done => {
+			/* eslint-disable new-cap */
 			let zipFilePaths = [];
 
 			fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
 				.pipe(unzip.Parse())
 				.on("entry", (entry) => {
-					zipFilePaths.push(entry.path);
+					if(entry.path.match(/conanHandler\-[a-zA-Z0-9.]*/)) {
+						zipFilePaths.push(entry.path);
+					}
+				})
+				.on("close", () => {
+					zipFilePaths.length.should.equal(1);
+					done();
+				});
+		});
+
+		it("should add the lambda file as a dependency", () => {
+			dependenciesSpy.calledWith(lambdaFilePath).should.be.true;
+		});
+
+		it("should insert the lambda file, the dependencies, and its packages into the zip file", done => {
+			/* eslint-disable new-cap */
+			let zipFilePaths = [];
+
+			fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
+				.pipe(unzip.Parse())
+				.on("entry", (entry) => {
+					if(!entry.path.match(/conanHandler\-[a-zA-Z0-9.]*/)) {
+						zipFilePaths.push(entry.path);
+					}
 				})
 				.on("close", () => {
 					const expectedFilePaths = [
-						"lambda.js",
-						"save.js",
-						"destroy.js"
+						"aws-lambda/spec/fixtures/emptyDirectory/",
+						"aws-lambda/spec/fixtures/directory/file.js",
+						"aws-lambda/conanAwsLambdaPlugin.js",
+						"lib/aws-lambda/conanAwsLambdaPlugin.js",
+						"aws-lambda/spec/fixtures/save.js",
+						"lib/aws-lambda/spec/fixtures/destroy.js"
 					];
 
-					zipFilePaths.should.have.members(expectedFilePaths);
+					zipFilePaths.should.eql(expectedFilePaths);
 
 					done();
 				});
@@ -159,11 +165,12 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 			fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
 				.pipe(unzip.Parse())
 				.on("entry", (entry) => {
-					zipFilePaths.push(entry.path);
+					if(!entry.path.match(/conanHandler\-[a-zA-Z0-9.]*/)) {
+						zipFilePaths.push(entry.path);
+					}
 				})
 				.on("close", () => {
 					const expectedFilePaths = [
-						"lambda.js",
 						"node_modules/async/.jshintrc",
 						"node_modules/async/.travis.yml",
 						"node_modules/async/CHANGELOG.md",

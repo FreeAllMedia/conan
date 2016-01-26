@@ -110,6 +110,42 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 		}).should.be["true"];
 	});
 
+	describe("(No Lambda parameter)", function () {
+		it("should skip the call entirely", function (done) {
+			parameters = new ((function () {
+				function MockConanAwsLambda() {
+					_classCallCheck(this, MockConanAwsLambda);
+				}
+
+				_createClass(MockConanAwsLambda, [{
+					key: "lambda",
+					value: function lambda() {
+						return [];
+					}
+				}]);
+
+				return MockConanAwsLambda;
+			})())();
+
+			context = {
+				parameters: parameters,
+				libraries: {
+					AWS: {
+						Lambda: function Lambda() {
+							_classCallCheck(this, Lambda);
+						}
+					}
+				},
+				results: {}
+			};
+
+			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, results) {
+				(results.lambdaArn === null).should.be["true"];
+				done();
+			});
+		});
+	});
+
 	describe("(Lambda is Found)", function () {
 		it("should return the found lambda id", function () {
 			stepReturnData.should.eql({
@@ -126,7 +162,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 				_createClass(MockConanAwsLambda, [{
 					key: "lambda",
 					value: function lambda() {
-						return "TestFunctionWithLambda";
+						return ["TestFunctionWithLambda"];
 					}
 				}]);
 
