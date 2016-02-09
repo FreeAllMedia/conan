@@ -1,3 +1,3 @@
-export default function save(event, callback) {
+export default /* istanbul ignore next */ function save(event, callback) {
 	callback();
 }

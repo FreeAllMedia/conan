@@ -39,8 +39,10 @@ var _hacher = require("hacher");
 
 var _hacher2 = _interopRequireDefault(_hacher);
 
+var _proven = require("proven");
+
 function buildZipPath(fullPath, basePath) {
-	return fullPath.replace(_path2["default"].normalize(basePath) + "/", "");
+	return _path2["default"].normalize(fullPath).replace(_path2["default"].normalize(basePath) + "/", "");
 }
 
 function compileLambdaZipStep(conan, context, stepDone) {
@@ -52,21 +54,33 @@ function compileLambdaZipStep(conan, context, stepDone) {
 	var handlerFilePath = conanAwsLambda.handler()[1];
 	var handlerName = conanAwsLambda.handler()[0];
 
+	var fileSystem = context.fileSystem || _fs2["default"];
+
 	//the lambda file path is another dependency
 	conanAwsLambda.dependencies(conanAwsLambda.filePath());
 
 	var lambdaZip = (0, _archiver2["default"])("zip", {});
 
-	if (_fs2["default"].existsSync(handlerFilePath)) {
+	if (fileSystem.existsSync(handlerFilePath)) {
 		conanAwsLambda.filePath(handlerFilePath);
+
 		var lambdaFilePath = conanAwsLambda.filePath();
 		var lambdaFileName = _path2["default"].basename(lambdaFilePath);
-		var lambdaReadStream = _fs2["default"].createReadStream(lambdaFilePath);
+		var lambdaReadStream = fileSystem.createReadStream(lambdaFilePath);
 
 		lambdaZip.append(lambdaReadStream, { name: lambdaFileName });
 	} else {
 		var lambdaFilePath = buildZipPath(conanAwsLambda.filePath(), conan.config.basePath);
-		var conanHandlerContent = "module.exports = {\n\t" + handlerName + ": require(\"./" + lambdaFilePath + "\")." + handlerName + "\n};";
+		var lambdaModule = require(conanAwsLambda.filePath());
+		var isClassLambda = (0, _proven.isClass)(lambdaModule).result;
+
+		var conanHandlerContent = undefined;
+
+		if (isClassLambda) {
+			conanHandlerContent = "module.exports = {\n\t" + handlerName + ": function classHandler(event, context) {\n\t\tvar LambdaClass = require(\"./" + lambdaFilePath + "\").default;\n\t\tvar lambdaClass = new LambdaClass(event, context);\n\t\tlambdaClass." + handlerName + "(event, context);\n\t}\n};\n";
+		} else {
+			conanHandlerContent = "module.exports = {\n\t" + handlerName + ": require(\"./" + lambdaFilePath + "\")." + handlerName + "\n};\n";
+		}
 		var conanHandlerFileName = "conanHandler-" + _hacher2["default"].getUUID() + ".js";
 
 		conanAwsLambda.filePath(conanHandlerFileName);
@@ -75,7 +89,7 @@ function compileLambdaZipStep(conan, context, stepDone) {
 
 	var lambdaZipFileName = (0, _jargon2["default"])(conanAwsLambda.name()).snake.toString();
 	var lambdaZipFilePath = context.temporaryDirectoryPath + "/" + lambdaZipFileName + ".zip";
-	var lambdaZipWriteStream = _fs2["default"].createWriteStream(lambdaZipFilePath);
+	var lambdaZipWriteStream = fileSystem.createWriteStream(lambdaZipFilePath);
 
 	var dependencies = conanAwsLambda.dependencies();
 
@@ -107,7 +121,7 @@ function compileLambdaZipStep(conan, context, stepDone) {
 
 	function appendPackages(done) {
 		if (packageZipFilePath) {
-			_fs2["default"].createReadStream(packageZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
+			fileSystem.createReadStream(packageZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
 				var isDirectory = entry.path.slice(-1) === "/";
 				if (!isDirectory) {
 					lambdaZip.append(entry, { name: "node_modules/" + entry.path });
@@ -127,7 +141,7 @@ function compileLambdaZipStep(conan, context, stepDone) {
 	}
 
 	function addPathToZip(filePath, relativeZipPath) {
-		var fileStats = _fs2["default"].statSync(filePath);
+		var fileStats = fileSystem.statSync(filePath);
 		var isDirectory = fileStats.isDirectory();
 
 		var relativeFilePath = undefined;
@@ -140,7 +154,7 @@ function compileLambdaZipStep(conan, context, stepDone) {
 		}
 
 		if (!isDirectory) {
-			var fileReadStream = _fs2["default"].createReadStream(filePath);
+			var fileReadStream = fileSystem.createReadStream(filePath);
 			lambdaZip.append(fileReadStream, { name: relativeFilePath, stats: fileStats });
 		} else {
 			relativeFilePath = relativeFilePath + "/";

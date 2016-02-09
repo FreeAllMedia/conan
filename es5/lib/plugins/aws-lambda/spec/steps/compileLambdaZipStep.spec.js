@@ -30,6 +30,10 @@ var _sinon = require("sinon");
 
 var _sinon2 = _interopRequireDefault(_sinon);
 
+var _path = require("path");
+
+var _path2 = _interopRequireDefault(_path);
+
 describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 	var conan = undefined,
 	    context = undefined,
@@ -43,7 +47,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 
 	beforeEach(function (done) {
 		conan = new _conanJs2["default"]({
-			basePath: __dirname + "../../../..",
+			basePath: __dirname + "/../../..",
 			region: "us-east-1"
 		});
 
@@ -120,12 +124,29 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", function () {
 		beforeEach(function (done) {
 			// Testing that glob matching works.
 			// If glob matching works normal paths will, too.
-			dependencyFilePaths = [[__dirname + "/../fixtures/**/s*e.js"], [__dirname + "/../fixtures/**/d*y.js", "lib"], [__dirname + "/../fixtures/emptyDirectory"], [__dirname + "/../fixtures/directory/file.js"], [__dirname + "/../../conanAwsLambdaPlugin.js"], [__dirname + "/../../conanAwsLambdaPlugin.js", "lib"]];
+
+			var fixturesDirectoryPath = _path2["default"].normalize(__dirname + "/../fixtures");
+
+			dependencyFilePaths = [[fixturesDirectoryPath + "/**/s*e.js"], [fixturesDirectoryPath + "/**/d*y.js", "lib"], [fixturesDirectoryPath + "/emptyDirectory"], [fixturesDirectoryPath + "/directory/file.js"], [__dirname + "/../../conanAwsLambdaPlugin.js"], [__dirname + "/../../conanAwsLambdaPlugin.js", "lib"]];
 
 			(0, _stepsCompileLambdaZipStepJs2["default"])(conan, context, stepDone(done));
 		});
 
 		it("should create a conan handler on the root of the zipFile", function (done) {
+			/* eslint-disable new-cap */
+			var zipFilePaths = [];
+
+			_fs2["default"].createReadStream(stepReturnData.lambdaZipFilePath).pipe(_unzip22["default"].Parse()).on("entry", function (entry) {
+				if (entry.path.match(/conanHandler\-[a-zA-Z0-9.]*/)) {
+					zipFilePaths.push(entry.path);
+				}
+			}).on("close", function () {
+				zipFilePaths.length.should.equal(1);
+				done();
+			});
+		});
+
+		it("should generate the conan handler on the root of the zipFile", function (done) {
 			/* eslint-disable new-cap */
 			var zipFilePaths = [];
 
