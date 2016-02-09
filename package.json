@@ -13,22 +13,22 @@
   },
   "keywords": [
     "conan",
-		"aws",
-		"lambda",
-		"deploy",
-		"deployment",
-		"deployer",
-		"serverless",
-		"api",
-		"gateway",
-		"amazon",
-		"web",
-		"services",
-		"aurora",
-		"dynamodb"
+    "aws",
+    "lambda",
+    "deploy",
+    "deployment",
+    "deployer",
+    "serverless",
+    "api",
+    "gateway",
+    "amazon",
+    "web",
+    "services",
+    "aurora",
+    "dynamodb"
   ],
   "author": "Free All Media, LLC",
-	"contributors": [
+  "contributors": [
     {
       "name": "nicosommi",
       "email": "nicosommi@gmail.com"
@@ -48,7 +48,7 @@
   },
   "homepage": "https://github.com/FreeAllMedia/conan",
   "dependencies": {
-		"archiver": "^0.21.0",
+    "archiver": "^0.21.0",
     "aws-sdk": "^2.2.24",
     "cli-table": "^0.3.1",
     "flowsync": "^0.1.11",
@@ -56,6 +56,7 @@
     "hacher": "^0.1.4",
     "incognito": "^0.1.4",
     "jargon": "^0.1.22",
+    "proven": "^0.2.0",
     "run-sequence": "^1.1.5",
     "temp": "^0.8.3",
     "unzip2": "^0.2.5"
