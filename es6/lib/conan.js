@@ -1,3 +1,6 @@
+import requireHack from "./babel6.require.hack.js";
+requireHack();
+
 import ConanSteps from "./components/conanSteps.js";
 import ConanComponent from "./components/conanComponent.js";
 
