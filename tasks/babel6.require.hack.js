@@ -4,7 +4,15 @@ export default function requireHack() {
 	Module.prototype.require = function newRequire() {
 		const required = oldRequire.apply(this, arguments);
 		if(required && required.__esModule && required.default) {
-			Object.assign(required.default, required);
+			if(Object.assign) {
+				Object.assign(required.default, required);
+			} else {
+				Object.keys(required.default).forEach(
+					(key) => {
+						required.default[key] = required[key];
+					}
+				);
+			}
 			return required.default;
 		} else {
 			return required;
