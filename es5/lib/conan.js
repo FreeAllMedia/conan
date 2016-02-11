@@ -7,6 +7,10 @@ exports.ConanAwsApiGatewayPlugin = exports.ConanAwsLambdaPlugin = exports.ConanC
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _babel6RequireHack = require("./babel6.require.hack.js");
+
+var _babel6RequireHack2 = _interopRequireDefault(_babel6RequireHack);
+
 var _conanSteps = require("./components/conanSteps.js");
 
 var _conanSteps2 = _interopRequireDefault(_conanSteps);
@@ -26,6 +30,8 @@ var _conanAwsApiGatewayPlugin2 = _interopRequireDefault(_conanAwsApiGatewayPlugi
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+(0, _babel6RequireHack2.default)();
 
 /**
  * @class Conan
