@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = putIntegrationResponseStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+exports.default = putIntegrationResponseStep;
 
 var _flowsync = require("flowsync");
 
 var _flowsync2 = _interopRequireDefault(_flowsync);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var responseTemplates = { "application/json": "" };
 
@@ -33,7 +33,7 @@ function putIntegrationResponseStep(conan, context, done) {
 
 			var responseParameters = getResponseParameters(context.parameters.responseHeaders());
 
-			_flowsync2["default"].eachSeries(Object.keys(statusCodes), function (statusCode, next) {
+			_flowsync2.default.eachSeries(Object.keys(statusCodes), function (statusCode, next) {
 				var apiParameters = {
 					restApiId: restApiId,
 					resourceId: resourceId,
@@ -62,5 +62,3 @@ function putIntegrationResponseStep(conan, context, done) {
 		done(null, {});
 	}
 }
-
-module.exports = exports["default"];

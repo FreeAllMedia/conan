@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = attachRolePolicyStep;
-
+exports.default = attachRolePolicyStep;
 function attachRolePolicyStep(conan, context, stepDone) {
 	var AWS = context.libraries.AWS;
 	var iam = new AWS.IAM({
@@ -22,5 +21,3 @@ function attachRolePolicyStep(conan, context, stepDone) {
 		}
 	});
 }
-
-module.exports = exports["default"];

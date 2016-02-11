@@ -1,15 +1,14 @@
-/*
-* It finds a resource by his full path and returns it's id and it's parentId
-* If it's necessary it builds a queue with resource tokens that needs to be created
-* and returns the id of the closest existing parent resource, or the root
-*/
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = findApiResourceByPathStep;
-
+exports.default = findApiResourceByPathStep;
+/*
+* It finds a resource by his full path and returns it's id and it's parentId
+* If it's necessary it builds a queue with resource tokens that needs to be created
+* and returns the id of the closest existing parent resource, or the root
+*/
 function findApiResourceByPathStep(conan, context, done) {
 	var restApiId = context.results.restApiId;
 	var resourceFullPath = context.parameters.path();
@@ -71,5 +70,3 @@ function findApiResourceByPathStep(conan, context, done) {
 		done(new Error("There is no api defined as a previous step or there was an error o that step."));
 	}
 }
-
-module.exports = exports["default"];

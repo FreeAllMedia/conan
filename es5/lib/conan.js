@@ -3,34 +3,35 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.ConanAwsApiGatewayPlugin = exports.ConanAwsLambdaPlugin = exports.ConanComponent = undefined;
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _conanSteps = require("./components/conanSteps.js");
+
+var _conanSteps2 = _interopRequireDefault(_conanSteps);
+
+var _conanComponent = require("./components/conanComponent.js");
+
+var _conanComponent2 = _interopRequireDefault(_conanComponent);
+
+var _conanAwsLambdaPlugin = require("./plugins/aws-lambda/conanAwsLambdaPlugin.js");
+
+var _conanAwsLambdaPlugin2 = _interopRequireDefault(_conanAwsLambdaPlugin);
+
+var _conanAwsApiGatewayPlugin = require("./plugins/aws-api-gateway/conanAwsApiGatewayPlugin.js");
+
+var _conanAwsApiGatewayPlugin2 = _interopRequireDefault(_conanAwsApiGatewayPlugin);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var _componentsConanStepsJs = require("./components/conanSteps.js");
-
-var _componentsConanStepsJs2 = _interopRequireDefault(_componentsConanStepsJs);
-
-var _componentsConanComponentJs = require("./components/conanComponent.js");
-
-var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
-
-var _pluginsAwsLambdaConanAwsLambdaPluginJs = require("./plugins/aws-lambda/conanAwsLambdaPlugin.js");
-
-var _pluginsAwsLambdaConanAwsLambdaPluginJs2 = _interopRequireDefault(_pluginsAwsLambdaConanAwsLambdaPluginJs);
-
-var _pluginsAwsApiGatewayConanAwsApiGatewayPluginJs = require("./plugins/aws-api-gateway/conanAwsApiGatewayPlugin.js");
-
-var _pluginsAwsApiGatewayConanAwsApiGatewayPluginJs2 = _interopRequireDefault(_pluginsAwsApiGatewayConanAwsApiGatewayPluginJs);
 
 /**
  * @class Conan
  */
 
-var Conan = (function () {
+var Conan = function () {
   /**
    * @constructor
    * @method constructor
@@ -42,7 +43,7 @@ var Conan = (function () {
     _classCallCheck(this, Conan);
 
     this.config = config || {};
-    this.steps = new _componentsConanStepsJs2["default"](this);
+    this.steps = new _conanSteps2.default(this);
     this.plugins = [];
   }
 
@@ -64,9 +65,9 @@ var Conan = (function () {
   }]);
 
   return Conan;
-})();
+}();
 
-exports["default"] = Conan;
-exports.ConanComponent = _componentsConanComponentJs2["default"];
-exports.ConanAwsLambdaPlugin = _pluginsAwsLambdaConanAwsLambdaPluginJs2["default"];
-exports.ConanAwsApiGatewayPlugin = _pluginsAwsApiGatewayConanAwsApiGatewayPluginJs2["default"];
+exports.default = Conan;
+exports.ConanComponent = _conanComponent2.default;
+exports.ConanAwsLambdaPlugin = _conanAwsLambdaPlugin2.default;
+exports.ConanAwsApiGatewayPlugin = _conanAwsApiGatewayPlugin2.default;

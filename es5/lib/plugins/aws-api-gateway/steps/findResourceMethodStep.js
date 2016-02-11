@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = findResourceMethodStep;
-
+exports.default = findResourceMethodStep;
 function findResourceMethodStep(conan, context, done) {
 	var restApiId = context.results.restApiId;
 	var resourceId = context.results.apiResourceId;
@@ -34,5 +33,3 @@ function findResourceMethodStep(conan, context, done) {
 		done();
 	}
 }
-
-module.exports = exports["default"];

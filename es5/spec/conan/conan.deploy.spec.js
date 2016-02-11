@@ -1,20 +1,20 @@
 "use strict";
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _conan = require("../../lib/conan.js");
 
-var _libConanJs = require("../../lib/conan.js");
-
-var _libConanJs2 = _interopRequireDefault(_libConanJs);
+var _conan2 = _interopRequireDefault(_conan);
 
 var _sinon = require("sinon");
 
 var _sinon2 = _interopRequireDefault(_sinon);
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 describe("conan.deploy(callback)", function () {
 	var conan = undefined;
 
 	beforeEach(function () {
-		conan = new _libConanJs2["default"]();
+		conan = new _conan2.default();
 	});
 
 	it("should run all step functions in order", function (done) {
@@ -22,14 +22,14 @@ describe("conan.deploy(callback)", function () {
 			return stepDone();
 		};
 
-		var conanStepOne = _sinon2["default"].spy(conanStepFunction);
-		var conanStepTwo = _sinon2["default"].spy(conanStepFunction);
+		var conanStepOne = _sinon2.default.spy(conanStepFunction);
+		var conanStepTwo = _sinon2.default.spy(conanStepFunction);
 
 		conan.steps.add(conanStepOne);
 		conan.steps.add(conanStepTwo);
 
 		conan.deploy(function (error) {
-			_sinon2["default"].assert.callOrder(conanStepOne, conanStepTwo);
+			_sinon2.default.assert.callOrder(conanStepOne, conanStepTwo);
 			done(error);
 		});
 	});
@@ -41,8 +41,8 @@ describe("conan.deploy(callback)", function () {
 			stepDone(conanStepError);
 		};
 
-		var conanStepOne = _sinon2["default"].spy(conanStepWithErrorFunction);
-		var conanStepTwo = _sinon2["default"].spy();
+		var conanStepOne = _sinon2.default.spy(conanStepWithErrorFunction);
+		var conanStepTwo = _sinon2.default.spy();
 
 		conan.steps.add(conanStepOne);
 		conan.steps.add(conanStepTwo);
@@ -60,14 +60,14 @@ describe("conan.deploy(callback)", function () {
 			stepDone(conanStepError);
 		};
 
-		var conanStepOne = _sinon2["default"].spy(conanStepWithError);
-		var conanStepTwo = _sinon2["default"].spy();
+		var conanStepOne = _sinon2.default.spy(conanStepWithError);
+		var conanStepTwo = _sinon2.default.spy();
 
 		conan.steps.add(conanStepOne);
 		conan.steps.add(conanStepTwo);
 
 		conan.deploy(function () {
-			conanStepTwo.called.should.be["false"];
+			conanStepTwo.called.should.be.false;
 			done();
 		});
 	});

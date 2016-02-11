@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = findMethodResponseStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+exports.default = findMethodResponseStep;
 
 var _flowsync = require("flowsync");
 
 var _flowsync2 = _interopRequireDefault(_flowsync);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function findMethodResponseStep(conan, context, done) {
 	var restApiId = context.results.restApiId;
@@ -22,7 +22,7 @@ function findMethodResponseStep(conan, context, done) {
 				region: conan.config.region
 			});
 
-			_flowsync2["default"].eachSeries(Object.keys(statusCodes), function (statusCode, next) {
+			_flowsync2.default.eachSeries(Object.keys(statusCodes), function (statusCode, next) {
 				var apiParameters = {
 					httpMethod: context.parameters.method(),
 					resourceId: resourceId,
@@ -53,5 +53,3 @@ function findMethodResponseStep(conan, context, done) {
 		done();
 	}
 }
-
-module.exports = exports["default"];

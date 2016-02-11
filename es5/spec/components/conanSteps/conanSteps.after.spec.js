@@ -1,16 +1,16 @@
 "use strict";
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _conanSteps = require("../../../lib/components/conanSteps.js");
 
-var _libComponentsConanStepsJs = require("../../../lib/components/conanSteps.js");
+var _conanSteps2 = _interopRequireDefault(_conanSteps);
 
-var _libComponentsConanStepsJs2 = _interopRequireDefault(_libComponentsConanStepsJs);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 describe("conanSteps.after(existingStep, afterStep)", function () {
 	var conanSteps = undefined;
 
 	beforeEach(function () {
-		conanSteps = new _libComponentsConanStepsJs2["default"]();
+		conanSteps = new _conanSteps2.default();
 	});
 
 	it("should add a step to the collection after an existing step", function () {

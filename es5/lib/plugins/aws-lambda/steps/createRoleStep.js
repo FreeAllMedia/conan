@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = createRoleStep;
-
+exports.default = createRoleStep;
 function createRoleStep(conan, context, stepDone) {
 	if (!context.results.roleArn) {
 		var AWS = context.libraries.AWS;
@@ -37,5 +36,3 @@ function createRoleStep(conan, context, stepDone) {
 		stepDone();
 	}
 }
-
-module.exports = exports["default"];

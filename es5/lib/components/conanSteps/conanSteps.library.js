@@ -3,16 +3,14 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = library;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+exports.default = library;
 
 var _incognito = require("incognito");
 
 var _incognito2 = _interopRequireDefault(_incognito);
 
-function library(name, value) {
-	(0, _incognito2["default"])(this).libraries[name] = value;
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = exports["default"];
+function library(name, value) {
+	(0, _incognito2.default)(this).libraries[name] = value;
+}

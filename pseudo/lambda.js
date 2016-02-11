@@ -1,4 +1,15 @@
-exports.handler = function handler(event, context) {
-	var name = event.params.path.id;
-	context.succeed("Hello, " + name + "!");
-};
+/* istanbul ignore */
+
+import Database from "almaden";
+
+export function handler(event, context) {
+	const database = new Database();
+
+	database
+		.select("first_name").one
+		.from("users")
+		.where("id", 1)
+		.results((error, row) => {
+			context.succeed(row.first_name);
+		});
+}

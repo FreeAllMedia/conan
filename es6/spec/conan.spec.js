@@ -24,10 +24,10 @@ describe("Conan(config)", () => {
 
 	describe("(Instantiating with a config object)", () => {
 		it("should not throw an error", () => {
-			() => {
+			(() => {
 				const config = {key: "value"};
 				conan = new Conan(config);
-			}.should.not.throw();
+			}).should.not.throw();
 		});
 
 		it("should save config object to conan.config", () => {

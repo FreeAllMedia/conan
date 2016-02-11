@@ -4,6 +4,7 @@ import fileSystem from "fs";
 import unzip from "unzip2";
 import temp from "temp";
 import sinon from "sinon";
+import path from "path";
 
 describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 	let conan,
@@ -22,7 +23,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 
 	beforeEach(done => {
 		conan = new Conan({
-			basePath: `${__dirname}../../../..`,
+			basePath: `${__dirname}/../../..`,
 			region: "us-east-1"
 		});
 
@@ -78,19 +79,22 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 		beforeEach(done => {
 			// Testing that glob matching works.
 			// If glob matching works normal paths will, too.
+
+			const fixturesDirectoryPath = path.normalize(`${__dirname}/../fixtures`);
+
 			dependencyFilePaths = [
 				[
-					__dirname + "/../fixtures/**/s*e.js"
+					`${fixturesDirectoryPath}/**/s*e.js`
 				],
 				[
-					__dirname + "/../fixtures/**/d*y.js",
+					`${fixturesDirectoryPath}/**/d*y.js`,
 					"lib"
 				],
 				[
-					__dirname + "/../fixtures/emptyDirectory"
+					`${fixturesDirectoryPath}/emptyDirectory`
 				],
 				[
-					__dirname + "/../fixtures/directory/file.js"
+					`${fixturesDirectoryPath}/directory/file.js`
 				],
 				[
 					__dirname + "/../../conanAwsLambdaPlugin.js"
@@ -105,6 +109,23 @@ describe(".compileLambdaZipStep(conan, context, stepDone)", () => {
 		});
 
 		it("should create a conan handler on the root of the zipFile", done => {
+			/* eslint-disable new-cap */
+			let zipFilePaths = [];
+
+			fileSystem.createReadStream(stepReturnData.lambdaZipFilePath)
+				.pipe(unzip.Parse())
+				.on("entry", (entry) => {
+					if(entry.path.match(/conanHandler\-[a-zA-Z0-9.]*/)) {
+						zipFilePaths.push(entry.path);
+					}
+				})
+				.on("close", () => {
+					zipFilePaths.length.should.equal(1);
+					done();
+				});
+		});
+
+		it("should generate the conan handler on the root of the zipFile", done => {
 			/* eslint-disable new-cap */
 			let zipFilePaths = [];
 

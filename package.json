@@ -1,7 +1,7 @@
 {
   "generatorVersion": "0.2.21",
   "name": "conan",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Barbarically simple deployment system.",
   "main": "es5/lib/conan.js",
   "scripts": {
@@ -13,22 +13,22 @@
   },
   "keywords": [
     "conan",
-		"aws",
-		"lambda",
-		"deploy",
-		"deployment",
-		"deployer",
-		"serverless",
-		"api",
-		"gateway",
-		"amazon",
-		"web",
-		"services",
-		"aurora",
-		"dynamodb"
+    "aws",
+    "lambda",
+    "deploy",
+    "deployment",
+    "deployer",
+    "serverless",
+    "api",
+    "gateway",
+    "amazon",
+    "web",
+    "services",
+    "aurora",
+    "dynamodb"
   ],
   "author": "Free All Media, LLC",
-	"contributors": [
+  "contributors": [
     {
       "name": "nicosommi",
       "email": "nicosommi@gmail.com"
@@ -48,7 +48,7 @@
   },
   "homepage": "https://github.com/FreeAllMedia/conan",
   "dependencies": {
-		"archiver": "^0.21.0",
+    "archiver": "^0.21.0",
     "aws-sdk": "^2.2.24",
     "cli-table": "^0.3.1",
     "flowsync": "^0.1.11",
@@ -56,20 +56,22 @@
     "hacher": "^0.1.4",
     "incognito": "^0.1.4",
     "jargon": "^0.1.22",
+    "proven": "^0.2.0",
     "run-sequence": "^1.1.5",
     "temp": "^0.8.3",
     "unzip2": "^0.2.5"
   },
   "devDependencies": {
-    "babel": "^5.5.6",
-    "babel-eslint": "^4.1.6",
-    "babel-polyfill": "^6.3.14",
+    "babel": "^6.5.1",
+    "babel-core": "^6.5.1",
+    "babel-eslint": "^4.1.8",
+    "babel-preset-es2015": "^6.5.0",
     "chai": "^3.0.0",
     "compare-version": "^0.1.2",
     "coveralls": "^2.11.2",
     "eslint": "^1.10.3",
     "gulp": "^3.9.0",
-    "gulp-babel": "^5.1.0",
+    "gulp-babel": "^6.1.2",
     "gulp-babel-istanbul": "^0.11.0",
     "gulp-if": "^2.0.0",
     "gulp-istanbul": "^0.10.0",

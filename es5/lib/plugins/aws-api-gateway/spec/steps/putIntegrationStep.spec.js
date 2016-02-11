@@ -1,102 +1,50 @@
-"use strict";
+import Conan from "../../../../conan.js";
+import sinon from "sinon";
+import chai from "chai";
+import putIntegrationStep from "../../steps/putIntegrationStep.js";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+describe("putIntegrationStep", () => {
+	let putIntegrationSpy,
+		constructorSpy,
+		conan,
+		context,
+		parameters,
+		restApiId,
+		apiResourceId,
+		lambdaArn,
+		uri,
+		requestTemplates,
+		should;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var _conanJs = require("../../../../conan.js");
-
-var _conanJs2 = _interopRequireDefault(_conanJs);
-
-var _sinon = require("sinon");
-
-var _sinon2 = _interopRequireDefault(_sinon);
-
-var _chai = require("chai");
-
-var _chai2 = _interopRequireDefault(_chai);
-
-var _stepsPutIntegrationStepJs = require("../../steps/putIntegrationStep.js");
-
-var _stepsPutIntegrationStepJs2 = _interopRequireDefault(_stepsPutIntegrationStepJs);
-
-describe("putIntegrationStep", function () {
-	var putIntegrationSpy = undefined,
-	    constructorSpy = undefined,
-	    conan = undefined,
-	    context = undefined,
-	    parameters = undefined,
-	    restApiId = undefined,
-	    apiResourceId = undefined,
-	    lambdaArn = undefined,
-	    uri = undefined,
-	    requestTemplates = undefined,
-	    should = undefined;
-
-	var APIGateway = (function () {
-		function APIGateway(constructorParameters) {
-			_classCallCheck(this, APIGateway);
-
+	class APIGateway {
+		constructor(constructorParameters) {
 			constructorSpy(constructorParameters);
 		}
 
-		_createClass(APIGateway, [{
-			key: "putIntegration",
-			value: function putIntegration(params, callback) {
-				putIntegrationSpy(params, callback);
-			}
-		}]);
+		putIntegration(params, callback) {
+			putIntegrationSpy(params, callback);
+		}
+	}
 
-		return APIGateway;
-	})();
-
-	beforeEach(function () {
-		conan = new _conanJs2["default"]({
+	beforeEach(() => {
+		conan = new Conan({
 			region: "us-east-1"
 		});
 
-		constructorSpy = _sinon2["default"].spy();
-		putIntegrationSpy = _sinon2["default"].spy(function (params, callback) {
+		constructorSpy = sinon.spy();
+		putIntegrationSpy = sinon.spy((params, callback) => {
 			callback();
 		});
-		should = _chai2["default"].should();
+		should = chai.should();
 
-		parameters = new ((function () {
-			function MockConanAwsParameters() {
-				_classCallCheck(this, MockConanAwsParameters);
-			}
+		parameters = new class MockConanAwsParameters {
+			method() { return "GET"; }
+			path() { return "/account/items"; }
+			headers() { return []; }
+			queryStrings() { return []; }
+			lambda() { return []; }
+		}();
 
-			_createClass(MockConanAwsParameters, [{
-				key: "method",
-				value: function method() {
-					return "GET";
-				}
-			}, {
-				key: "path",
-				value: function path() {
-					return "/account/items";
-				}
-			}, {
-				key: "headers",
-				value: function headers() {
-					return [];
-				}
-			}, {
-				key: "queryStrings",
-				value: function queryStrings() {
-					return [];
-				}
-			}, {
-				key: "lambda",
-				value: function lambda() {
-					return [];
-				}
-			}]);
-
-			return MockConanAwsParameters;
-		})())();
 
 		// uri according to aws docs
 		// arn:aws:apigateway:{region}:{service}:{path|action}/{service_api}
@@ -104,355 +52,247 @@ describe("putIntegrationStep", function () {
 		restApiId = "23sysh";
 		apiResourceId = "23sysh3";
 		lambdaArn = "arn:aws:lambda:us-east-1:166191849902:function:accounts";
-		uri = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/" + lambdaArn + "/invocations";
+		uri = `arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${lambdaArn}/invocations`;
 
-		requestTemplates = { "application/json": "{\n  \"params\": {\n \"header\": {\n},\n \"queryString\": {\n},\n \"path\": {\n}},\n \"data\": $input.json('$')\n}" };
+		requestTemplates = {"application/json": "{\n  \"params\": {\n \"header\": {\n},\n \"queryString\": {\n},\n \"path\": {\n}},\n \"data\": $input.json('$')\n}"};
 
 		context = {
-			parameters: parameters,
+			parameters,
 			results: {
-				restApiId: restApiId,
-				apiResourceId: apiResourceId,
-				lambdaArn: lambdaArn
+				restApiId,
+				apiResourceId,
+				lambdaArn
 			},
 			libraries: {
 				AWS: {
-					APIGateway: APIGateway
+					APIGateway
 				}
 			}
 		};
 	});
 
-	it("should be a function", function () {
-		(typeof _stepsPutIntegrationStepJs2["default"]).should.equal("function");
+	it("should be a function", () => {
+		(typeof putIntegrationStep).should.equal("function");
 	});
 
-	describe("(parameter mapping)", function () {
-		describe("(header)", function () {
-			beforeEach(function (done) {
-				context.parameters = new ((function () {
-					function MockConanAwsParameters() {
-						_classCallCheck(this, MockConanAwsParameters);
-					}
-
-					_createClass(MockConanAwsParameters, [{
-						key: "path",
-						value: function path() {
-							return "/accounts/items";
-						}
-					}, {
-						key: "method",
-						value: function method() {
-							return "GET";
-						}
-					}, {
-						key: "headers",
-						value: function headers() {
-							return ["Access-Token"];
-						}
-					}, {
-						key: "queryStrings",
-						value: function queryStrings() {
-							return [];
-						}
-					}, {
-						key: "lambda",
-						value: function lambda() {
-							return [];
-						}
-					}]);
-
-					return MockConanAwsParameters;
-				})())();
-				requestTemplates = { "application/json": "{\n  \"params\": {\n \"header\": {\n\"accessToken\": \"$input.params('Access-Token')\"\n},\n \"queryString\": {\n},\n \"path\": {\n}},\n \"data\": $input.json('$')\n}" };
-				(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+	describe("(parameter mapping)", () => {
+		describe("(header)", () => {
+			beforeEach(done => {
+				context.parameters = new class MockConanAwsParameters {
+					path() { return "/accounts/items"; }
+					method() { return "GET"; }
+					headers() { return ["Access-Token"]; }
+					queryStrings() { return []; }
+					lambda() { return []; }
+				}();
+				requestTemplates = {"application/json": "{\n  \"params\": {\n \"header\": {\n\"accessToken\": \"$input.params('Access-Token')\"\n},\n \"queryString\": {\n},\n \"path\": {\n}},\n \"data\": $input.json('$')\n}"};
+				putIntegrationStep(conan, context, () => {
 					done();
 				});
 			});
 
-			it("should map the header parameters", function () {
+			it("should map the header parameters", () => {
 				putIntegrationSpy.firstCall.args[0].requestTemplates.should.eql(requestTemplates);
 			});
 		});
 
-		describe("(queryStrings)", function () {
-			beforeEach(function (done) {
-				context.parameters = new ((function () {
-					function MockConanAwsParameters() {
-						_classCallCheck(this, MockConanAwsParameters);
-					}
-
-					_createClass(MockConanAwsParameters, [{
-						key: "method",
-						value: function method() {
-							return "GET";
-						}
-					}, {
-						key: "path",
-						value: function path() {
-							return "/accounts/items";
-						}
-					}, {
-						key: "headers",
-						value: function headers() {
-							return [];
-						}
-					}, {
-						key: "queryStrings",
-						value: function queryStrings() {
-							return ["pageSize"];
-						}
-					}, {
-						key: "lambda",
-						value: function lambda() {
-							return [];
-						}
-					}]);
-
-					return MockConanAwsParameters;
-				})())();
-				requestTemplates = { "application/json": "{\n  \"params\": {\n \"header\": {\n},\n \"queryString\": {\n\"pageSize\": \"$input.params('pageSize')\"\n},\n \"path\": {\n}},\n \"data\": $input.json('$')\n}" };
-				(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+		describe("(queryStrings)", () => {
+			beforeEach(done => {
+				context.parameters = new class MockConanAwsParameters {
+					method() { return "GET"; }
+					path() { return "/accounts/items"; }
+					headers() { return []; }
+					queryStrings() { return ["pageSize"]; }
+					lambda() { return []; }
+				}();
+				requestTemplates = {"application/json": "{\n  \"params\": {\n \"header\": {\n},\n \"queryString\": {\n\"pageSize\": \"$input.params('pageSize')\"\n},\n \"path\": {\n}},\n \"data\": $input.json('$')\n}"};
+				putIntegrationStep(conan, context, () => {
 					done();
 				});
 			});
 
-			it("should map the header parameters", function () {
+			it("should map the header parameters", () => {
 				putIntegrationSpy.firstCall.args[0].requestTemplates.should.eql(requestTemplates);
 			});
 		});
 
-		describe("(path)", function () {
-			beforeEach(function (done) {
-				context.parameters = new ((function () {
-					function MockConanAwsParameters() {
-						_classCallCheck(this, MockConanAwsParameters);
-					}
-
-					_createClass(MockConanAwsParameters, [{
-						key: "method",
-						value: function method() {
-							return "GET";
-						}
-					}, {
-						key: "path",
-						value: function path() {
-							return "/account/{id}";
-						}
-					}, {
-						key: "headers",
-						value: function headers() {
-							return [];
-						}
-					}, {
-						key: "queryStrings",
-						value: function queryStrings() {
-							return [];
-						}
-					}, {
-						key: "lambda",
-						value: function lambda() {
-							return [];
-						}
-					}]);
-
-					return MockConanAwsParameters;
-				})())();
-				requestTemplates = { "application/json": "{\n  \"params\": {\n \"header\": {\n},\n \"queryString\": {\n},\n \"path\": {\n\"id\": \"$input.params('id')\"\n}},\n \"data\": $input.json('$')\n}" };
-				(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+		describe("(path)", () => {
+			beforeEach(done => {
+				context.parameters = new class MockConanAwsParameters {
+					method() { return "GET"; }
+					path() { return "/account/{id}"; }
+					headers() { return []; }
+					queryStrings() { return []; }
+					lambda() { return []; }
+				}();
+				requestTemplates = {"application/json": "{\n  \"params\": {\n \"header\": {\n},\n \"queryString\": {\n},\n \"path\": {\n\"id\": \"$input.params('id')\"\n}},\n \"data\": $input.json('$')\n}"};
+				putIntegrationStep(conan, context, () => {
 					done();
 				});
 			});
 
-			it("should map the header parameters", function () {
+			it("should map the header parameters", () => {
 				putIntegrationSpy.firstCall.args[0].requestTemplates.should.eql(requestTemplates);
 			});
 		});
 	});
 
-	describe("(parameters)", function () {
-		beforeEach(function (done) {
-			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+	describe("(parameters)", () => {
+		beforeEach(done => {
+			putIntegrationStep(conan, context, () => {
 				done();
 			});
 		});
 
-		it("should send the appropiate parameters to the AWS call", function () {
+		it("should send the appropiate parameters to the AWS call", () => {
 			putIntegrationSpy.firstCall.args[0].should.eql({
 				resourceId: apiResourceId,
 				httpMethod: parameters.method(),
 				type: "AWS",
 				integrationHttpMethod: "POST",
-				uri: uri,
-				requestTemplates: requestTemplates,
-				restApiId: restApiId
+				uri,
+				requestTemplates,
+				restApiId
 			});
 		});
 
-		it("should set the constructor parameters", function () {
+		it("should set the constructor parameters", () => {
 			constructorSpy.firstCall.args[0].should.eql({
 				region: conan.config.region
 			});
 		});
 	});
 
-	describe("(resource method created)", function () {
-		var responseData = undefined;
+	describe("(resource method created)", () => {
+		let responseData;
 
-		beforeEach(function () {
+		beforeEach(() => {
 			responseData = {};
-			putIntegrationSpy = _sinon2["default"].spy(function (awsParameters, callback) {
+			putIntegrationSpy = sinon.spy((awsParameters, callback) => {
 				callback(null, responseData);
 			});
 		});
 
-		it("should return with no error", function (done) {
-			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function (error) {
+		it("should return with no error", done => {
+			putIntegrationStep(conan, context, (error) => {
 				should.not.exist(error);
 				done();
 			});
 		});
 	});
 
-	describe("(resource method created with alias)", function () {
-		var responseData = undefined;
+	describe("(resource method created with alias)", () => {
+		let responseData;
 
-		beforeEach(function () {
-			parameters = new ((function () {
-				function MockConanAwsParameters() {
-					_classCallCheck(this, MockConanAwsParameters);
-				}
-
-				_createClass(MockConanAwsParameters, [{
-					key: "method",
-					value: function method() {
-						return "GET";
-					}
-				}, {
-					key: "path",
-					value: function path() {
-						return "/account/items";
-					}
-				}, {
-					key: "headers",
-					value: function headers() {
-						return [];
-					}
-				}, {
-					key: "queryStrings",
-					value: function queryStrings() {
-						return [];
-					}
-				}, {
-					key: "lambda",
-					value: function lambda() {
-						return ["testFunction", "development"];
-					}
-				}]);
-
-				return MockConanAwsParameters;
-			})())();
+		beforeEach(() => {
+			parameters = new class MockConanAwsParameters {
+				method() { return "GET"; }
+				path() { return "/account/items"; }
+				headers() { return []; }
+				queryStrings() { return []; }
+				lambda() { return ["testFunction", "development"]; }
+			}();
 			context = {
-				parameters: parameters,
+				parameters,
 				results: {
-					restApiId: restApiId,
-					apiResourceId: apiResourceId,
-					lambdaArn: lambdaArn
+					restApiId,
+					apiResourceId,
+					lambdaArn
 				},
 				libraries: {
 					AWS: {
-						APIGateway: APIGateway
+						APIGateway
 					}
 				}
 			};
 			responseData = {};
-			uri = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/" + lambdaArn + ":development/invocations";
-			putIntegrationSpy = _sinon2["default"].spy(function (awsParameters, callback) {
+			uri = `arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${lambdaArn}:development/invocations`;
+			putIntegrationSpy = sinon.spy((awsParameters, callback) => {
 				callback(null, responseData);
 			});
 		});
 
-		it("should return with no error", function (done) {
-			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function (error) {
+		it("should return with no error", done => {
+			putIntegrationStep(conan, context, (error) => {
 				should.not.exist(error);
 				done();
 			});
 		});
 
-		it("should use the alias on the uri", function (done) {
-			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+		it("should use the alias on the uri", done => {
+			putIntegrationStep(conan, context, () => {
 				putIntegrationSpy.firstCall.args[0].should.eql({
 					resourceId: apiResourceId,
 					httpMethod: parameters.method(),
 					type: "AWS",
 					integrationHttpMethod: "POST",
-					uri: uri,
-					requestTemplates: requestTemplates,
-					restApiId: restApiId
+					uri,
+					requestTemplates,
+					restApiId
 				});
 				done();
 			});
 		});
 	});
 
-	describe("(rest api id is not present)", function () {
-		beforeEach(function () {
+	describe("(rest api id is not present)", () => {
+		beforeEach(() => {
 			delete context.results.restApiId;
-			putIntegrationSpy = _sinon2["default"].spy();
+			putIntegrationSpy = sinon.spy();
 		});
 
-		it("should skip the function call entirely", function (done) {
-			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
-				putIntegrationSpy.called.should.be["false"];
+		it("should skip the function call entirely", done => {
+			putIntegrationStep(conan, context, () => {
+				putIntegrationSpy.called.should.be.false;
 				done();
 			});
 		});
 	});
 
-	describe("(api resource id is not present)", function () {
-		beforeEach(function () {
+	describe("(api resource id is not present)", () => {
+		beforeEach(() => {
 			delete context.results.apiResourceId;
-			putIntegrationSpy = _sinon2["default"].spy();
+			putIntegrationSpy = sinon.spy();
 		});
 
-		it("should skip the function call entirely", function (done) {
-			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
-				putIntegrationSpy.called.should.be["false"];
+		it("should skip the function call entirely", done => {
+			putIntegrationStep(conan, context, () => {
+				putIntegrationSpy.called.should.be.false;
 				done();
 			});
 		});
 	});
 
-	describe("(lambda arn is not present)", function () {
-		beforeEach(function () {
+	describe("(lambda arn is not present)", () => {
+		beforeEach(() => {
 			delete context.results.lambdaArn;
-			requestTemplates = { "application/json": "{\"statusCode\": 200}" };
+			requestTemplates = {"application/json": "{\"statusCode\": 200}"};
 		});
 
-		it("should put a mock integration", function (done) {
-			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function () {
+		it("should put a mock integration", done => {
+			putIntegrationStep(conan, context, () => {
 				putIntegrationSpy.firstCall.args[0].should.eql({
 					resourceId: apiResourceId,
 					httpMethod: parameters.method(),
 					type: "MOCK",
 					integrationHttpMethod: "POST",
-					requestTemplates: requestTemplates,
-					restApiId: restApiId
+					requestTemplates,
+					restApiId
 				});
 				done();
 			});
 		});
 	});
 
-	describe("(unknown error)", function () {
-		beforeEach(function () {
-			putIntegrationSpy = _sinon2["default"].spy(function (params, callback) {
+	describe("(unknown error)", () => {
+		beforeEach(() => {
+			putIntegrationSpy = sinon.spy((params, callback) => {
 				callback({ statusCode: 401 });
 			});
 		});
 
-		it("should return an error when is just one", function (done) {
-			(0, _stepsPutIntegrationStepJs2["default"])(conan, context, function (error) {
+		it("should return an error when is just one", done => {
+			putIntegrationStep(conan, context, (error) => {
 				should.exist(error);
 				done();
 			});

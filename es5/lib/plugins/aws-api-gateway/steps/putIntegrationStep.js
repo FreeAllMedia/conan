@@ -3,19 +3,19 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = putIntegrationStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+exports.default = putIntegrationStep;
 
 var _jargon = require("jargon");
 
 var _jargon2 = _interopRequireDefault(_jargon);
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function getVelocityMap(parameterArray) {
 	var result = [];
 	parameterArray.forEach(function (headerName) {
 		// TODO: add this requirements to jargon itself
-		var curatedHeaderName = (0, _jargon2["default"])(headerName).camel.toString().replace(/-|{|}/g, "");
+		var curatedHeaderName = (0, _jargon2.default)(headerName).camel.toString().replace(/-|{|}/g, "");
 		var curatedBrackets = headerName.replace(/\{|}/g, "");
 		result.push("\n\"" + curatedHeaderName + "\": \"$input.params('" + curatedBrackets + "')\"");
 	});
@@ -72,5 +72,3 @@ function putIntegrationStep(conan, context, done) {
 		done(null, {});
 	}
 }
-
-module.exports = exports["default"];

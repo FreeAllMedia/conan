@@ -3,9 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = upsertLambdaStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+exports.default = upsertLambdaStep;
 
 var _fs = require("fs");
 
@@ -14,6 +12,8 @@ var _fs2 = _interopRequireDefault(_fs);
 var _path = require("path");
 
 var _path2 = _interopRequireDefault(_path);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function upsertLambdaStep(conan, context, stepDone) {
 	var conanAwsLambda = context.parameters;
@@ -25,10 +25,10 @@ function upsertLambdaStep(conan, context, stepDone) {
 
 	var lambdaIsNew = lambdaArn === null;
 
-	var lambdaZipBuffer = _fs2["default"].readFileSync(context.results.lambdaZipFilePath);
+	var lambdaZipBuffer = _fs2.default.readFileSync(context.results.lambdaZipFilePath);
 
-	var lambdaExtension = _path2["default"].extname(conanAwsLambda.filePath());
-	var fileName = _path2["default"].basename(conanAwsLambda.filePath(), lambdaExtension);
+	var lambdaExtension = _path2.default.extname(conanAwsLambda.filePath());
+	var fileName = _path2.default.basename(conanAwsLambda.filePath(), lambdaExtension);
 
 	var handlerName = conanAwsLambda.handler()[0];
 	var handlerString = fileName + "." + handlerName;
@@ -87,5 +87,3 @@ function upsertLambdaStep(conan, context, stepDone) {
 		});
 	}
 }
-
-module.exports = exports["default"];

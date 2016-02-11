@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = updateApiStageStep;
-
+exports.default = updateApiStageStep;
 function updateApiStageStep(conan, context, done) {
 	var api = new context.libraries.AWS.APIGateway({
 		region: conan.config.region
@@ -33,5 +32,3 @@ function updateApiStageStep(conan, context, done) {
 		done();
 	}
 }
-
-module.exports = exports["default"];

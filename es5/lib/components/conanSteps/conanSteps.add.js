@@ -3,16 +3,14 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = add;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+exports.default = add;
 
 var _incognito = require("incognito");
 
 var _incognito2 = _interopRequireDefault(_incognito);
 
-function add(conanStep, parameters) {
-	(0, _incognito2["default"])(this).steps.push({ handler: conanStep, parameters: parameters });
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = exports["default"];
+function add(conanStep, parameters) {
+	(0, _incognito2.default)(this).steps.push({ handler: conanStep, parameters: parameters });
+}

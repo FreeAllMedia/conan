@@ -14,11 +14,12 @@ conan.use(ConanAwsApiGatewayPlugin);
 conan
 	.lambda("SomeLambda", __dirname + "/lambda.js", "AWSLambda");
 
-conan.api("My API")
-	.stage("development")
-		.get("/echoName/{id}")
-			.lambda("SomeLambda")
-			.statusCodes(200);
+conan
+	.api("My API")
+		.stage("development")
+			.get("/echoName/{id}")
+				.lambda("SomeLambda")
+				.statusCodes(200);
 
 conan.deploy((error) => {
 	if (error) { throw error; }
