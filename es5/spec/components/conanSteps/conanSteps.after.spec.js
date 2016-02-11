@@ -1,13 +1,19 @@
-import ConanSteps from "../../../lib/components/conanSteps.js";
+"use strict";
 
-describe("conanSteps.after(existingStep, afterStep)", () => {
-	let conanSteps;
+var _conanSteps = require("../../../lib/components/conanSteps.js");
 
-	beforeEach(() => {
-		conanSteps = new ConanSteps();
+var _conanSteps2 = _interopRequireDefault(_conanSteps);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+describe("conanSteps.after(existingStep, afterStep)", function () {
+	var conanSteps = undefined;
+
+	beforeEach(function () {
+		conanSteps = new _conanSteps2.default();
 	});
 
-	it("should add a step to the collection after an existing step", () => {
+	it("should add a step to the collection after an existing step", function () {
 		function conanStepOne(conan, done) {
 			done();
 		}
@@ -20,13 +26,13 @@ describe("conanSteps.after(existingStep, afterStep)", () => {
 			done();
 		}
 
-		const stepOneParameters = {foo: "bar"};
+		var stepOneParameters = { foo: "bar" };
 		conanSteps.add(conanStepOne, stepOneParameters);
 
-		const stepTwoParameters = {baz: "squee"};
+		var stepTwoParameters = { baz: "squee" };
 		conanSteps.add(conanStepTwo, stepTwoParameters);
 
-		const stepThreeParameters = {blah: "bing"};
+		var stepThreeParameters = { blah: "bing" };
 		conanSteps.after(conanStepOne, conanStepThree, stepThreeParameters);
 
 		conanSteps.all[1].should.eql({

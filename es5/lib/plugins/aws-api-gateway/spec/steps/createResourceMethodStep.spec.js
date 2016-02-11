@@ -1,195 +1,156 @@
-"use strict";
+import Conan from "../../../../conan.js";
+import sinon from "sinon";
+import chai from "chai";
+import createResourceMethodStep from "../../steps/createResourceMethodStep.js";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+describe("createResourceMethodStep", () => {
+	let putMethodSpy,
+		constructorSpy,
+		conan,
+		context,
+		parameters,
+		restApiId,
+		apiResourceId,
+		should;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _conan = require("../../../../conan.js");
-
-var _conan2 = _interopRequireDefault(_conan);
-
-var _sinon = require("sinon");
-
-var _sinon2 = _interopRequireDefault(_sinon);
-
-var _chai = require("chai");
-
-var _chai2 = _interopRequireDefault(_chai);
-
-var _createResourceMethodStep = require("../../steps/createResourceMethodStep.js");
-
-var _createResourceMethodStep2 = _interopRequireDefault(_createResourceMethodStep);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-describe("createResourceMethodStep", function () {
-	var putMethodSpy = undefined,
-	    constructorSpy = undefined,
-	    conan = undefined,
-	    context = undefined,
-	    parameters = undefined,
-	    restApiId = undefined,
-	    apiResourceId = undefined,
-	    should = undefined;
-
-	var APIGateway = function () {
-		function APIGateway(constructorParameters) {
-			_classCallCheck(this, APIGateway);
-
+	class APIGateway {
+		constructor(constructorParameters) {
 			constructorSpy(constructorParameters);
 		}
 
-		_createClass(APIGateway, [{
-			key: "putMethod",
-			value: function putMethod(params, callback) {
-				putMethodSpy(params, callback);
-			}
-		}]);
+		putMethod(params, callback) {
+			putMethodSpy(params, callback);
+		}
+	}
 
-		return APIGateway;
-	}();
-
-	beforeEach(function () {
-		conan = new _conan2.default({
+	beforeEach(() => {
+		conan = new Conan({
 			region: "us-east-1"
 		});
 
-		constructorSpy = _sinon2.default.spy();
-		putMethodSpy = _sinon2.default.spy(function (params, callback) {
+		constructorSpy = sinon.spy();
+		putMethodSpy = sinon.spy((params, callback) => {
 			callback();
 		});
-		should = _chai2.default.should();
+		should = chai.should();
 
-		parameters = new (function () {
-			function MockConanAwsParameters() {
-				_classCallCheck(this, MockConanAwsParameters);
-			}
-
-			_createClass(MockConanAwsParameters, [{
-				key: "method",
-				value: function method() {
-					return "GET";
-				}
-			}]);
-
-			return MockConanAwsParameters;
-		}())();
+		parameters = new class MockConanAwsParameters {
+			method() { return "GET"; }
+		}();
 
 		restApiId = "23sysh";
 		apiResourceId = "23sysh3";
 
 		context = {
-			parameters: parameters,
+			parameters,
 			results: {
-				restApiId: restApiId,
-				apiResourceId: apiResourceId
+				restApiId,
+				apiResourceId
 			},
 			libraries: {
 				AWS: {
-					APIGateway: APIGateway
+					APIGateway
 				}
 			}
 		};
 	});
 
-	it("should be a function", function () {
-		(typeof _createResourceMethodStep2.default === "undefined" ? "undefined" : _typeof(_createResourceMethodStep2.default)).should.equal("function");
+	it("should be a function", () => {
+		(typeof createResourceMethodStep).should.equal("function");
 	});
 
-	describe("(parameters)", function () {
-		beforeEach(function (done) {
-			(0, _createResourceMethodStep2.default)(conan, context, function () {
+	describe("(parameters)", () => {
+		beforeEach(done => {
+			createResourceMethodStep(conan, context, () => {
 				done();
 			});
 		});
 
-		it("should send the appropiate parameters to the AWS call", function () {
+		it("should send the appropiate parameters to the AWS call", () => {
 			putMethodSpy.firstCall.args[0].should.eql({
 				resourceId: apiResourceId,
 				httpMethod: parameters.method(),
 				authorizationType: "none",
-				restApiId: restApiId
+				restApiId
 			});
 		});
 
-		it("should set the constructor parameters", function () {
+		it("should set the constructor parameters", () => {
 			constructorSpy.firstCall.args[0].should.eql({
 				region: conan.config.region
 			});
 		});
 	});
 
-	describe("(resource method created)", function () {
-		var responseData = undefined;
+	describe("(resource method created)", () => {
+		let responseData;
 
-		beforeEach(function () {
+		beforeEach(() => {
 			responseData = { httpMethod: "GET" };
-			putMethodSpy = _sinon2.default.spy(function (awsParameters, callback) {
+			putMethodSpy = sinon.spy((awsParameters, callback) => {
 				callback(null, responseData);
 			});
 		});
 
-		it("should return the resource http method", function (done) {
-			(0, _createResourceMethodStep2.default)(conan, context, function (error, result) {
+		it("should return the resource http method", done => {
+			createResourceMethodStep(conan, context, (error, result) => {
 				result.resourceHttpMethod.should.equal(responseData.httpMethod);
 				done();
 			});
 		});
 	});
 
-	describe("(rest api id is not present)", function () {
-		beforeEach(function () {
+	describe("(rest api id is not present)", () => {
+		beforeEach(() => {
 			delete context.results.restApiId;
-			putMethodSpy = _sinon2.default.spy();
+			putMethodSpy = sinon.spy();
 		});
 
-		it("should skip the function call entirely", function (done) {
-			(0, _createResourceMethodStep2.default)(conan, context, function () {
+		it("should skip the function call entirely", done => {
+			createResourceMethodStep(conan, context, () => {
 				putMethodSpy.called.should.be.false;
 				done();
 			});
 		});
 	});
 
-	describe("(api resource id is not present)", function () {
-		beforeEach(function () {
+	describe("(api resource id is not present)", () => {
+		beforeEach(() => {
 			delete context.results.apiResourceId;
-			putMethodSpy = _sinon2.default.spy();
+			putMethodSpy = sinon.spy();
 		});
 
-		it("should skip the function call entirely", function (done) {
-			(0, _createResourceMethodStep2.default)(conan, context, function () {
+		it("should skip the function call entirely", done => {
+			createResourceMethodStep(conan, context, () => {
 				putMethodSpy.called.should.be.false;
 				done();
 			});
 		});
 	});
 
-	describe("(http resource method is present - it was found)", function () {
-		beforeEach(function () {
+	describe("(http resource method is present - it was found)", () => {
+		beforeEach(() => {
 			context.results.resourceHttpMethod = "GET";
-			putMethodSpy = _sinon2.default.spy();
+			putMethodSpy = sinon.spy();
 		});
 
-		it("should skip the function call entirely", function (done) {
-			(0, _createResourceMethodStep2.default)(conan, context, function () {
+		it("should skip the function call entirely", done => {
+			createResourceMethodStep(conan, context, () => {
 				putMethodSpy.called.should.be.false;
 				done();
 			});
 		});
 	});
 
-	describe("(unknown error)", function () {
-		beforeEach(function () {
-			putMethodSpy = _sinon2.default.spy(function (params, callback) {
+	describe("(unknown error)", () => {
+		beforeEach(() => {
+			putMethodSpy = sinon.spy((params, callback) => {
 				callback({ statusCode: 401 });
 			});
 		});
 
-		it("should return an error when is just one", function (done) {
-			(0, _createResourceMethodStep2.default)(conan, context, function (error) {
+		it("should return an error when is just one", done => {
+			createResourceMethodStep(conan, context, (error) => {
 				should.exist(error);
 				done();
 			});

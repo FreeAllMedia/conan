@@ -1,19 +1,8 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.handler = handler;
-
-var _save = require("./save.js");
-
-var _save2 = _interopRequireDefault(_save);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+import save from "./save.js";
 
 /* istanbul ignore next */
-function handler(event, context) {
-	(0, _save2.default)(event, function () {
+export function handler(event, context) {
+	save(event, () => {
 		context.succeed("Saved!");
 	});
 }

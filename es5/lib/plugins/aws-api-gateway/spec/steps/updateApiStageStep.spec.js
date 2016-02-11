@@ -1,203 +1,162 @@
-"use strict";
+import Conan from "../../../../conan.js";
+import sinon from "sinon";
+import chai from "chai";
+import updateApiStageStep from "../../steps/updateApiStageStep.js";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+describe("updateApiStageStep", () => {
+	let updateStageSpy,
+		constructorSpy,
+		conan,
+		context,
+		parameters,
+		restApiId,
+		stageName,
+		should;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _conan = require("../../../../conan.js");
-
-var _conan2 = _interopRequireDefault(_conan);
-
-var _sinon = require("sinon");
-
-var _sinon2 = _interopRequireDefault(_sinon);
-
-var _chai = require("chai");
-
-var _chai2 = _interopRequireDefault(_chai);
-
-var _updateApiStageStep = require("../../steps/updateApiStageStep.js");
-
-var _updateApiStageStep2 = _interopRequireDefault(_updateApiStageStep);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-describe("updateApiStageStep", function () {
-	var updateStageSpy = undefined,
-	    constructorSpy = undefined,
-	    conan = undefined,
-	    context = undefined,
-	    parameters = undefined,
-	    restApiId = undefined,
-	    stageName = undefined,
-	    should = undefined;
-
-	var APIGateway = function () {
-		function APIGateway(constructorParameters) {
-			_classCallCheck(this, APIGateway);
-
+	class APIGateway {
+		constructor(constructorParameters) {
 			constructorSpy(constructorParameters);
 		}
 
-		_createClass(APIGateway, [{
-			key: "updateStage",
-			value: function updateStage(params, callback) {
-				updateStageSpy(params, callback);
-			}
-		}]);
+		updateStage(params, callback) {
+			updateStageSpy(params, callback);
+		}
+	}
 
-		return APIGateway;
-	}();
-
-	beforeEach(function () {
-		conan = new _conan2.default({
+	beforeEach(() => {
+		conan = new Conan({
 			region: "us-east-1"
 		});
 
-		constructorSpy = _sinon2.default.spy();
-		updateStageSpy = _sinon2.default.spy(function (params, callback) {
+		constructorSpy = sinon.spy();
+		updateStageSpy = sinon.spy((params, callback) => {
 			callback();
 		});
-		should = _chai2.default.should();
+		should = chai.should();
 
-		parameters = new (function () {
-			function MockConanAwsParameters() {
-				_classCallCheck(this, MockConanAwsParameters);
-			}
-
-			_createClass(MockConanAwsParameters, [{
-				key: "name",
-				value: function name() {
-					return "testStage";
-				}
-			}, {
-				key: "description",
-				value: function description() {
-					return "testStage description";
-				}
-			}]);
-
-			return MockConanAwsParameters;
-		}())();
+		parameters = new class MockConanAwsParameters {
+			name() { return "testStage"; }
+			description() { return "testStage description"; }
+		}();
 
 		restApiId = "23sysh";
 		stageName = "testStage";
 
 		context = {
-			parameters: parameters,
+			parameters,
 			results: {
-				restApiId: restApiId,
-				stageName: stageName
+				restApiId,
+				stageName
 			},
 			libraries: {
 				AWS: {
-					APIGateway: APIGateway
+					APIGateway
 				}
 			}
 		};
 	});
 
-	it("should be a function", function () {
-		(typeof _updateApiStageStep2.default === "undefined" ? "undefined" : _typeof(_updateApiStageStep2.default)).should.equal("function");
+	it("should be a function", () => {
+		(typeof updateApiStageStep).should.equal("function");
 	});
 
-	describe("(parameters)", function () {
-		beforeEach(function (done) {
-			(0, _updateApiStageStep2.default)(conan, context, function () {
+	describe("(parameters)", () => {
+		beforeEach(done => {
+			updateApiStageStep(conan, context, () => {
 				done();
 			});
 		});
 
-		it("should send the appropiate parameters to the AWS get function call", function () {
+		it("should send the appropiate parameters to the AWS get function call", () => {
 			updateStageSpy.firstCall.args[0].should.eql({
-				restApiId: restApiId,
+				restApiId,
 				stageName: "testStage",
-				patchOperations: [{
-					op: "replace",
-					path: "/description",
-					value: "testStage description"
-				}]
+				patchOperations: [
+					{
+						op: "replace",
+						path: "/description",
+						value: "testStage description"
+					}
+				]
 			});
 		});
 
-		it("should set the constructor parameters", function () {
+		it("should set the constructor parameters", () => {
 			constructorSpy.firstCall.args[0].should.eql({
 				region: conan.config.region
 			});
 		});
 	});
 
-	describe("(rest api id not present)", function () {
-		beforeEach(function () {
+	describe("(rest api id not present)", () => {
+		beforeEach(() => {
 			delete context.results.restApiId;
-			updateStageSpy = _sinon2.default.spy();
+			updateStageSpy = sinon.spy();
 		});
 
-		it("should skip the function call entirely", function (done) {
-			(0, _updateApiStageStep2.default)(conan, context, function () {
+		it("should skip the function call entirely", done => {
+			updateApiStageStep(conan, context, () => {
 				updateStageSpy.called.should.be.false;
 				done();
 			});
 		});
 	});
 
-	describe("(stage name not present)", function () {
-		beforeEach(function () {
+	describe("(stage name not present)", () => {
+		beforeEach(() => {
 			delete context.results.stageName;
-			updateStageSpy = _sinon2.default.spy();
+			updateStageSpy = sinon.spy();
 		});
 
-		it("should skip the function call entirely", function (done) {
-			(0, _updateApiStageStep2.default)(conan, context, function () {
+		it("should skip the function call entirely", done => {
+			updateApiStageStep(conan, context, () => {
 				updateStageSpy.called.should.be.false;
 				done();
 			});
 		});
 	});
 
-	describe("(api stage updated)", function () {
-		var responseData = undefined;
+	describe("(api stage updated)", () => {
+		let responseData;
 
-		beforeEach(function () {
-			responseData = { stageName: "testStage", deploymentId: 3 };
-			updateStageSpy = _sinon2.default.spy(function (params, callback) {
+		beforeEach(() => {
+			responseData = {stageName: "testStage", deploymentId: 3};
+			updateStageSpy = sinon.spy((params, callback) => {
 				callback(null, responseData);
 			});
 		});
 
-		it("should return with no error for that api", function (done) {
-			(0, _updateApiStageStep2.default)(conan, context, function (error) {
+		it("should return with no error for that api", done => {
+			updateApiStageStep(conan, context, (error) => {
 				should.not.exist(error);
 				done();
 			});
 		});
 
-		it("should return the new stage name for that stage", function (done) {
-			(0, _updateApiStageStep2.default)(conan, context, function (error, results) {
+		it("should return the new stage name for that stage", done => {
+			updateApiStageStep(conan, context, (error, results) => {
 				results.stageName.should.equal(responseData.stageName);
 				done();
 			});
 		});
 
-		it("should return the deployment id for that stage", function (done) {
-			(0, _updateApiStageStep2.default)(conan, context, function (error, results) {
+		it("should return the deployment id for that stage", done => {
+			updateApiStageStep(conan, context, (error, results) => {
 				results.deploymentId.should.equal(responseData.deploymentId);
 				done();
 			});
 		});
 	});
 
-	describe("(unknown error)", function () {
-		beforeEach(function () {
-			updateStageSpy = _sinon2.default.spy(function (params, callback) {
+	describe("(unknown error)", () => {
+		beforeEach(() => {
+			updateStageSpy = sinon.spy((params, callback) => {
 				callback({ statusCode: 401 });
 			});
 		});
 
-		it("should return error", function (done) {
-			(0, _updateApiStageStep2.default)(conan, context, function (error) {
+		it("should return error", done => {
+			updateApiStageStep(conan, context, (error) => {
 				should.exist(error);
 				done();
 			});

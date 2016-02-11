@@ -1,94 +1,51 @@
-"use strict";
+import Conan from "../../../../../conan.js";
+import compileLambdaZipStep from "../../../steps/compileLambdaZipStep.js";
+import fileSystem from "fs";
+import unzip from "unzip2";
+import temp from "temp";
+import sinon from "sinon";
+import path from "path";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+temp.track();
 
-var _conan = require("../../../../../conan.js");
+describe(".compileLambdaZipStep(conan, context, stepDone) classHandler", () => {
+	let conan,
+			context,
 
-var _conan2 = _interopRequireDefault(_conan);
+			lambdaFilePath,
+			handlerFilePath,
 
-var _compileLambdaZipStep = require("../../../steps/compileLambdaZipStep.js");
+			temporaryDirectoryPath,
+			conanAwsLambda;
 
-var _compileLambdaZipStep2 = _interopRequireDefault(_compileLambdaZipStep);
-
-var _fs = require("fs");
-
-var _fs2 = _interopRequireDefault(_fs);
-
-var _unzip = require("unzip2");
-
-var _unzip2 = _interopRequireDefault(_unzip);
-
-var _temp = require("temp");
-
-var _temp2 = _interopRequireDefault(_temp);
-
-var _sinon = require("sinon");
-
-var _sinon2 = _interopRequireDefault(_sinon);
-
-var _path = require("path");
-
-var _path2 = _interopRequireDefault(_path);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-_temp2.default.track();
-
-describe(".compileLambdaZipStep(conan, context, stepDone) classHandler", function () {
-	var conan = undefined,
-	    context = undefined,
-	    lambdaFilePath = undefined,
-	    handlerFilePath = undefined,
-	    temporaryDirectoryPath = undefined,
-	    conanAwsLambda = undefined;
-
-	beforeEach(function () {
-		conan = new _conan2.default({
-			basePath: __dirname + "/../../fixtures",
+	beforeEach(() => {
+		conan = new Conan({
+			basePath: `${__dirname}/../../fixtures`,
 			region: "us-east-1"
 		});
 
-		lambdaFilePath = __dirname + "/../../fixtures/lambda.js";
+		lambdaFilePath = `${__dirname}/../../fixtures/lambda.js`;
 
-		conanAwsLambda = new (function () {
-			function MockConanAwsLambda() {
-				_classCallCheck(this, MockConanAwsLambda);
-			}
+		conanAwsLambda = new class MockConanAwsLambda {
+			name() { return "MyLambda"; }
+			handler() { return ["handler"]; }
+		}();
 
-			_createClass(MockConanAwsLambda, [{
-				key: "name",
-				value: function name() {
-					return "MyLambda";
-				}
-			}, {
-				key: "handler",
-				value: function handler() {
-					return ["handler"];
-				}
-			}]);
-
-			return MockConanAwsLambda;
-		}())();
-
-		var filePath = lambdaFilePath;
-		conanAwsLambda.filePath = _sinon2.default.spy(function (newFilePath) {
-			if (newFilePath) {
-				filePath = newFilePath;
-			}
+		let filePath = lambdaFilePath;
+		conanAwsLambda.filePath = sinon.spy((newFilePath) => {
+			if (newFilePath) { filePath = newFilePath; }
 			return filePath;
 		});
 
-		var dependencies = [];
-		conanAwsLambda.dependencies = _sinon2.default.spy(function (newDependencies) {
+		let dependencies = [];
+		conanAwsLambda.dependencies = sinon.spy((newDependencies) => {
 			if (newDependencies) {
 				dependencies.push([newDependencies]);
 			}
 			return dependencies;
 		});
 
-		temporaryDirectoryPath = _temp2.default.mkdirSync("compileLambdaZip");
+		temporaryDirectoryPath = temp.mkdirSync("compileLambdaZip");
 
 		context = {
 			temporaryDirectoryPath: temporaryDirectoryPath,
@@ -97,67 +54,67 @@ describe(".compileLambdaZipStep(conan, context, stepDone) classHandler", functio
 		};
 	});
 
-	describe("(When lambda file exports a class by default)", function () {
-		var lambdaZipFilePath = undefined;
+	describe("(When lambda file exports a class by default)", () => {
+		let lambdaZipFilePath;
 
-		beforeEach(function (done) {
-			conanAwsLambda.filePath(_path2.default.normalize(__dirname + "/../../fixtures/lambdaClass.js"));
-			(0, _compileLambdaZipStep2.default)(conan, context, function (error, data) {
+		beforeEach(done => {
+			conanAwsLambda.filePath(path.normalize(`${__dirname}/../../fixtures/lambdaClass.js`));
+			compileLambdaZipStep(conan, context, (error, data) => {
 				lambdaZipFilePath = data.lambdaZipFilePath;
 				done();
 			});
 		});
 
-		it("should generate a lambda class conan handler on the zip root", function (done) {
+		it("should generate a lambda class conan handler on the zip root", done => {
 			/* eslint-disable new-cap */
-			_fs2.default.createReadStream(lambdaZipFilePath).pipe(_unzip2.default.Parse()).on("entry", function (entry) {
-				if (entry.path.indexOf("conanHandler") !== -1) {
-					(function () {
-						var entryData = "";
-						entry.on("data", function (data) {
-							entryData = "" + entryData + data;
+			fileSystem.createReadStream(lambdaZipFilePath)
+				.pipe(unzip.Parse())
+				.on("entry", (entry) => {
+					if (entry.path.indexOf("conanHandler") !== -1) {
+						let entryData = "";
+						entry.on("data", (data) => {
+							entryData = `${entryData}${data}`;
 						});
-						entry.on("end", function () {
-							var expectedConanHandlerCode = _fs2.default.readFileSync(__dirname + "/../../fixtures/lambdaClassHandler.js", "utf-8");
+						entry.on("end", () => {
+							const expectedConanHandlerCode = fileSystem.readFileSync(`${__dirname}/../../fixtures/lambdaClassHandler.js`, "utf-8");
 							entryData.should.eql(expectedConanHandlerCode);
 							done();
 						});
-					})();
-				}
-			});
+					}
+				});
 		});
 	});
 
-	describe("(When lambda file exports a function by default)", function () {
-		var lambdaZipFilePath = undefined;
+	describe("(When lambda file exports a function by default)", () => {
+		let lambdaZipFilePath;
 
-		beforeEach(function (done) {
-			conanAwsLambda.filePath(_path2.default.normalize(__dirname + "/../../fixtures/lambda.js"));
-			(0, _compileLambdaZipStep2.default)(conan, context, function (error, data) {
+		beforeEach(done => {
+			conanAwsLambda.filePath(path.normalize(`${__dirname}/../../fixtures/lambda.js`));
+			compileLambdaZipStep(conan, context, (error, data) => {
 				lambdaZipFilePath = data.lambdaZipFilePath;
 				done();
 			});
 		});
 
-		it("should generate a lambda function conan handler on the zip root", function (done) {
+		it("should generate a lambda function conan handler on the zip root", done => {
 			/* eslint-disable new-cap */
-			_fs2.default.createReadStream(lambdaZipFilePath).pipe(_unzip2.default.Parse()).on("entry", function (entry) {
-				if (entry.path.indexOf("conanHandler") !== -1) {
-					(function () {
-						var entryData = "";
+			fileSystem.createReadStream(lambdaZipFilePath)
+				.pipe(unzip.Parse())
+				.on("entry", (entry) => {
+					if (entry.path.indexOf("conanHandler") !== -1) {
+						let entryData = "";
 
-						entry.on("data", function (data) {
-							entryData = "" + entryData + data;
+						entry.on("data", (data) => {
+							entryData = `${entryData}${data}`;
 						});
 
-						entry.on("end", function () {
-							var expectedConanHandlerCode = _fs2.default.readFileSync(__dirname + "/../../fixtures/lambdaHandler.js", "utf-8");
+						entry.on("end", () => {
+							const expectedConanHandlerCode = fileSystem.readFileSync(`${__dirname}/../../fixtures/lambdaHandler.js`, "utf-8");
 							entryData.should.eql(expectedConanHandlerCode);
 							done();
 						});
-					})();
-				}
-			});
+					}
+				});
 		});
 
 		it("should call the function with the handler event and context");

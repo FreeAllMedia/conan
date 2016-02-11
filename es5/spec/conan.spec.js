@@ -1,59 +1,70 @@
-/* eslint-disable no-unused-vars */
-import Conan, {
-	ConanComponent,
-	ConanAwsLambdaPlugin,
-	ConanAwsApiGatewayPlugin
-} from "../lib/conan.js";
+"use strict";
 
-import ExpectedConanComponent from "../lib/components/conanComponent.js";
-import ExpectedConanAwsLambdaPlugin from "../lib/plugins/aws-lambda/conanAwsLambdaPlugin.js";
-import ExpectedConanAwsApiGatewayPlugin from "../lib/plugins/aws-api-gateway/conanAwsApiGatewayPlugin.js";
+var _conan = require("../lib/conan.js");
 
-import sinon from "sinon";
+var _conan2 = _interopRequireDefault(_conan);
 
-describe("Conan(config)", () => {
-	let conan;
+var _conanComponent = require("../lib/components/conanComponent.js");
 
-	beforeEach(() => {
-		conan = new Conan();
+var _conanComponent2 = _interopRequireDefault(_conanComponent);
+
+var _conanAwsLambdaPlugin = require("../lib/plugins/aws-lambda/conanAwsLambdaPlugin.js");
+
+var _conanAwsLambdaPlugin2 = _interopRequireDefault(_conanAwsLambdaPlugin);
+
+var _conanAwsApiGatewayPlugin = require("../lib/plugins/aws-api-gateway/conanAwsApiGatewayPlugin.js");
+
+var _conanAwsApiGatewayPlugin2 = _interopRequireDefault(_conanAwsApiGatewayPlugin);
+
+var _sinon = require("sinon");
+
+var _sinon2 = _interopRequireDefault(_sinon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+describe("Conan(config)", function () {
+	var conan = undefined;
+
+	beforeEach(function () {
+		conan = new _conan2.default();
 	});
 
-	it("should pass itself to ConanSteps", () => {
+	it("should pass itself to ConanSteps", function () {
 		conan.steps.parent.should.eql(conan);
 	});
 
-	describe("(Instantiating with a config object)", () => {
-		it("should not throw an error", () => {
-			() => {
-				const config = {key: "value"};
-				conan = new Conan(config);
-			}.should.not.throw();
+	describe("(Instantiating with a config object)", function () {
+		it("should not throw an error", function () {
+			(function () {
+				var config = { key: "value" };
+				conan = new _conan2.default(config);
+			}).should.not.throw();
 		});
 
-		it("should save config object to conan.config", () => {
-			const config = {key: "value"};
-			conan = new Conan(config);
+		it("should save config object to conan.config", function () {
+			var config = { key: "value" };
+			conan = new _conan2.default(config);
 			conan.config.should.eql(config);
 		});
 	});
 
-	describe("(Instantiating without a config object)", () => {
-		it("should save an empty object to conan.config", () => {
+	describe("(Instantiating without a config object)", function () {
+		it("should save an empty object to conan.config", function () {
 			conan.config.should.eql({});
 		});
 	});
 
-	describe("(Exports)", () => {
-		it("should export ConanComponent", () => {
-			ConanComponent.should.eql(ExpectedConanComponent);
+	describe("(Exports)", function () {
+		it("should export ConanComponent", function () {
+			_conan.ConanComponent.should.eql(_conanComponent2.default);
 		});
 
-		it("should export ConanAwsLambdaPlugin", () => {
-			ConanAwsLambdaPlugin.should.eql(ExpectedConanAwsLambdaPlugin);
+		it("should export ConanAwsLambdaPlugin", function () {
+			_conan.ConanAwsLambdaPlugin.should.eql(_conanAwsLambdaPlugin2.default);
 		});
 
-		it("should export ConanAwsApiGatewayPlugin", () => {
-			ConanAwsApiGatewayPlugin.should.eql(ExpectedConanAwsApiGatewayPlugin);
+		it("should export ConanAwsApiGatewayPlugin", function () {
+			_conan.ConanAwsApiGatewayPlugin.should.eql(_conanAwsApiGatewayPlugin2.default);
 		});
 	});
-});
+}); /* eslint-disable no-unused-vars */

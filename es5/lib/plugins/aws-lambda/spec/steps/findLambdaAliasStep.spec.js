@@ -1,79 +1,47 @@
-"use strict";
+import Conan from "../../../../conan.js";
+import findLambdaAliasStep from "../../steps/findLambdaAliasStep.js";
+import sinon from "sinon";
+import chai from "chai";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+describe(".findLambdaAliasStep(conan, context, stepDone)", () => {
+	let conan,
+		should,
+		context,
+		stepDone,
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+		awsResponseError,
+		firstAliasArn,
+		secondAliasArn,
 
-var _conan = require("../../../../conan.js");
+		responseData,
 
-var _conan2 = _interopRequireDefault(_conan);
+		stepReturnError,
+		stepReturnData,
 
-var _findLambdaAliasStep = require("../../steps/findLambdaAliasStep.js");
+		parameters;
 
-var _findLambdaAliasStep2 = _interopRequireDefault(_findLambdaAliasStep);
-
-var _sinon = require("sinon");
-
-var _sinon2 = _interopRequireDefault(_sinon);
-
-var _chai = require("chai");
-
-var _chai2 = _interopRequireDefault(_chai);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
-	var conan = undefined,
-	    should = undefined,
-	    context = undefined,
-	    stepDone = undefined,
-	    awsResponseError = undefined,
-	    firstAliasArn = undefined,
-	    secondAliasArn = undefined,
-	    responseData = undefined,
-	    stepReturnError = undefined,
-	    stepReturnData = undefined,
-	    parameters = undefined;
-
-	var mockLambda = {
-		getAlias: _sinon2.default.spy(function (params, callback) {
+	let mockLambda = {
+		getAlias: sinon.spy((params, callback) => {
 			callback(awsResponseError, responseData(params));
 		})
 	};
 
-	var MockAWS = {
-		Lambda: _sinon2.default.spy(function () {
+	let MockAWS = {
+		Lambda: sinon.spy(() => {
 			return mockLambda;
 		})
 	};
 
-	beforeEach(function () {
-		should = _chai2.default.should();
-		conan = new _conan2.default({
+	beforeEach(() => {
+		should = chai.should();
+		conan = new Conan({
 			region: "us-east-1"
 		});
 
-		parameters = new (function () {
-			function MockConanAwsLambda() {
-				_classCallCheck(this, MockConanAwsLambda);
-			}
-
-			_createClass(MockConanAwsLambda, [{
-				key: "name",
-				value: function name() {
-					return "TestFunction";
-				}
-			}, {
-				key: "alias",
-				value: function alias() {
-					return [["development"], ["production", "1"]];
-				}
-			}]);
-
-			return MockConanAwsLambda;
-		}())();
+		parameters = new class MockConanAwsLambda {
+			name() { return "TestFunction"; }
+			alias() { return [["development"], ["production", "1"]]; }
+		}();
 
 		context = {
 			parameters: parameters,
@@ -87,93 +55,84 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 
 		awsResponseError = null;
 
-		responseData = _sinon2.default.stub();
-		responseData.withArgs({ FunctionName: "TestFunction", Name: "development" }).returns({});
+		responseData = sinon.stub();
+		responseData.withArgs({FunctionName: "TestFunction", Name: "development"})
+			.returns({});
 
-		responseData.withArgs({ FunctionName: "TestFunction", Name: "production" }).returns({});
+		responseData.withArgs({FunctionName: "TestFunction", Name: "production"})
+			.returns({});
 
-		responseData.withArgs({ FunctionName: "TestFunction", Name: "development-some" }).returns({
-			AliasArn: firstAliasArn,
-			FunctionVersion: "$LATEST"
-		});
+		responseData.withArgs({FunctionName: "TestFunction", Name: "development-some"})
+			.returns({
+				AliasArn: firstAliasArn,
+				FunctionVersion: "$LATEST"
+			});
 
-		responseData.withArgs({ FunctionName: "TestFunction", Name: "production-some" }).returns({
-			AliasArn: secondAliasArn,
-			FunctionVersion: "2"
-		});
+		responseData.withArgs({FunctionName: "TestFunction", Name: "production-some"})
+			.returns({
+				AliasArn: secondAliasArn,
+				FunctionVersion: "2"
+			});
 
-		responseData.withArgs({ FunctionName: "TestFunction", Name: "development-all" }).returns({
-			AliasArn: firstAliasArn,
-			FunctionVersion: "$LATEST"
-		});
+		responseData.withArgs({FunctionName: "TestFunction", Name: "development-all"})
+			.returns({
+				AliasArn: firstAliasArn,
+				FunctionVersion: "$LATEST"
+			});
 
-		responseData.withArgs({ FunctionName: "TestFunction", Name: "production-all" }).returns({
-			AliasArn: secondAliasArn,
-			FunctionVersion: "1"
-		});
+		responseData.withArgs({FunctionName: "TestFunction", Name: "production-all"})
+			.returns({
+				AliasArn: secondAliasArn,
+				FunctionVersion: "1"
+			});
 	});
 
-	describe("(When calling AWS)", function () {
-		beforeEach(function (done) {
-			stepDone = function stepDone(afterStepCallback) {
-				return function (error, data) {
+	describe("(When calling AWS)", () => {
+		beforeEach(done => {
+			stepDone = (afterStepCallback) => {
+				return (error, data) => {
 					stepReturnError = error;
 					stepReturnData = data;
 					afterStepCallback();
 				};
 			};
 
-			(0, _findLambdaAliasStep2.default)(conan, context, stepDone(done));
+			findLambdaAliasStep(conan, context, stepDone(done));
 		});
 
-		it("should be a function", function () {
-			(typeof _findLambdaAliasStep2.default === "undefined" ? "undefined" : _typeof(_findLambdaAliasStep2.default)).should.equal("function");
+		it("should be a function", () => {
+			(typeof findLambdaAliasStep).should.equal("function");
 		});
 
-		it("should set the designated region on the lambda client", function () {
+		it("should set the designated region on the lambda client", () => {
 			MockAWS.Lambda.calledWith({
 				region: conan.config.region
 			}).should.be.true;
 		});
 
-		it("should call AWS with the designated function name parameter", function () {
+		it("should call AWS with the designated function name parameter", () => {
 			mockLambda.getAlias.calledWith({
 				"FunctionName": context.parameters.name(),
 				"Name": "development"
 			}).should.be.true;
 		});
 
-		describe("(Alias is Found and Updated for Every Alias)", function () {
-			beforeEach(function (done) {
-				parameters = new (function () {
-					function MockConanAwsLambda() {
-						_classCallCheck(this, MockConanAwsLambda);
-					}
-
-					_createClass(MockConanAwsLambda, [{
-						key: "name",
-						value: function name() {
-							return "TestFunction";
-						}
-					}, {
-						key: "alias",
-						value: function alias() {
-							return [["development-all"], ["production-all", "1"]];
-						}
-					}]);
-
-					return MockConanAwsLambda;
-				}())();
+		describe("(Alias is Found and Updated for Every Alias)", () => {
+			beforeEach(done => {
+				parameters = new class MockConanAwsLambda {
+					name() { return "TestFunction"; }
+					alias() { return [["development-all"], ["production-all", "1"]]; }
+				}();
 
 				context = {
 					parameters: parameters,
 					libraries: { AWS: MockAWS },
 					results: {}
 				};
-				(0, _findLambdaAliasStep2.default)(conan, context, stepDone(done));
+				findLambdaAliasStep(conan, context, stepDone(done));
 			});
 
-			it("should return the alias arn", function () {
+			it("should return the alias arn", () => {
 				stepReturnData.should.eql({
 					aliases: {
 						"development-all": {
@@ -189,37 +148,22 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 			});
 		});
 
-		describe("(Alias is Found but Updated just for Some Alias)", function () {
-			beforeEach(function (done) {
-				parameters = new (function () {
-					function MockConanAwsLambda() {
-						_classCallCheck(this, MockConanAwsLambda);
-					}
-
-					_createClass(MockConanAwsLambda, [{
-						key: "name",
-						value: function name() {
-							return "TestFunction";
-						}
-					}, {
-						key: "alias",
-						value: function alias() {
-							return [["development-some"], ["production-some", "1"]];
-						}
-					}]);
-
-					return MockConanAwsLambda;
-				}())();
+		describe("(Alias is Found but Updated just for Some Alias)", () => {
+			beforeEach(done => {
+				parameters = new class MockConanAwsLambda {
+					name() { return "TestFunction"; }
+					alias() { return [["development-some"], ["production-some", "1"]]; }
+				}();
 
 				context = {
 					parameters: parameters,
 					libraries: { AWS: MockAWS },
 					results: {}
 				};
-				(0, _findLambdaAliasStep2.default)(conan, context, stepDone(done));
+				findLambdaAliasStep(conan, context, stepDone(done));
 			});
 
-			it("should return the alias arn", function () {
+			it("should return the alias arn", () => {
 				stepReturnData.should.eql({
 					aliases: {
 						"development-some": {
@@ -234,67 +178,52 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 			});
 		});
 
-		describe("(Alias is not Found)", function () {
-			beforeEach(function (done) {
-				parameters = new (function () {
-					function MockConanAwsLambda() {
-						_classCallCheck(this, MockConanAwsLambda);
-					}
-
-					_createClass(MockConanAwsLambda, [{
-						key: "name",
-						value: function name() {
-							return "TestFunction";
-						}
-					}, {
-						key: "alias",
-						value: function alias() {
-							return [["development"], ["production", "1"]];
-						}
-					}]);
-
-					return MockConanAwsLambda;
-				}())();
+		describe("(Alias is not Found)", () => {
+			beforeEach(done => {
+				parameters = new class MockConanAwsLambda {
+					name() { return "TestFunction"; }
+					alias() { return [["development"], ["production", "1"]]; }
+				}();
 
 				context = {
 					parameters: parameters,
 					libraries: { AWS: MockAWS },
 					results: {}
 				};
-				(0, _findLambdaAliasStep2.default)(conan, context, stepDone(done));
+				findLambdaAliasStep(conan, context, stepDone(done));
 			});
 
-			it("should return the alias arn", function () {
+			it("should return the alias arn", () => {
 				stepReturnData.should.eql({ aliases: {} });
 			});
 		});
 
-		describe("(Not Found is Returned)", function () {
-			var errorMessage = undefined;
+		describe("(Not Found is Returned)", () => {
+			let errorMessage;
 
-			beforeEach(function () {
+			beforeEach(() => {
 				errorMessage = "AWS returned status code 404";
 				awsResponseError = { statusCode: 404, message: errorMessage };
 			});
 
-			it("should skip the alias because it does not exist", function (done) {
-				(0, _findLambdaAliasStep2.default)(conan, context, function (error) {
+			it("should skip the alias because it does not exist", done => {
+				findLambdaAliasStep(conan, context, (error) => {
 					should.not.exist(error);
 					done();
 				});
 			});
 		});
 
-		describe("(Unknown Error is Returned)", function () {
-			var errorMessage = undefined;
+		describe("(Unknown Error is Returned)", () => {
+			let errorMessage;
 
-			beforeEach(function (done) {
+			beforeEach(done => {
 				errorMessage = "AWS returned status code 401";
 				awsResponseError = { statusCode: 401, message: errorMessage };
-				(0, _findLambdaAliasStep2.default)(conan, context, stepDone(done));
+				findLambdaAliasStep(conan, context, stepDone(done));
 			});
 
-			it("should return an error which stops the step runner", function () {
+			it("should return an error which stops the step runner", () => {
 				stepReturnError.message.should.eql(errorMessage);
 			});
 		});
