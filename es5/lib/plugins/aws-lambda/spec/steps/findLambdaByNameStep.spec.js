@@ -1,22 +1,24 @@
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _conan = require("../../../../conan.js");
 
-var _conanJs = require("../../../../conan.js");
+var _conan2 = _interopRequireDefault(_conan);
 
-var _conanJs2 = _interopRequireDefault(_conanJs);
+var _findLambdaByNameStep = require("../../steps/findLambdaByNameStep.js");
 
-var _stepsFindLambdaByNameStepJs = require("../../steps/findLambdaByNameStep.js");
-
-var _stepsFindLambdaByNameStepJs2 = _interopRequireDefault(_stepsFindLambdaByNameStepJs);
+var _findLambdaByNameStep2 = _interopRequireDefault(_findLambdaByNameStep);
 
 var _sinon = require("sinon");
 
 var _sinon2 = _interopRequireDefault(_sinon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 	var conan = undefined,
@@ -30,7 +32,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 	    mockLambdaSpy = undefined;
 
 	var mockLambda = {
-		getFunction: _sinon2["default"].spy(function (params, callback) {
+		getFunction: _sinon2.default.spy(function (params, callback) {
 			callback(awsResponseError, awsResponseData);
 		})
 	};
@@ -47,11 +49,11 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 	};
 
 	beforeEach(function (done) {
-		conan = new _conanJs2["default"]({
+		conan = new _conan2.default({
 			region: "us-east-1"
 		});
 
-		parameters = new ((function () {
+		parameters = new (function () {
 			function MockConanAwsLambda() {
 				_classCallCheck(this, MockConanAwsLambda);
 			}
@@ -64,7 +66,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 			}]);
 
 			return MockConanAwsLambda;
-		})())();
+		}())();
 
 		context = {
 			parameters: parameters,
@@ -81,9 +83,9 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 		};
 		awsResponseError = null;
 
-		mockLambdaSpy = _sinon2["default"].spy();
+		mockLambdaSpy = _sinon2.default.spy();
 
-		stepDone = function (afterStepCallback) {
+		stepDone = function stepDone(afterStepCallback) {
 			return function (error, data) {
 				stepReturnError = error;
 				stepReturnData = data;
@@ -91,28 +93,28 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 			};
 		};
 
-		(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, stepDone(done));
+		(0, _findLambdaByNameStep2.default)(conan, context, stepDone(done));
 	});
 
 	it("should be a function", function () {
-		(typeof _stepsFindLambdaByNameStepJs2["default"]).should.equal("function");
+		(typeof _findLambdaByNameStep2.default === "undefined" ? "undefined" : _typeof(_findLambdaByNameStep2.default)).should.equal("function");
 	});
 
 	it("should set the designated region on the lambda client", function () {
 		mockLambdaSpy.calledWith({
 			region: conan.config.region
-		}).should.be["true"];
+		}).should.be.true;
 	});
 
 	it("should call AWS with the designated lambda name parameter", function () {
 		mockLambda.getFunction.calledWith({
 			FunctionName: context.parameters.name()
-		}).should.be["true"];
+		}).should.be.true;
 	});
 
 	describe("(No Lambda parameter)", function () {
 		it("should skip the call entirely", function (done) {
-			parameters = new ((function () {
+			parameters = new (function () {
 				function MockConanAwsLambda() {
 					_classCallCheck(this, MockConanAwsLambda);
 				}
@@ -125,7 +127,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 				}]);
 
 				return MockConanAwsLambda;
-			})())();
+			}())();
 
 			context = {
 				parameters: parameters,
@@ -139,8 +141,8 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 				results: {}
 			};
 
-			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, results) {
-				(results.lambdaArn === null).should.be["true"];
+			(0, _findLambdaByNameStep2.default)(conan, context, function (error, results) {
+				(results.lambdaArn === null).should.be.true;
 				done();
 			});
 		});
@@ -154,7 +156,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 		});
 
 		it("should work indistinctly with a lambda parameters instead of a name parameter", function (done) {
-			parameters = new ((function () {
+			parameters = new (function () {
 				function MockConanAwsLambda() {
 					_classCallCheck(this, MockConanAwsLambda);
 				}
@@ -167,7 +169,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 				}]);
 
 				return MockConanAwsLambda;
-			})())();
+			}())();
 
 			context = {
 				parameters: parameters,
@@ -175,7 +177,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 				results: {}
 			};
 
-			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, function (error, results) {
+			(0, _findLambdaByNameStep2.default)(conan, context, function (error, results) {
 				results.should.eql({
 					lambdaArn: awsResponseData.Configuration.FunctionArn
 				});
@@ -187,7 +189,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 	describe("(Lambda is not Found)", function () {
 		beforeEach(function (done) {
 			awsResponseError = { statusCode: 404 };
-			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, stepDone(done));
+			(0, _findLambdaByNameStep2.default)(conan, context, stepDone(done));
 		});
 
 		it("should return the lambda arn as null", function () {
@@ -202,7 +204,7 @@ describe(".findLambdaByNameStep(conan, context, stepDone)", function () {
 		beforeEach(function (done) {
 			errorMessage = "AWS returned status code 401";
 			awsResponseError = { statusCode: 401, message: errorMessage };
-			(0, _stepsFindLambdaByNameStepJs2["default"])(conan, context, stepDone(done));
+			(0, _findLambdaByNameStep2.default)(conan, context, stepDone(done));
 		});
 
 		it("should return an error which stops the step runner", function () {

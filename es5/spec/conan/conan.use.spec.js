@@ -1,32 +1,24 @@
-"use strict";
+import Conan from "../../lib/conan.js";
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+describe("conan.use(ConanPlugin)", () => {
+	class ConanPlugin {
+		constructor(conan) {
+			conan.test = true;
+		}
+	}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	let conan;
 
-var _libConanJs = require("../../lib/conan.js");
-
-var _libConanJs2 = _interopRequireDefault(_libConanJs);
-
-describe("conan.use(ConanPlugin)", function () {
-	var ConanPlugin = function ConanPlugin(conan) {
-		_classCallCheck(this, ConanPlugin);
-
-		conan.test = true;
-	};
-
-	var conan = undefined;
-
-	beforeEach(function () {
-		conan = new _libConanJs2["default"]();
+	beforeEach(() => {
+		conan = new Conan();
 		conan.use(ConanPlugin);
 	});
 
-	it("should instantiate the ConanPlugin with conan", function () {
-		conan.test.should.be["true"];
+	it("should instantiate the ConanPlugin with conan", () => {
+		conan.test.should.be.true;
 	});
 
-	it("should add the instantiated plugin to the conan.plugins array", function () {
+	it("should add the instantiated plugin to the conan.plugins array", () => {
 		conan.plugins[0].should.be.instanceOf(ConanPlugin);
 	});
 });

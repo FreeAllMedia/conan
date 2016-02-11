@@ -10,5 +10,4 @@ var ConanContext = function ConanContext() {
   _classCallCheck(this, ConanContext);
 };
 
-exports["default"] = ConanContext;
-module.exports = exports["default"];
+exports.default = ConanContext;

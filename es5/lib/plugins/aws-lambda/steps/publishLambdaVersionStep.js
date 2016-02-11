@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = publishLambdaVersionStep;
-
+exports.default = publishLambdaVersionStep;
 function publishLambdaVersionStep(conan, context, stepDone) {
 	var AWS = context.libraries.AWS;
 	var iam = new AWS.Lambda({
@@ -24,5 +23,3 @@ function publishLambdaVersionStep(conan, context, stepDone) {
 		}
 	});
 }
-
-module.exports = exports["default"];

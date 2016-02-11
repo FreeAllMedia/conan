@@ -3,9 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = buildPackageStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+exports.default = buildPackageStep;
 
 var _fs = require("fs");
 
@@ -14,6 +12,8 @@ var _fs2 = _interopRequireDefault(_fs);
 var _jargon = require("jargon");
 
 var _jargon2 = _interopRequireDefault(_jargon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function buildPackageStep(conan, context, stepDone) {
 	var conanAwsLambda = context.parameters;
@@ -31,7 +31,7 @@ function buildPackageStep(conan, context, stepDone) {
 			});
 
 			var lambdaName = conanAwsLambda.name();
-			var packageZipFileName = (0, _jargon2["default"])(lambdaName).camel.toString() + ".packages.zip";
+			var packageZipFileName = (0, _jargon2.default)(lambdaName).camel.toString() + ".packages.zip";
 
 			var parameters = {
 				FunctionName: "Thaumaturgy",
@@ -52,7 +52,7 @@ function buildPackageStep(conan, context, stepDone) {
 
 				var packageZipFilePath = context.temporaryDirectoryPath + "/" + packageZipFileName;
 
-				var packageZipWriteStream = _fs2["default"].createWriteStream(packageZipFilePath);
+				var packageZipWriteStream = _fs2.default.createWriteStream(packageZipFilePath);
 
 				packageZipWriteStream.on("close", function () {
 					stepDone(null, {
@@ -69,5 +69,3 @@ function buildPackageStep(conan, context, stepDone) {
 		});
 	}
 }
-
-module.exports = exports["default"];

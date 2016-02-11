@@ -1,18 +1,14 @@
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _conan = require("../../../../../conan.js");
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _conan2 = _interopRequireDefault(_conan);
 
-var _conanJs = require("../../../../../conan.js");
+var _compileLambdaZipStep = require("../../../steps/compileLambdaZipStep.js");
 
-var _conanJs2 = _interopRequireDefault(_conanJs);
-
-var _stepsCompileLambdaZipStepJs = require("../../../steps/compileLambdaZipStep.js");
-
-var _stepsCompileLambdaZipStepJs2 = _interopRequireDefault(_stepsCompileLambdaZipStepJs);
+var _compileLambdaZipStep2 = _interopRequireDefault(_compileLambdaZipStep);
 
 var _fs = require("fs");
 
@@ -26,7 +22,11 @@ var _sinon = require("sinon");
 
 var _sinon2 = _interopRequireDefault(_sinon);
 
-_temp2["default"].track();
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+_temp2.default.track();
 
 describe(".compileLambdaZipStep(conan, context, stepDone) classHandler", function () {
 	var conan = undefined,
@@ -37,7 +37,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone) classHandler", functio
 	    conanAwsLambda = undefined;
 
 	beforeEach(function () {
-		conan = new _conanJs2["default"]({
+		conan = new _conan2.default({
 			basePath: __dirname + "../../../../..",
 			region: "us-east-1"
 		});
@@ -45,7 +45,7 @@ describe(".compileLambdaZipStep(conan, context, stepDone) classHandler", functio
 		lambdaFilePath = __dirname + "/../../fixtures/lambda.js";
 		handlerFilePath = __dirname + "/../../fixtures/customHandler.js";
 
-		conanAwsLambda = new ((function () {
+		conanAwsLambda = new (function () {
 			function MockConanAwsLambda() {
 				_classCallCheck(this, MockConanAwsLambda);
 			}
@@ -63,10 +63,10 @@ describe(".compileLambdaZipStep(conan, context, stepDone) classHandler", functio
 			}]);
 
 			return MockConanAwsLambda;
-		})())();
+		}())();
 
 		var filePath = lambdaFilePath;
-		conanAwsLambda.filePath = _sinon2["default"].spy(function (newFilePath) {
+		conanAwsLambda.filePath = _sinon2.default.spy(function (newFilePath) {
 			if (newFilePath) {
 				filePath = newFilePath;
 			}
@@ -74,14 +74,14 @@ describe(".compileLambdaZipStep(conan, context, stepDone) classHandler", functio
 		});
 
 		var dependencies = [];
-		conanAwsLambda.dependencies = _sinon2["default"].spy(function (newDependencies) {
+		conanAwsLambda.dependencies = _sinon2.default.spy(function (newDependencies) {
 			if (newDependencies) {
 				dependencies.push([newDependencies]);
 			}
 			return dependencies;
 		});
 
-		temporaryDirectoryPath = _temp2["default"].mkdirSync("compileLambdaZip");
+		temporaryDirectoryPath = _temp2.default.mkdirSync("compileLambdaZip");
 
 		context = {
 			temporaryDirectoryPath: temporaryDirectoryPath,
@@ -96,13 +96,13 @@ describe(".compileLambdaZipStep(conan, context, stepDone) classHandler", functio
 
 			beforeEach(function (done) {
 				mockFileSystem = {
-					createReadStream: _sinon2["default"].spy(_fs2["default"].createReadStream),
-					createWriteStream: _sinon2["default"].spy(_fs2["default"].createWriteStream),
-					statSync: _sinon2["default"].spy(_fs2["default"].statSync),
-					existsSync: _sinon2["default"].spy(_fs2["default"].existsSync)
+					createReadStream: _sinon2.default.spy(_fs2.default.createReadStream),
+					createWriteStream: _sinon2.default.spy(_fs2.default.createWriteStream),
+					statSync: _sinon2.default.spy(_fs2.default.statSync),
+					existsSync: _sinon2.default.spy(_fs2.default.existsSync)
 				};
 				context.fileSystem = mockFileSystem;
-				(0, _stepsCompileLambdaZipStepJs2["default"])(conan, context, done);
+				(0, _compileLambdaZipStep2.default)(conan, context, done);
 			});
 
 			it("should use a provided filesystem", function () {

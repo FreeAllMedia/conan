@@ -4,75 +4,75 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _conanComponent = require("../../../components/conanComponent.js");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _conanComponent2 = _interopRequireDefault(_conanComponent);
+
+var _findApiResourceByPathStep = require("../steps/findApiResourceByPathStep.js");
+
+var _findApiResourceByPathStep2 = _interopRequireDefault(_findApiResourceByPathStep);
+
+var _createApiResourcesStep = require("../steps/createApiResourcesStep.js");
+
+var _createApiResourcesStep2 = _interopRequireDefault(_createApiResourcesStep);
+
+var _findResourceMethodStep = require("../steps/findResourceMethodStep.js");
+
+var _findResourceMethodStep2 = _interopRequireDefault(_findResourceMethodStep);
+
+var _createResourceMethodStep = require("../steps/createResourceMethodStep.js");
+
+var _createResourceMethodStep2 = _interopRequireDefault(_createResourceMethodStep);
+
+var _putIntegrationStep = require("../steps/putIntegrationStep.js");
+
+var _putIntegrationStep2 = _interopRequireDefault(_putIntegrationStep);
+
+var _putIntegrationResponseStep = require("../steps/putIntegrationResponseStep.js");
+
+var _putIntegrationResponseStep2 = _interopRequireDefault(_putIntegrationResponseStep);
+
+var _putMethodResponseStep = require("../steps/putMethodResponseStep.js");
+
+var _putMethodResponseStep2 = _interopRequireDefault(_putMethodResponseStep);
+
+var _findMethodResponseStep = require("../steps/findMethodResponseStep.js");
+
+var _findMethodResponseStep2 = _interopRequireDefault(_findMethodResponseStep);
+
+var _addPermissionStep = require("../steps/addPermissionStep.js");
+
+var _addPermissionStep2 = _interopRequireDefault(_addPermissionStep);
+
+var _getAccountIdStep = require("../steps/getAccountIdStep.js");
+
+var _getAccountIdStep2 = _interopRequireDefault(_getAccountIdStep);
+
+var _findLambdaByNameStep = require("../../aws-lambda/steps/findLambdaByNameStep.js");
+
+var _findLambdaByNameStep2 = _interopRequireDefault(_findLambdaByNameStep);
+
+var _findApiStageByNameStep = require("../steps/findApiStageByNameStep.js");
+
+var _findApiStageByNameStep2 = _interopRequireDefault(_findApiStageByNameStep);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _componentsConanComponentJs = require("../../../components/conanComponent.js");
-
-var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
-
-var _stepsFindApiResourceByPathStepJs = require("../steps/findApiResourceByPathStep.js");
-
-var _stepsFindApiResourceByPathStepJs2 = _interopRequireDefault(_stepsFindApiResourceByPathStepJs);
-
-var _stepsCreateApiResourcesStepJs = require("../steps/createApiResourcesStep.js");
-
-var _stepsCreateApiResourcesStepJs2 = _interopRequireDefault(_stepsCreateApiResourcesStepJs);
-
-var _stepsFindResourceMethodStepJs = require("../steps/findResourceMethodStep.js");
-
-var _stepsFindResourceMethodStepJs2 = _interopRequireDefault(_stepsFindResourceMethodStepJs);
-
-var _stepsCreateResourceMethodStepJs = require("../steps/createResourceMethodStep.js");
-
-var _stepsCreateResourceMethodStepJs2 = _interopRequireDefault(_stepsCreateResourceMethodStepJs);
-
-var _stepsPutIntegrationStepJs = require("../steps/putIntegrationStep.js");
-
-var _stepsPutIntegrationStepJs2 = _interopRequireDefault(_stepsPutIntegrationStepJs);
-
-var _stepsPutIntegrationResponseStepJs = require("../steps/putIntegrationResponseStep.js");
-
-var _stepsPutIntegrationResponseStepJs2 = _interopRequireDefault(_stepsPutIntegrationResponseStepJs);
-
-var _stepsPutMethodResponseStepJs = require("../steps/putMethodResponseStep.js");
-
-var _stepsPutMethodResponseStepJs2 = _interopRequireDefault(_stepsPutMethodResponseStepJs);
-
-var _stepsFindMethodResponseStepJs = require("../steps/findMethodResponseStep.js");
-
-var _stepsFindMethodResponseStepJs2 = _interopRequireDefault(_stepsFindMethodResponseStepJs);
-
-var _stepsAddPermissionStepJs = require("../steps/addPermissionStep.js");
-
-var _stepsAddPermissionStepJs2 = _interopRequireDefault(_stepsAddPermissionStepJs);
-
-var _stepsGetAccountIdStepJs = require("../steps/getAccountIdStep.js");
-
-var _stepsGetAccountIdStepJs2 = _interopRequireDefault(_stepsGetAccountIdStepJs);
-
-var _awsLambdaStepsFindLambdaByNameStepJs = require("../../aws-lambda/steps/findLambdaByNameStep.js");
-
-var _awsLambdaStepsFindLambdaByNameStepJs2 = _interopRequireDefault(_awsLambdaStepsFindLambdaByNameStepJs);
-
-var _stepsFindApiStageByNameStepJs = require("../steps/findApiStageByNameStep.js");
-
-var _stepsFindApiStageByNameStepJs2 = _interopRequireDefault(_stepsFindApiStageByNameStepJs);
-
-var ConanAwsApiGatewayResource = (function (_ConanComponent) {
+var ConanAwsApiGatewayResource = function (_ConanComponent) {
 	_inherits(ConanAwsApiGatewayResource, _ConanComponent);
 
 	function ConanAwsApiGatewayResource() {
 		_classCallCheck(this, ConanAwsApiGatewayResource);
 
-		_get(Object.getPrototypeOf(ConanAwsApiGatewayResource.prototype), "constructor", this).apply(this, arguments);
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(ConanAwsApiGatewayResource).apply(this, arguments));
 	}
 
 	_createClass(ConanAwsApiGatewayResource, [{
@@ -91,17 +91,17 @@ var ConanAwsApiGatewayResource = (function (_ConanComponent) {
 			this.statusCodes({ "200": "" });
 			this.responseHeaders({});
 
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _awsLambdaStepsFindLambdaByNameStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindApiResourceByPathStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsCreateApiResourcesStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindResourceMethodStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsCreateResourceMethodStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsFindMethodResponseStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutMethodResponseStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsPutIntegrationResponseStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsGetAccountIdStepJs2["default"], this);
-			this.conan.steps.before(_stepsFindApiStageByNameStepJs2["default"], _stepsAddPermissionStepJs2["default"], this);
+			this.conan.steps.before(_findApiStageByNameStep2.default, _findLambdaByNameStep2.default, this);
+			this.conan.steps.before(_findApiStageByNameStep2.default, _findApiResourceByPathStep2.default, this);
+			this.conan.steps.before(_findApiStageByNameStep2.default, _createApiResourcesStep2.default, this);
+			this.conan.steps.before(_findApiStageByNameStep2.default, _findResourceMethodStep2.default, this);
+			this.conan.steps.before(_findApiStageByNameStep2.default, _createResourceMethodStep2.default, this);
+			this.conan.steps.before(_findApiStageByNameStep2.default, _putIntegrationStep2.default, this);
+			this.conan.steps.before(_findApiStageByNameStep2.default, _findMethodResponseStep2.default, this);
+			this.conan.steps.before(_findApiStageByNameStep2.default, _putMethodResponseStep2.default, this);
+			this.conan.steps.before(_findApiStageByNameStep2.default, _putIntegrationResponseStep2.default, this);
+			this.conan.steps.before(_findApiStageByNameStep2.default, _getAccountIdStep2.default, this);
+			this.conan.steps.before(_findApiStageByNameStep2.default, _addPermissionStep2.default, this);
 		}
 	}, {
 		key: "get",
@@ -131,7 +131,6 @@ var ConanAwsApiGatewayResource = (function (_ConanComponent) {
 	}]);
 
 	return ConanAwsApiGatewayResource;
-})(_componentsConanComponentJs2["default"]);
+}(_conanComponent2.default);
 
-exports["default"] = ConanAwsApiGatewayResource;
-module.exports = exports["default"];
+exports.default = ConanAwsApiGatewayResource;

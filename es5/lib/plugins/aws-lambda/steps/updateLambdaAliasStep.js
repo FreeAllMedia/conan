@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = updateLambdaAliasStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+exports.default = updateLambdaAliasStep;
 
 var _flowsync = require("flowsync");
 
 var _flowsync2 = _interopRequireDefault(_flowsync);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function updateLambdaAliasStep(conan, context, stepDone) {
 	var AWS = context.libraries.AWS;
@@ -19,7 +19,7 @@ function updateLambdaAliasStep(conan, context, stepDone) {
 
 	var aliases = context.parameters.alias();
 	var result = context.results.aliases;
-	_flowsync2["default"].eachSeries(aliases, function (alias, next) {
+	_flowsync2.default.eachSeries(aliases, function (alias, next) {
 		var aliasName = alias[0];
 		var aliasVersion = undefined;
 		if (alias.length > 1) {
@@ -52,5 +52,3 @@ function updateLambdaAliasStep(conan, context, stepDone) {
 		stepDone(error, { aliases: result });
 	});
 }
-
-module.exports = exports["default"];

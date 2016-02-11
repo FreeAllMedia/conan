@@ -1,18 +1,16 @@
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _conan = require("../../../../conan.js");
 
-var _conanJs = require("../../../../conan.js");
+var _conan2 = _interopRequireDefault(_conan);
 
-var _conanJs2 = _interopRequireDefault(_conanJs);
+var _upsertLambdaStep = require("../../steps/upsertLambdaStep.js");
 
-var _stepsUpsertLambdaStepJs = require("../../steps/upsertLambdaStep.js");
-
-var _stepsUpsertLambdaStepJs2 = _interopRequireDefault(_stepsUpsertLambdaStepJs);
+var _upsertLambdaStep2 = _interopRequireDefault(_upsertLambdaStep);
 
 var _sinon = require("sinon");
 
@@ -34,7 +32,11 @@ var _jargon = require("jargon");
 
 var _jargon2 = _interopRequireDefault(_jargon);
 
-_temp2["default"].track();
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+_temp2.default.track();
 
 describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 	var conan = undefined,
@@ -58,14 +60,14 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 	    handlerString = undefined;
 
 	var mockLambda = {
-		createFunction: _sinon2["default"].spy(function (params, callback) {
+		createFunction: _sinon2.default.spy(function (params, callback) {
 			createFunctionParameters = params;
 			callback(createFunctionError, createFunctionData);
 		}),
-		updateFunctionCode: _sinon2["default"].spy(function (params, callback) {
+		updateFunctionCode: _sinon2.default.spy(function (params, callback) {
 			callback(updateFunctionCodeError, updateFunctionCodeData);
 		}),
-		updateFunctionConfiguration: _sinon2["default"].spy(function (params, callback) {
+		updateFunctionConfiguration: _sinon2.default.spy(function (params, callback) {
 			callback(updateFunctionConfigurationError, updateFunctionConfigurationData);
 		})
 	};
@@ -82,7 +84,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 	};
 
 	beforeEach(function (done) {
-		conan = new _conanJs2["default"]({
+		conan = new _conan2.default({
 			region: "us-east-1"
 		});
 
@@ -92,7 +94,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 		lambdaFilePath = __dirname + "/../fixtures/lambda.js";
 		lambdaZipFilePath = __dirname + "/../fixtures/lambda.zip";
 
-		parameters = new ((function () {
+		parameters = new (function () {
 			function MockConanAwsLambda() {
 				_classCallCheck(this, MockConanAwsLambda);
 			}
@@ -140,7 +142,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 			}]);
 
 			return MockConanAwsLambda;
-		})())();
+		}())();
 
 		context = {
 			parameters: parameters,
@@ -167,13 +169,13 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 		};
 		createFunctionError = null;
 
-		mockLambdaSpy = _sinon2["default"].spy();
+		mockLambdaSpy = _sinon2.default.spy();
 
-		var lambdaExtension = _path2["default"].extname(parameters.filePath());
-		var fileName = _path2["default"].basename(parameters.filePath(), lambdaExtension);
+		var lambdaExtension = _path2.default.extname(parameters.filePath());
+		var fileName = _path2.default.basename(parameters.filePath(), lambdaExtension);
 		handlerString = fileName + "." + parameters.handler();
 
-		stepDone = function (afterStepCallback) {
+		stepDone = function stepDone(afterStepCallback) {
 			return function (error, data) {
 				stepReturnError = error;
 				stepReturnData = data;
@@ -181,21 +183,21 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 			};
 		};
 
-		(0, _stepsUpsertLambdaStepJs2["default"])(conan, context, stepDone(done));
+		(0, _upsertLambdaStep2.default)(conan, context, stepDone(done));
 	});
 
 	afterEach(function (done) {
-		_temp2["default"].cleanup(done);
+		_temp2.default.cleanup(done);
 	});
 
 	it("should be a function", function () {
-		(typeof _stepsUpsertLambdaStepJs2["default"]).should.equal("function");
+		(typeof _upsertLambdaStep2.default === "undefined" ? "undefined" : _typeof(_upsertLambdaStep2.default)).should.equal("function");
 	});
 
 	it("should set the designated region on the lambda client", function () {
 		mockLambdaSpy.calledWith({
 			region: conan.config.region
-		}).should.be["true"];
+		}).should.be.true;
 	});
 
 	describe("(When Lambda is NOT New)", function () {
@@ -213,7 +215,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 
 		it("should call AWS to update the lambda with the designated code", function () {
 			var updateCodeParameters = {
-				ZipFile: _fs2["default"].readFileSync(lambdaZipFilePath),
+				ZipFile: _fs2.default.readFileSync(lambdaZipFilePath),
 				FunctionName: parameters.name(),
 				Publish: parameters.publish()
 			};
@@ -225,7 +227,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 				updateFunctionConfigurationData = {
 					FunctionArn: createFunctionData.FunctionArn
 				};
-				(0, _stepsUpsertLambdaStepJs2["default"])(conan, context, stepDone(done));
+				(0, _upsertLambdaStep2.default)(conan, context, stepDone(done));
 			});
 
 			it("should return the lambda Amazon Resource Name", function () {
@@ -242,7 +244,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 			});
 
 			it("should return an error", function () {
-				(0, _stepsUpsertLambdaStepJs2["default"])(conan, context, function (error) {
+				(0, _upsertLambdaStep2.default)(conan, context, function (error) {
 					error.should.eql(updateFunctionCodeError);
 				});
 			});
@@ -255,7 +257,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 			});
 
 			it("should return an error", function () {
-				(0, _stepsUpsertLambdaStepJs2["default"])(conan, context, function (error) {
+				(0, _upsertLambdaStep2.default)(conan, context, function (error) {
 					error.should.eql(updateFunctionConfigurationError);
 				});
 			});
@@ -265,7 +267,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 	describe("(When Lambda is New)", function () {
 		beforeEach(function (done) {
 			context.results.lambdaArn = null;
-			(0, _stepsUpsertLambdaStepJs2["default"])(conan, context, stepDone(done));
+			(0, _upsertLambdaStep2.default)(conan, context, stepDone(done));
 		});
 
 		it("should call AWS with the designated lambda parameters", function () {
@@ -285,7 +287,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 		});
 
 		it("should call AWS with the designated lambda code", function () {
-			var expectedCodeBuffer = _fs2["default"].readFileSync(__dirname + "/../fixtures/lambda.zip");
+			var expectedCodeBuffer = _fs2.default.readFileSync(__dirname + "/../fixtures/lambda.zip");
 
 			var codeBuffer = createFunctionParameters.Code.ZipFile;
 
@@ -307,7 +309,7 @@ describe(".upsertLambdaStep(conan, context, stepDone)", function () {
 			});
 
 			it("should return an error", function () {
-				(0, _stepsUpsertLambdaStepJs2["default"])(conan, context, function (error) {
+				(0, _upsertLambdaStep2.default)(conan, context, function (error) {
 					error.should.eql(createFunctionError);
 				});
 			});

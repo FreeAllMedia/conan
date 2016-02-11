@@ -5,16 +5,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.handler = handler;
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _save = require("./save.js");
 
-var _saveJs = require("./save.js");
+var _save2 = _interopRequireDefault(_save);
 
-var _saveJs2 = _interopRequireDefault(_saveJs);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /* istanbul ignore next */
-
 function handler(event, context) {
-	(0, _saveJs2["default"])(event, function () {
+	(0, _save2.default)(event, function () {
 		context.succeed("Saved!");
 	});
 }

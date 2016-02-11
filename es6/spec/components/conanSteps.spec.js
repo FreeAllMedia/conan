@@ -3,10 +3,10 @@ import ConanSteps from "../../lib/components/conanSteps.js";
 
 describe("ConanSteps(parent)", () => {
 	it("should not throw an error", () => {
-		() => {
+		(() => {
 			const conan = {};
 			const steps = new ConanSteps(conan);
-		}.should.not.throw();
+		}).should.not.throw();
 	});
 
 	it("should save parent to .parent", () => {

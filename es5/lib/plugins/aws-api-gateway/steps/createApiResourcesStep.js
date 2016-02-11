@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = createApiResourcesStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+exports.default = createApiResourcesStep;
 
 var _flowsync = require("flowsync");
 
 var _flowsync2 = _interopRequireDefault(_flowsync);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function createApiResourcesStep(conan, context, done) {
 	var restApiId = context.results.restApiId;
@@ -20,7 +20,7 @@ function createApiResourcesStep(conan, context, done) {
 			var api = new context.libraries.AWS.APIGateway({
 				region: conan.config.region
 			});
-			_flowsync2["default"].eachSeries(context.results.newApiResources, function (pathPart, nextResource) {
+			_flowsync2.default.eachSeries(context.results.newApiResources, function (pathPart, nextResource) {
 				var apiParameters = {
 					restApiId: restApiId,
 					parentId: parentId,
@@ -46,5 +46,3 @@ function createApiResourcesStep(conan, context, done) {
 		done(null, { apiResourceId: null });
 	}
 }
-
-module.exports = exports["default"];

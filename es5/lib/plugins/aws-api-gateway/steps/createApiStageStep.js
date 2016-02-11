@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = createApiStageStep;
-
+exports.default = createApiStageStep;
 function createApiStageStep(conan, context, done) {
 	if (context.results.restApiId) {
 		var api = new context.libraries.AWS.APIGateway({
@@ -30,5 +29,3 @@ function createApiStageStep(conan, context, done) {
 		done();
 	}
 }
-
-module.exports = exports["default"];

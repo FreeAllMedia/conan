@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = getAccountIdStep;
-
+exports.default = getAccountIdStep;
 function getAccountIdStep(conan, context, done) {
 	var api = new context.libraries.AWS.IAM({
 		region: conan.config.region
@@ -21,5 +20,3 @@ function getAccountIdStep(conan, context, done) {
 		}
 	});
 }
-
-module.exports = exports["default"];

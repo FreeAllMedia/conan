@@ -9,7 +9,7 @@ function requireDefault(fileName) {
 	}
 }
 
-var LambdaClass = requireDefault("./lambdaClass.js")["default"];
+var LambdaClass = requireDefault("./lambdaClass.js").default;
 
 module.exports = {
 	handler: function classHandler(event, context) {

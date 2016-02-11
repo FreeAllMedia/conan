@@ -1,14 +1,8 @@
-"use strict";
+import Conan from "../../lib/conan.js";
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-var _libConanJs = require("../../lib/conan.js");
-
-var _libConanJs2 = _interopRequireDefault(_libConanJs);
-
-describe("conan.plugins", function () {
-	it("should return an instance of Array", function () {
-		var conan = new _libConanJs2["default"]();
+describe("conan.plugins", () => {
+	it("should return an instance of Array", () => {
+		const conan = new Conan();
 		conan.plugins.should.be.instanceOf(Array);
 	});
 });

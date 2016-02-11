@@ -1,26 +1,26 @@
 "use strict";
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _conan = require("../../../../conan.js");
 
-var _conanJs = require("../../../../conan.js");
+var _conan2 = _interopRequireDefault(_conan);
 
-var _conanJs2 = _interopRequireDefault(_conanJs);
+var _conanAwsApiGateway = require("../../components/conanAwsApiGateway.js");
 
-var _componentsConanAwsApiGatewayJs = require("../../components/conanAwsApiGateway.js");
+var _conanAwsApiGateway2 = _interopRequireDefault(_conanAwsApiGateway);
 
-var _componentsConanAwsApiGatewayJs2 = _interopRequireDefault(_componentsConanAwsApiGatewayJs);
+var _conanAwsApiGatewayStage = require("../../components/conanAwsApiGatewayStage.js");
 
-var _componentsConanAwsApiGatewayStageJs = require("../../components/conanAwsApiGatewayStage.js");
+var _conanAwsApiGatewayStage2 = _interopRequireDefault(_conanAwsApiGatewayStage);
 
-var _componentsConanAwsApiGatewayStageJs2 = _interopRequireDefault(_componentsConanAwsApiGatewayStageJs);
+var _conanComponent = require("../../../../components/conanComponent.js");
 
-var _componentsConanComponentJs = require("../../../../components/conanComponent.js");
-
-var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
+var _conanComponent2 = _interopRequireDefault(_conanComponent);
 
 var _jargon = require("jargon");
 
 var _jargon2 = _interopRequireDefault(_jargon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 describe("ConanAwsApiGateway(conan, name)", function () {
 	var api = undefined;
@@ -30,12 +30,12 @@ describe("ConanAwsApiGateway(conan, name)", function () {
 	beforeEach(function () {
 		name = "MyAPI";
 
-		conan = new _conanJs2["default"]();
-		api = new _componentsConanAwsApiGatewayJs2["default"](conan, name);
+		conan = new _conan2.default();
+		api = new _conanAwsApiGateway2.default(conan, name);
 	});
 
 	it("should extend ConanComponent", function () {
-		api.should.be.instanceOf(_componentsConanComponentJs2["default"]);
+		api.should.be.instanceOf(_conanComponent2.default);
 	});
 
 	it("should save conan to .conan", function () {
@@ -44,11 +44,11 @@ describe("ConanAwsApiGateway(conan, name)", function () {
 
 	describe("(parameters)", function () {
 		["name"].forEach(function (parameterName) {
-			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
+			var parameterNamePascalCase = (0, _jargon2.default)(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
 				it("should save new" + parameterNamePascalCase, function () {
-					var component = new _componentsConanAwsApiGatewayJs2["default"](conan);
+					var component = new _conanAwsApiGateway2.default(conan);
 					var testValue = "abc123";
 					component = component[parameterName](testValue);
 					component[parameterName]().should.eql(testValue);
@@ -84,7 +84,7 @@ describe("ConanAwsApiGateway(conan, name)", function () {
 		});
 
 		it("should return an instance of ConanAwsApiGatewayStage", function () {
-			stage.should.be.instanceOf(_componentsConanAwsApiGatewayStageJs2["default"]);
+			stage.should.be.instanceOf(_conanAwsApiGatewayStage2.default);
 		});
 
 		it("should pass conan to the ConanAwsApiGatewayStage constructor", function () {
@@ -104,7 +104,7 @@ describe("ConanAwsApiGateway(conan, name)", function () {
 		});
 
 		it("should return an instance of ConanAwsApiGateway", function () {
-			api.should.be.instanceOf(_componentsConanAwsApiGatewayJs2["default"]);
+			api.should.be.instanceOf(_conanAwsApiGateway2.default);
 		});
 
 		it("should pass conan to the ConanAwsApiGateway constructor", function () {

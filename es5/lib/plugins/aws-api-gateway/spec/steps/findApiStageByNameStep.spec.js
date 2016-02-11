@@ -1,14 +1,12 @@
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _conan = require("../../../../conan.js");
 
-var _conanJs = require("../../../../conan.js");
-
-var _conanJs2 = _interopRequireDefault(_conanJs);
+var _conan2 = _interopRequireDefault(_conan);
 
 var _sinon = require("sinon");
 
@@ -18,9 +16,13 @@ var _chai = require("chai");
 
 var _chai2 = _interopRequireDefault(_chai);
 
-var _stepsFindApiStageByNameStepJs = require("../../steps/findApiStageByNameStep.js");
+var _findApiStageByNameStep = require("../../steps/findApiStageByNameStep.js");
 
-var _stepsFindApiStageByNameStepJs2 = _interopRequireDefault(_stepsFindApiStageByNameStepJs);
+var _findApiStageByNameStep2 = _interopRequireDefault(_findApiStageByNameStep);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 describe("findApiStageByNameStep", function () {
 	var getStageSpy = undefined,
@@ -31,7 +33,7 @@ describe("findApiStageByNameStep", function () {
 	    restApiId = undefined,
 	    should = undefined;
 
-	var APIGateway = (function () {
+	var APIGateway = function () {
 		function APIGateway(constructorParameters) {
 			_classCallCheck(this, APIGateway);
 
@@ -46,20 +48,20 @@ describe("findApiStageByNameStep", function () {
 		}]);
 
 		return APIGateway;
-	})();
+	}();
 
 	beforeEach(function () {
-		conan = new _conanJs2["default"]({
+		conan = new _conan2.default({
 			region: "us-east-1"
 		});
 
-		constructorSpy = _sinon2["default"].spy();
-		getStageSpy = _sinon2["default"].spy(function (params, callback) {
+		constructorSpy = _sinon2.default.spy();
+		getStageSpy = _sinon2.default.spy(function (params, callback) {
 			callback();
 		});
-		should = _chai2["default"].should();
+		should = _chai2.default.should();
 
-		parameters = new ((function () {
+		parameters = new (function () {
 			function MockConanAwsParameters() {
 				_classCallCheck(this, MockConanAwsParameters);
 			}
@@ -72,7 +74,7 @@ describe("findApiStageByNameStep", function () {
 			}]);
 
 			return MockConanAwsParameters;
-		})())();
+		}())();
 
 		restApiId = "23sysh";
 
@@ -90,12 +92,12 @@ describe("findApiStageByNameStep", function () {
 	});
 
 	it("should be a function", function () {
-		(typeof _stepsFindApiStageByNameStepJs2["default"]).should.equal("function");
+		(typeof _findApiStageByNameStep2.default === "undefined" ? "undefined" : _typeof(_findApiStageByNameStep2.default)).should.equal("function");
 	});
 
 	describe("(parameters)", function () {
 		beforeEach(function (done) {
-			(0, _stepsFindApiStageByNameStepJs2["default"])(conan, context, function () {
+			(0, _findApiStageByNameStep2.default)(conan, context, function () {
 				done();
 			});
 		});
@@ -116,20 +118,20 @@ describe("findApiStageByNameStep", function () {
 
 	describe("(api stages not found)", function () {
 		beforeEach(function () {
-			getStageSpy = _sinon2["default"].spy(function (params, callback) {
+			getStageSpy = _sinon2.default.spy(function (params, callback) {
 				callback({ statusCode: 404 });
 			});
 		});
 
 		it("should not return no error", function (done) {
-			(0, _stepsFindApiStageByNameStepJs2["default"])(conan, context, function (error) {
+			(0, _findApiStageByNameStep2.default)(conan, context, function (error) {
 				should.not.exist(error);
 				done();
 			});
 		});
 
 		it("should not return results", function (done) {
-			(0, _stepsFindApiStageByNameStepJs2["default"])(conan, context, function (error, result) {
+			(0, _findApiStageByNameStep2.default)(conan, context, function (error, result) {
 				should.not.exist(result);
 				done();
 			});
@@ -141,13 +143,13 @@ describe("findApiStageByNameStep", function () {
 
 		beforeEach(function () {
 			responseData = { stageName: "testApi" };
-			getStageSpy = _sinon2["default"].spy(function (params, callback) {
+			getStageSpy = _sinon2.default.spy(function (params, callback) {
 				callback(null, responseData);
 			});
 		});
 
 		it("should return the stage name for that stage", function (done) {
-			(0, _stepsFindApiStageByNameStepJs2["default"])(conan, context, function (error, result) {
+			(0, _findApiStageByNameStep2.default)(conan, context, function (error, result) {
 				result.stageName.should.equal(responseData.stageName);
 				done();
 			});
@@ -156,13 +158,13 @@ describe("findApiStageByNameStep", function () {
 
 	describe("(unknown error)", function () {
 		beforeEach(function () {
-			getStageSpy = _sinon2["default"].spy(function (params, callback) {
+			getStageSpy = _sinon2.default.spy(function (params, callback) {
 				callback({ statusCode: 401 });
 			});
 		});
 
 		it("should return error", function (done) {
-			(0, _stepsFindApiStageByNameStepJs2["default"])(conan, context, function (error) {
+			(0, _findApiStageByNameStep2.default)(conan, context, function (error) {
 				should.exist(error);
 				done();
 			});

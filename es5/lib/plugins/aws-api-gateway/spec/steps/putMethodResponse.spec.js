@@ -1,14 +1,12 @@
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _conan = require("../../../../conan.js");
 
-var _conanJs = require("../../../../conan.js");
-
-var _conanJs2 = _interopRequireDefault(_conanJs);
+var _conan2 = _interopRequireDefault(_conan);
 
 var _sinon = require("sinon");
 
@@ -18,9 +16,13 @@ var _chai = require("chai");
 
 var _chai2 = _interopRequireDefault(_chai);
 
-var _stepsPutMethodResponseStepJs = require("../../steps/putMethodResponseStep.js");
+var _putMethodResponseStep = require("../../steps/putMethodResponseStep.js");
 
-var _stepsPutMethodResponseStepJs2 = _interopRequireDefault(_stepsPutMethodResponseStepJs);
+var _putMethodResponseStep2 = _interopRequireDefault(_putMethodResponseStep);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 describe("putMethodResponseStep", function () {
 	var putMethodResponseSpy = undefined,
@@ -33,7 +35,7 @@ describe("putMethodResponseStep", function () {
 	    responseParameters = undefined,
 	    should = undefined;
 
-	var APIGateway = (function () {
+	var APIGateway = function () {
 		function APIGateway(constructorParameters) {
 			_classCallCheck(this, APIGateway);
 
@@ -48,20 +50,20 @@ describe("putMethodResponseStep", function () {
 		}]);
 
 		return APIGateway;
-	})();
+	}();
 
 	beforeEach(function () {
-		conan = new _conanJs2["default"]({
+		conan = new _conan2.default({
 			region: "us-east-1"
 		});
 
-		constructorSpy = _sinon2["default"].spy();
-		putMethodResponseSpy = _sinon2["default"].spy(function (params, callback) {
+		constructorSpy = _sinon2.default.spy();
+		putMethodResponseSpy = _sinon2.default.spy(function (params, callback) {
 			callback();
 		});
-		should = _chai2["default"].should();
+		should = _chai2.default.should();
 
-		parameters = new ((function () {
+		parameters = new (function () {
 			function MockConanAwsParameters() {
 				_classCallCheck(this, MockConanAwsParameters);
 			}
@@ -84,7 +86,7 @@ describe("putMethodResponseStep", function () {
 			}]);
 
 			return MockConanAwsParameters;
-		})())();
+		}())();
 
 		restApiId = "23sysh";
 		apiResourceId = "23sysh3";
@@ -106,12 +108,12 @@ describe("putMethodResponseStep", function () {
 	});
 
 	it("should be a function", function () {
-		(typeof _stepsPutMethodResponseStepJs2["default"]).should.equal("function");
+		(typeof _putMethodResponseStep2.default === "undefined" ? "undefined" : _typeof(_putMethodResponseStep2.default)).should.equal("function");
 	});
 
 	describe("(parameters)", function () {
 		beforeEach(function (done) {
-			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function () {
+			(0, _putMethodResponseStep2.default)(conan, context, function () {
 				done();
 			});
 		});
@@ -136,12 +138,12 @@ describe("putMethodResponseStep", function () {
 	describe("(rest api id is not present)", function () {
 		beforeEach(function () {
 			delete context.results.restApiId;
-			putMethodResponseSpy = _sinon2["default"].spy();
+			putMethodResponseSpy = _sinon2.default.spy();
 		});
 
 		it("should skip the function call entirely", function (done) {
-			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function () {
-				putMethodResponseSpy.called.should.be["false"];
+			(0, _putMethodResponseStep2.default)(conan, context, function () {
+				putMethodResponseSpy.called.should.be.false;
 				done();
 			});
 		});
@@ -149,7 +151,7 @@ describe("putMethodResponseStep", function () {
 
 	describe("(the status code is present on the array)", function () {
 		beforeEach(function () {
-			parameters = new ((function () {
+			parameters = new (function () {
 				function MockConanAwsParameters() {
 					_classCallCheck(this, MockConanAwsParameters);
 				}
@@ -172,7 +174,7 @@ describe("putMethodResponseStep", function () {
 				}]);
 
 				return MockConanAwsParameters;
-			})())();
+			}())();
 
 			restApiId = "23sysh";
 			apiResourceId = "23sysh3";
@@ -191,13 +193,13 @@ describe("putMethodResponseStep", function () {
 				}
 			};
 
-			putMethodResponseSpy = _sinon2["default"].spy(function (params, callback) {
+			putMethodResponseSpy = _sinon2.default.spy(function (params, callback) {
 				callback(null, {});
 			});
 		});
 
 		it("should skip the function call for it", function (done) {
-			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function () {
+			(0, _putMethodResponseStep2.default)(conan, context, function () {
 				putMethodResponseSpy.firstCall.args[0].statusCode.should.equal("404");
 				done();
 			});
@@ -209,13 +211,13 @@ describe("putMethodResponseStep", function () {
 
 		beforeEach(function () {
 			responseData = {};
-			putMethodResponseSpy = _sinon2["default"].spy(function (awsParameters, callback) {
+			putMethodResponseSpy = _sinon2.default.spy(function (awsParameters, callback) {
 				callback(null, responseData);
 			});
 		});
 
 		it("should not return an error", function (done) {
-			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function (error) {
+			(0, _putMethodResponseStep2.default)(conan, context, function (error) {
 				should.not.exist(error);
 				done();
 			});
@@ -225,12 +227,12 @@ describe("putMethodResponseStep", function () {
 	describe("(api resource id is not present)", function () {
 		beforeEach(function () {
 			delete context.results.apiResourceId;
-			putMethodResponseSpy = _sinon2["default"].spy();
+			putMethodResponseSpy = _sinon2.default.spy();
 		});
 
 		it("should skip the function call entirely", function (done) {
-			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function () {
-				putMethodResponseSpy.called.should.be["false"];
+			(0, _putMethodResponseStep2.default)(conan, context, function () {
+				putMethodResponseSpy.called.should.be.false;
 				done();
 			});
 		});
@@ -238,7 +240,7 @@ describe("putMethodResponseStep", function () {
 
 	describe("(responseHeaders)", function () {
 		beforeEach(function () {
-			parameters = new ((function () {
+			parameters = new (function () {
 				function MockConanAwsParameters() {
 					_classCallCheck(this, MockConanAwsParameters);
 				}
@@ -261,7 +263,7 @@ describe("putMethodResponseStep", function () {
 				}]);
 
 				return MockConanAwsParameters;
-			})())();
+			}())();
 
 			responseParameters = {
 				"method.response.header.Access-Control-Allow-Origin": false
@@ -283,7 +285,7 @@ describe("putMethodResponseStep", function () {
 		});
 
 		it("should put them all in the response parameters", function (done) {
-			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function () {
+			(0, _putMethodResponseStep2.default)(conan, context, function () {
 				putMethodResponseSpy.firstCall.args[0].responseParameters.should.eql(responseParameters);
 				done();
 			});
@@ -292,13 +294,13 @@ describe("putMethodResponseStep", function () {
 
 	describe("(unknown error)", function () {
 		beforeEach(function () {
-			putMethodResponseSpy = _sinon2["default"].spy(function (params, callback) {
+			putMethodResponseSpy = _sinon2.default.spy(function (params, callback) {
 				callback({ statusCode: 401 });
 			});
 		});
 
 		it("should return an error when is just one", function (done) {
-			(0, _stepsPutMethodResponseStepJs2["default"])(conan, context, function (error) {
+			(0, _putMethodResponseStep2.default)(conan, context, function (error) {
 				should.exist(error);
 				done();
 			});

@@ -1,22 +1,22 @@
 "use strict";
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _conan = require("../../../../conan.js");
 
-var _conanJs = require("../../../../conan.js");
+var _conan2 = _interopRequireDefault(_conan);
 
-var _conanJs2 = _interopRequireDefault(_conanJs);
+var _conanAwsLambda = require("../../components/conanAwsLambda.js");
 
-var _componentsConanAwsLambdaJs = require("../../components/conanAwsLambda.js");
+var _conanAwsLambda2 = _interopRequireDefault(_conanAwsLambda);
 
-var _componentsConanAwsLambdaJs2 = _interopRequireDefault(_componentsConanAwsLambdaJs);
+var _conanComponent = require("../../../../components/conanComponent.js");
 
-var _componentsConanComponentJs = require("../../../../components/conanComponent.js");
-
-var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
+var _conanComponent2 = _interopRequireDefault(_conanComponent);
 
 var _jargon = require("jargon");
 
 var _jargon2 = _interopRequireDefault(_jargon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 	var lambda = undefined;
@@ -30,12 +30,12 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 		filePath = "/account/create.js";
 		role = "SomeRole";
 
-		conan = new _conanJs2["default"]();
-		lambda = new _componentsConanAwsLambdaJs2["default"](conan, name, filePath, role);
+		conan = new _conan2.default();
+		lambda = new _conanAwsLambda2.default(conan, name, filePath, role);
 	});
 
 	it("should extend ConanComponent", function () {
-		lambda.should.be.instanceOf(_componentsConanComponentJs2["default"]);
+		lambda.should.be.instanceOf(_conanComponent2.default);
 	});
 
 	it("should save conan to .conan", function () {
@@ -56,11 +56,11 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 
 	describe("(parameters)", function () {
 		["name", "filePath", "role", "runtime", "description", "memorySize", "timeout", "publish", "packages", "bucket"].forEach(function (parameterName) {
-			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
+			var parameterNamePascalCase = (0, _jargon2.default)(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function describeComponentParameter() {
 				it("should save new" + parameterNamePascalCase, function itShouldSaveComponentParameter() {
-					var component = new _componentsConanAwsLambdaJs2["default"](conan);
+					var component = new _conanAwsLambda2.default(conan);
 					var testValue = "abc123";
 					component = component[parameterName](testValue);
 					component[parameterName]().should.eql(testValue);
@@ -71,11 +71,11 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 
 	describe("(multiple-value parameters)", function () {
 		["handler"].forEach(function (parameterName) {
-			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
+			var parameterNamePascalCase = (0, _jargon2.default)(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
 				it("should save new" + parameterNamePascalCase, function () {
-					var component = new _componentsConanAwsLambdaJs2["default"](conan);
+					var component = new _conanAwsLambda2.default(conan);
 					var testValueOne = "abc123";
 					var testValueTwo = "abc123";
 					component = component[parameterName](testValueOne, testValueTwo);
@@ -87,11 +87,11 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 
 	describe("(multiple-value-aggregate parameters)", function () {
 		["dependencies", "alias"].forEach(function (parameterName) {
-			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
+			var parameterNamePascalCase = (0, _jargon2.default)(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
 				it("should save new" + parameterNamePascalCase, function () {
-					var component = new _componentsConanAwsLambdaJs2["default"](conan);
+					var component = new _conanAwsLambda2.default(conan);
 
 					var testValueOne = "abc123";
 					var testValueTwo = "123abc";
@@ -109,7 +109,7 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 
 	describe("(default values)", function () {
 		it("should set the handler to 'handler' by default", function () {
-			lambda = new _componentsConanAwsLambdaJs2["default"](conan, name, filePath);
+			lambda = new _conanAwsLambda2.default(conan, name, filePath);
 			lambda.handler().should.eql(["handler"]);
 		});
 		it("should set the runtime to 'nodejs' by default", function () {
@@ -188,7 +188,7 @@ describe("ConanAwsLambda(conan, name, filePath, role)", function () {
 		});
 
 		it("should return an instance of ConanAwsLambda", function () {
-			lambda.should.be.instanceOf(_componentsConanAwsLambdaJs2["default"]);
+			lambda.should.be.instanceOf(_conanAwsLambda2.default);
 		});
 
 		it("should pass conan to the ConanAwsLambda constructor", function () {

@@ -3,10 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = save;
-/* istanbul ignore next */
-function save(event, callback) {
+exports.default = save;
+/* istanbul ignore next */function save(event, callback) {
 	callback();
 }
-
-module.exports = exports["default"];

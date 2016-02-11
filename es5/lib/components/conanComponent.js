@@ -4,21 +4,21 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _incognito = require("incognito");
 
 var _incognito2 = _interopRequireDefault(_incognito);
 
-var ConanComponent = (function () {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ConanComponent = function () {
 	function ConanComponent() {
 		_classCallCheck(this, ConanComponent);
 
-		(0, _incognito2["default"])(this).parameters = {};
+		(0, _incognito2.default)(this).parameters = {};
 
 		//initialize the parameters object
 
@@ -31,15 +31,14 @@ var ConanComponent = (function () {
 
 	_createClass(ConanComponent, [{
 		key: "initialize",
-		value: function initialize() {}
-		// Stub for overridding
+		value: function initialize() {} // Stub for overridding
 
 	}, {
 		key: "parameters",
 		value: function parameters() {
 			var _this = this;
 
-			var _ = (0, _incognito2["default"])(this);
+			var _ = (0, _incognito2.default)(this);
 
 			for (var _len2 = arguments.length, newParameters = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
 				newParameters[_key2] = arguments[_key2];
@@ -68,7 +67,7 @@ var ConanComponent = (function () {
 		value: function multipleValueParameters() {
 			var _this2 = this;
 
-			var _ = (0, _incognito2["default"])(this);
+			var _ = (0, _incognito2.default)(this);
 
 			for (var _len3 = arguments.length, newParameters = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
 				newParameters[_key3] = arguments[_key3];
@@ -98,7 +97,7 @@ var ConanComponent = (function () {
 		value: function aggregateValueParameters() {
 			var _this3 = this;
 
-			var _ = (0, _incognito2["default"])(this);
+			var _ = (0, _incognito2.default)(this);
 
 			for (var _len5 = arguments.length, newParameters = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
 				newParameters[_key5] = arguments[_key5];
@@ -128,7 +127,7 @@ var ConanComponent = (function () {
 		value: function multipleValueAggregateParameters() {
 			var _this4 = this;
 
-			var _ = (0, _incognito2["default"])(this);
+			var _ = (0, _incognito2.default)(this);
 
 			for (var _len7 = arguments.length, newParameters = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
 				newParameters[_key7] = arguments[_key7];
@@ -157,7 +156,6 @@ var ConanComponent = (function () {
 	}]);
 
 	return ConanComponent;
-})();
+}();
 
-exports["default"] = ConanComponent;
-module.exports = exports["default"];
+exports.default = ConanComponent;

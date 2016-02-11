@@ -1,18 +1,16 @@
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _conan = require("../../../../conan.js");
 
-var _conanJs = require("../../../../conan.js");
+var _conan2 = _interopRequireDefault(_conan);
 
-var _conanJs2 = _interopRequireDefault(_conanJs);
+var _findLambdaAliasStep = require("../../steps/findLambdaAliasStep.js");
 
-var _stepsFindLambdaAliasStepJs = require("../../steps/findLambdaAliasStep.js");
-
-var _stepsFindLambdaAliasStepJs2 = _interopRequireDefault(_stepsFindLambdaAliasStepJs);
+var _findLambdaAliasStep2 = _interopRequireDefault(_findLambdaAliasStep);
 
 var _sinon = require("sinon");
 
@@ -21,6 +19,10 @@ var _sinon2 = _interopRequireDefault(_sinon);
 var _chai = require("chai");
 
 var _chai2 = _interopRequireDefault(_chai);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 	var conan = undefined,
@@ -36,24 +38,24 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 	    parameters = undefined;
 
 	var mockLambda = {
-		getAlias: _sinon2["default"].spy(function (params, callback) {
+		getAlias: _sinon2.default.spy(function (params, callback) {
 			callback(awsResponseError, responseData(params));
 		})
 	};
 
 	var MockAWS = {
-		Lambda: _sinon2["default"].spy(function () {
+		Lambda: _sinon2.default.spy(function () {
 			return mockLambda;
 		})
 	};
 
 	beforeEach(function () {
-		should = _chai2["default"].should();
-		conan = new _conanJs2["default"]({
+		should = _chai2.default.should();
+		conan = new _conan2.default({
 			region: "us-east-1"
 		});
 
-		parameters = new ((function () {
+		parameters = new (function () {
 			function MockConanAwsLambda() {
 				_classCallCheck(this, MockConanAwsLambda);
 			}
@@ -71,7 +73,7 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 			}]);
 
 			return MockConanAwsLambda;
-		})())();
+		}())();
 
 		context = {
 			parameters: parameters,
@@ -85,7 +87,7 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 
 		awsResponseError = null;
 
-		responseData = _sinon2["default"].stub();
+		responseData = _sinon2.default.stub();
 		responseData.withArgs({ FunctionName: "TestFunction", Name: "development" }).returns({});
 
 		responseData.withArgs({ FunctionName: "TestFunction", Name: "production" }).returns({});
@@ -113,7 +115,7 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 
 	describe("(When calling AWS)", function () {
 		beforeEach(function (done) {
-			stepDone = function (afterStepCallback) {
+			stepDone = function stepDone(afterStepCallback) {
 				return function (error, data) {
 					stepReturnError = error;
 					stepReturnData = data;
@@ -121,29 +123,29 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 				};
 			};
 
-			(0, _stepsFindLambdaAliasStepJs2["default"])(conan, context, stepDone(done));
+			(0, _findLambdaAliasStep2.default)(conan, context, stepDone(done));
 		});
 
 		it("should be a function", function () {
-			(typeof _stepsFindLambdaAliasStepJs2["default"]).should.equal("function");
+			(typeof _findLambdaAliasStep2.default === "undefined" ? "undefined" : _typeof(_findLambdaAliasStep2.default)).should.equal("function");
 		});
 
 		it("should set the designated region on the lambda client", function () {
 			MockAWS.Lambda.calledWith({
 				region: conan.config.region
-			}).should.be["true"];
+			}).should.be.true;
 		});
 
 		it("should call AWS with the designated function name parameter", function () {
 			mockLambda.getAlias.calledWith({
 				"FunctionName": context.parameters.name(),
 				"Name": "development"
-			}).should.be["true"];
+			}).should.be.true;
 		});
 
 		describe("(Alias is Found and Updated for Every Alias)", function () {
 			beforeEach(function (done) {
-				parameters = new ((function () {
+				parameters = new (function () {
 					function MockConanAwsLambda() {
 						_classCallCheck(this, MockConanAwsLambda);
 					}
@@ -161,14 +163,14 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 					}]);
 
 					return MockConanAwsLambda;
-				})())();
+				}())();
 
 				context = {
 					parameters: parameters,
 					libraries: { AWS: MockAWS },
 					results: {}
 				};
-				(0, _stepsFindLambdaAliasStepJs2["default"])(conan, context, stepDone(done));
+				(0, _findLambdaAliasStep2.default)(conan, context, stepDone(done));
 			});
 
 			it("should return the alias arn", function () {
@@ -189,7 +191,7 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 
 		describe("(Alias is Found but Updated just for Some Alias)", function () {
 			beforeEach(function (done) {
-				parameters = new ((function () {
+				parameters = new (function () {
 					function MockConanAwsLambda() {
 						_classCallCheck(this, MockConanAwsLambda);
 					}
@@ -207,14 +209,14 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 					}]);
 
 					return MockConanAwsLambda;
-				})())();
+				}())();
 
 				context = {
 					parameters: parameters,
 					libraries: { AWS: MockAWS },
 					results: {}
 				};
-				(0, _stepsFindLambdaAliasStepJs2["default"])(conan, context, stepDone(done));
+				(0, _findLambdaAliasStep2.default)(conan, context, stepDone(done));
 			});
 
 			it("should return the alias arn", function () {
@@ -234,7 +236,7 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 
 		describe("(Alias is not Found)", function () {
 			beforeEach(function (done) {
-				parameters = new ((function () {
+				parameters = new (function () {
 					function MockConanAwsLambda() {
 						_classCallCheck(this, MockConanAwsLambda);
 					}
@@ -252,14 +254,14 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 					}]);
 
 					return MockConanAwsLambda;
-				})())();
+				}())();
 
 				context = {
 					parameters: parameters,
 					libraries: { AWS: MockAWS },
 					results: {}
 				};
-				(0, _stepsFindLambdaAliasStepJs2["default"])(conan, context, stepDone(done));
+				(0, _findLambdaAliasStep2.default)(conan, context, stepDone(done));
 			});
 
 			it("should return the alias arn", function () {
@@ -276,7 +278,7 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 			});
 
 			it("should skip the alias because it does not exist", function (done) {
-				(0, _stepsFindLambdaAliasStepJs2["default"])(conan, context, function (error) {
+				(0, _findLambdaAliasStep2.default)(conan, context, function (error) {
 					should.not.exist(error);
 					done();
 				});
@@ -289,7 +291,7 @@ describe(".findLambdaAliasStep(conan, context, stepDone)", function () {
 			beforeEach(function (done) {
 				errorMessage = "AWS returned status code 401";
 				awsResponseError = { statusCode: 401, message: errorMessage };
-				(0, _stepsFindLambdaAliasStepJs2["default"])(conan, context, stepDone(done));
+				(0, _findLambdaAliasStep2.default)(conan, context, stepDone(done));
 			});
 
 			it("should return an error which stops the step runner", function () {

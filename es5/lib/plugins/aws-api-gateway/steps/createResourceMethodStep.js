@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = createResourceMethodStep;
-
+exports.default = createResourceMethodStep;
 function createResourceMethodStep(conan, context, done) {
 	var restApiId = context.results.restApiId;
 	var resourceId = context.results.apiResourceId;
@@ -29,5 +28,3 @@ function createResourceMethodStep(conan, context, done) {
 		done(null, { resourceHttpMethod: null });
 	}
 }
-
-module.exports = exports["default"];

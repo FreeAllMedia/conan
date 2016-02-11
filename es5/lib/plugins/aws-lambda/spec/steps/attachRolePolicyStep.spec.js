@@ -1,18 +1,16 @@
 "use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _conan = require("../../../../conan.js");
 
-var _conanJs = require("../../../../conan.js");
+var _conan2 = _interopRequireDefault(_conan);
 
-var _conanJs2 = _interopRequireDefault(_conanJs);
+var _attachRolePolicyStep = require("../../steps/attachRolePolicyStep.js");
 
-var _stepsAttachRolePolicyStepJs = require("../../steps/attachRolePolicyStep.js");
-
-var _stepsAttachRolePolicyStepJs2 = _interopRequireDefault(_stepsAttachRolePolicyStepJs);
+var _attachRolePolicyStep2 = _interopRequireDefault(_attachRolePolicyStep);
 
 var _sinon = require("sinon");
 
@@ -21,6 +19,10 @@ var _sinon2 = _interopRequireDefault(_sinon);
 var _chai = require("chai");
 
 var _chai2 = _interopRequireDefault(_chai);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 describe(".attachRolePolicyStep(conan, context, stepDone)", function () {
 	var conan = undefined,
@@ -33,24 +35,24 @@ describe(".attachRolePolicyStep(conan, context, stepDone)", function () {
 	    parameters = undefined;
 
 	var mockIam = {
-		attachRolePolicy: _sinon2["default"].spy(function (params, callback) {
+		attachRolePolicy: _sinon2.default.spy(function (params, callback) {
 			callback(awsResponseError, awsResponseData);
 		})
 	};
 
 	var MockAWS = {
-		IAM: _sinon2["default"].spy(function () {
+		IAM: _sinon2.default.spy(function () {
 			return mockIam;
 		})
 	};
 
 	beforeEach(function (done) {
-		should = _chai2["default"].should();
-		conan = new _conanJs2["default"]({
+		should = _chai2.default.should();
+		conan = new _conan2.default({
 			region: "us-east-1"
 		});
 
-		parameters = new ((function () {
+		parameters = new (function () {
 			function MockConanAwsLambda() {
 				_classCallCheck(this, MockConanAwsLambda);
 			}
@@ -63,7 +65,7 @@ describe(".attachRolePolicyStep(conan, context, stepDone)", function () {
 			}]);
 
 			return MockConanAwsLambda;
-		})())();
+		}())();
 
 		context = {
 			parameters: parameters,
@@ -74,31 +76,31 @@ describe(".attachRolePolicyStep(conan, context, stepDone)", function () {
 		awsResponseData = {};
 		awsResponseError = null;
 
-		stepDone = function (afterStepCallback) {
+		stepDone = function stepDone(afterStepCallback) {
 			return function (error) {
 				stepReturnError = error;
 				afterStepCallback();
 			};
 		};
 
-		(0, _stepsAttachRolePolicyStepJs2["default"])(conan, context, stepDone(done));
+		(0, _attachRolePolicyStep2.default)(conan, context, stepDone(done));
 	});
 
 	it("should be a function", function () {
-		(typeof _stepsAttachRolePolicyStepJs2["default"]).should.equal("function");
+		(typeof _attachRolePolicyStep2.default === "undefined" ? "undefined" : _typeof(_attachRolePolicyStep2.default)).should.equal("function");
 	});
 
 	it("should set the designated region on the lambda client", function () {
 		MockAWS.IAM.calledWith({
 			region: conan.config.region
-		}).should.be["true"];
+		}).should.be.true;
 	});
 
 	it("should call AWS with the designated parameters", function () {
 		mockIam.attachRolePolicy.calledWith({
 			RoleName: context.parameters.role(),
 			PolicyArn: "arn:aws:iam::aws:policy/AWSLambdaExecute"
-		}).should.be["true"];
+		}).should.be.true;
 	});
 
 	describe("(Policy Attached)", function () {
@@ -113,7 +115,7 @@ describe(".attachRolePolicyStep(conan, context, stepDone)", function () {
 		beforeEach(function (done) {
 			errorMessage = "AWS returned status code 401";
 			awsResponseError = { statusCode: 401, message: errorMessage };
-			(0, _stepsAttachRolePolicyStepJs2["default"])(conan, context, stepDone(done));
+			(0, _attachRolePolicyStep2.default)(conan, context, stepDone(done));
 		});
 
 		it("should return an error which stops the step runner", function () {

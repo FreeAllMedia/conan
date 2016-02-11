@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = findRoleByNameStep;
-
+exports.default = findRoleByNameStep;
 function findRoleByNameStep(conan, context, stepDone) {
 	var AWS = context.libraries.AWS;
 	var iam = new AWS.IAM({
@@ -27,5 +26,3 @@ function findRoleByNameStep(conan, context, stepDone) {
 		}
 	});
 }
-
-module.exports = exports["default"];

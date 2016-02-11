@@ -1,30 +1,30 @@
 "use strict";
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var _conan = require("../../../../conan.js");
 
-var _conanJs = require("../../../../conan.js");
+var _conan2 = _interopRequireDefault(_conan);
 
-var _conanJs2 = _interopRequireDefault(_conanJs);
+var _conanAwsApiGatewayResource = require("../../components/conanAwsApiGatewayResource.js");
 
-var _componentsConanAwsApiGatewayResourceJs = require("../../components/conanAwsApiGatewayResource.js");
+var _conanAwsApiGatewayResource2 = _interopRequireDefault(_conanAwsApiGatewayResource);
 
-var _componentsConanAwsApiGatewayResourceJs2 = _interopRequireDefault(_componentsConanAwsApiGatewayResourceJs);
+var _findApiStageByNameStep = require("../../steps/findApiStageByNameStep.js");
 
-var _stepsFindApiStageByNameStepJs = require("../../steps/findApiStageByNameStep.js");
+var _findApiStageByNameStep2 = _interopRequireDefault(_findApiStageByNameStep);
 
-var _stepsFindApiStageByNameStepJs2 = _interopRequireDefault(_stepsFindApiStageByNameStepJs);
+var _findLambdaByNameStep = require("../../../aws-lambda/steps/findLambdaByNameStep.js");
 
-var _awsLambdaStepsFindLambdaByNameStepJs = require("../../../aws-lambda/steps/findLambdaByNameStep.js");
+var _findLambdaByNameStep2 = _interopRequireDefault(_findLambdaByNameStep);
 
-var _awsLambdaStepsFindLambdaByNameStepJs2 = _interopRequireDefault(_awsLambdaStepsFindLambdaByNameStepJs);
+var _conanComponent = require("../../../../components/conanComponent.js");
 
-var _componentsConanComponentJs = require("../../../../components/conanComponent.js");
-
-var _componentsConanComponentJs2 = _interopRequireDefault(_componentsConanComponentJs);
+var _conanComponent2 = _interopRequireDefault(_conanComponent);
 
 var _jargon = require("jargon");
 
 var _jargon2 = _interopRequireDefault(_jargon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 describe("ConanAwsApiGatewayResource(conan)", function () {
 	var apiResource = undefined;
@@ -36,12 +36,12 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 		path = "/account";
 		method = "GET";
 
-		conan = new _conanJs2["default"]();
-		apiResource = new _componentsConanAwsApiGatewayResourceJs2["default"](conan, path, method);
+		conan = new _conan2.default();
+		apiResource = new _conanAwsApiGatewayResource2.default(conan, path, method);
 	});
 
 	it("should extend ConanComponent", function () {
-		apiResource.should.be.instanceOf(_componentsConanComponentJs2["default"]);
+		apiResource.should.be.instanceOf(_conanComponent2.default);
 	});
 
 	it("should save conan to .conan", function () {
@@ -50,11 +50,11 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 
 	describe("(parameters)", function () {
 		["path", "method", "statusCodes", "responseHeaders"].forEach(function (parameterName) {
-			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
+			var parameterNamePascalCase = (0, _jargon2.default)(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
 				it("should save new" + parameterNamePascalCase, function () {
-					var component = new _componentsConanAwsApiGatewayResourceJs2["default"](conan);
+					var component = new _conanAwsApiGatewayResource2.default(conan);
 					var testValue = "abc123";
 					component = component[parameterName](testValue);
 					component[parameterName]().should.eql(testValue);
@@ -65,11 +65,11 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 
 	describe("(multiple-value parameters)", function () {
 		["headers", "lambda", "queryStrings"].forEach(function (parameterName) {
-			var parameterNamePascalCase = (0, _jargon2["default"])(parameterName).pascal.toString();
+			var parameterNamePascalCase = (0, _jargon2.default)(parameterName).pascal.toString();
 
 			describe("." + parameterName + "(new" + parameterNamePascalCase + ")", function () {
 				it("should save new" + parameterNamePascalCase, function () {
-					var component = new _componentsConanAwsApiGatewayResourceJs2["default"](conan);
+					var component = new _conanAwsApiGatewayResource2.default(conan);
 					var testValueOne = "abc123";
 					var testValueTwo = "abc123";
 					component = component[parameterName](testValueOne, testValueTwo);
@@ -82,17 +82,17 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 	describe("(steps)", function () {
 		describe("(step order)", function () {
 			beforeEach(function () {
-				conan = new _conanJs2["default"]();
-				conan.steps.add(_stepsFindApiStageByNameStepJs2["default"], {});
-				apiResource = new _componentsConanAwsApiGatewayResourceJs2["default"](conan, path, method);
+				conan = new _conan2.default();
+				conan.steps.add(_findApiStageByNameStep2.default, {});
+				apiResource = new _conanAwsApiGatewayResource2.default(conan, path, method);
 			});
 
 			it("should insert all his steps before the find stage component step", function () {
-				conan.steps.all.pop().handler.should.equal(_stepsFindApiStageByNameStepJs2["default"]);
+				conan.steps.all.pop().handler.should.equal(_findApiStageByNameStep2.default);
 			});
 
 			it("should insert the find lambda step at first", function () {
-				conan.steps.all.shift().handler.should.equal(_awsLambdaStepsFindLambdaByNameStepJs2["default"]);
+				conan.steps.all.shift().handler.should.equal(_findLambdaByNameStep2.default);
 			});
 		});
 
@@ -160,11 +160,11 @@ describe("ConanAwsApiGatewayResource(conan)", function () {
 				path = "/testResource";
 				method = resourceMethod;
 
-				newResource = _componentsConanAwsApiGatewayResourceJs2["default"].prototype[methodFunctionName].call(apiResource, path);
+				newResource = _conanAwsApiGatewayResource2.default.prototype[methodFunctionName].call(apiResource, path);
 			});
 
 			it("should return an instance of ConanAwsApiGatewayResource", function () {
-				newResource.should.be.instanceOf(_componentsConanAwsApiGatewayResourceJs2["default"]);
+				newResource.should.be.instanceOf(_conanAwsApiGatewayResource2.default);
 			});
 
 			it("should pass conan to the ConanAwsApiGatewayResource constructor", function () {

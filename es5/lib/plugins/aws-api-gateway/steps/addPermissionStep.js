@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = addPermissionStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+exports.default = addPermissionStep;
 
 var _hacher = require("hacher");
 
 var _hacher2 = _interopRequireDefault(_hacher);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function addPermissionStep(conan, context, stepDone) {
 	var AWS = context.libraries.AWS;
@@ -50,7 +50,7 @@ function addPermissionStep(conan, context, stepDone) {
 							"SourceArn": sourceArn,
 							"Action": "lambda:InvokeFunction",
 							"Principal": "apigateway.amazonaws.com",
-							"StatementId": _hacher2["default"].getUUID()
+							"StatementId": _hacher2.default.getUUID()
 						};
 						if (context.parameters.lambda().length > 1) {
 							apiParameters.Qualifier = context.parameters.lambda()[1];
@@ -76,5 +76,3 @@ function addPermissionStep(conan, context, stepDone) {
 		stepDone();
 	}
 }
-
-module.exports = exports["default"];

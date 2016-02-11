@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = findLambdaByNameStep;
-
+exports.default = findLambdaByNameStep;
 function findLambdaByNameStep(conan, context, stepDone) {
 	var AWS = context.libraries.AWS;
 	var lambda = new AWS.Lambda({
@@ -39,5 +38,3 @@ function findLambdaByNameStep(conan, context, stepDone) {
 		});
 	}
 }
-
-module.exports = exports["default"];

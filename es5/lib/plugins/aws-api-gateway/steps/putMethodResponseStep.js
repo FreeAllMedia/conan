@@ -3,13 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = putMethodResponseStep;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+exports.default = putMethodResponseStep;
 
 var _flowsync = require("flowsync");
 
 var _flowsync2 = _interopRequireDefault(_flowsync);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function getResponseParameters(responseHeaders) {
 	var result = {};
@@ -32,7 +32,7 @@ function putMethodResponseStep(conan, context, done) {
 
 			var responseParameters = getResponseParameters(context.parameters.responseHeaders());
 
-			_flowsync2["default"].eachSeries(Object.keys(statusCodes), function (statusCode, next) {
+			_flowsync2.default.eachSeries(Object.keys(statusCodes), function (statusCode, next) {
 				var status = responseStatusCodes.find(function (currentStatusCode) {
 					return currentStatusCode === "" + statusCode;
 				});
@@ -67,5 +67,3 @@ function putMethodResponseStep(conan, context, done) {
 		done(null, {});
 	}
 }
-
-module.exports = exports["default"];

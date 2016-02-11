@@ -3,8 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports["default"] = findApiStageByNameStep;
-
+exports.default = findApiStageByNameStep;
 function findApiStageByNameStep(conan, context, done) {
 	var api = new context.libraries.AWS.APIGateway({
 		region: conan.config.region
@@ -25,5 +24,3 @@ function findApiStageByNameStep(conan, context, done) {
 		}
 	});
 }
-
-module.exports = exports["default"];
