@@ -14,7 +14,13 @@ It is fundamentally designed on a very simple plugin-based architecture to allow
 
 Internally, Conan.js manages the workflow of deployment into small, easy-to-test-and-maintain "steps", which can work together to completely automate even the most tedious of hosting platforms.
 
-Currently, Conan.js has two built-in plugins for demonstrating deployment of both AWS Lambda functions, and AWS API Gateway stacks. Both of these plugins will eventually be put into stand-alone packages; effort permitting.
+### Plugins
+
+Conan.js is built from the ground-up as an extendable sytem via an easy-to-build, simple plugin-based architecture.
+
+#### Conan AWS Lambda Plugin
+
+#### Conan AWS API Gateway Plugin
 
 ### Workflow Overview
 
