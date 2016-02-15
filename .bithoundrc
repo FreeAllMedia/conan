@@ -1,5 +1,7 @@
 {
   "ignore": [
-    "es5/**/*.js"
+    "es5/**/*.js",
+    "pseudo/**/*.js",
+    "scratch/**/*.js"
   ]
 }
