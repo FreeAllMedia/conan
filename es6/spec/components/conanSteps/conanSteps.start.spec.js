@@ -2,7 +2,6 @@ import ConanSteps from "../../../lib/components/conanSteps.js";
 import Conan from "../../../lib/conan.js";
 
 import sinon from "sinon";
-import temp from "temp";
 import fs from "fs";
 
 describe("conanSteps.start(callback)", () => {
