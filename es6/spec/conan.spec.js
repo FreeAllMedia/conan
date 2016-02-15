@@ -1,13 +1,9 @@
 /* eslint-disable no-unused-vars */
 import Conan, {
-	ConanComponent,
-	ConanAwsLambdaPlugin,
-	ConanAwsApiGatewayPlugin
+	ConanComponent
 } from "../lib/conan.js";
 
 import ExpectedConanComponent from "../lib/components/conanComponent.js";
-import ExpectedConanAwsLambdaPlugin from "../lib/plugins/aws-lambda/conanAwsLambdaPlugin.js";
-import ExpectedConanAwsApiGatewayPlugin from "../lib/plugins/aws-api-gateway/conanAwsApiGatewayPlugin.js";
 
 import sinon from "sinon";
 
@@ -46,14 +42,6 @@ describe("Conan(config)", () => {
 	describe("(Exports)", () => {
 		it("should export ConanComponent", () => {
 			ConanComponent.should.eql(ExpectedConanComponent);
-		});
-
-		it("should export ConanAwsLambdaPlugin", () => {
-			ConanAwsLambdaPlugin.should.eql(ExpectedConanAwsLambdaPlugin);
-		});
-
-		it("should export ConanAwsApiGatewayPlugin", () => {
-			ConanAwsApiGatewayPlugin.should.eql(ExpectedConanAwsApiGatewayPlugin);
 		});
 	});
 });
