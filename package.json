@@ -1,7 +1,7 @@
 {
   "generatorVersion": "0.2.21",
   "name": "conan",
-  "version": "0.0.16",
+  "version": "0.0.18",
   "description": "Barbarically simple deployment system.",
   "main": "es5/lib/conan.js",
   "scripts": {
@@ -76,7 +76,6 @@
     "gulp-if": "^2.0.0",
     "gulp-istanbul": "^0.10.0",
     "gulp-mocha": "^2.1.3",
-    "gulp-run-sequence": "^0.3.2",
     "gulp-util": "^3.0.6",
     "mocha": "^2.2.5",
     "sinon": "^1.17.2",

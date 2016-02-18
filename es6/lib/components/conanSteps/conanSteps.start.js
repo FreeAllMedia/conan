@@ -22,7 +22,7 @@ export default function start(callback) {
 			// console.log(`${step.handler.name} Started`);
 			step.handler(_.parent, context, (stepError, stepResult) => {
 				Object.assign(accumulatedResults, stepResult);
-				console.log(`${inflect(step.handler.name).table.toString().replace(/_/g, " ").replace(" steps", "")} - ${new Date().getTime() - beforeRunTime}ms`)
+				console.log(`${inflect(step.handler.name).table.toString().replace(/_/g, " ").replace(" steps", "")} - ${new Date().getTime() - beforeRunTime}ms`);
 				done(stepError, stepResult);
 			});
 		}, (errors) => {
