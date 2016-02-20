@@ -1,172 +1,55 @@
-```
-             __________                       .__
-           .'  .v-._.- _____   _____   _____   ) \     _____   _____
-          /  .(W--\| .'.---.'. |\./\   |\./|  / | \    |\ /\   |\ /|
-__       |  /<M.   '/ / .-. \ \| |\ \  | | | / / \ \   | |\ \  | | |
-\ b________/#@|\-----------\ \ \--\\ \-| | |----\ \ \-----\\ \-| | |-.
- >@)######(#( )#H>==========) ) )==\\ \| | |=====\ \ \=====\\ \  | |-->
-/_p~~~~~~~~\#@|/-----------/ / /----\\ \ | |------\ \ \-----\\ \ | |-'
-         |  \<M'   .\ \ '-' / /| | | \\  | | /     \ \ | | | \\  | |
-          \  '(B--/| \ '---' / |/^\|  \'.| |/       \/'./ \|  \'.| |
-           '.  '?_.-._'-----'  '---'   ) '.'.       '-------'  ) '.'.  
-             '---------               '------' THE DEPLOYER  '------'
+![](./conan-logo.png)
 
-```
+[![npm version](https://img.shields.io/npm/v/conan.svg)](https://www.npmjs.com/package/conan) [![license type](https://img.shields.io/npm/l/conan.svg)](https://github.com/FreeAllMedia/conan.git/blob/master/LICENSE) [![npm downloads](https://img.shields.io/npm/dm/conan.svg)](https://www.npmjs.com/package/conan) ![Source: ECMAScript 6](https://img.shields.io/badge/Source-ECMAScript_2015-green.svg)
+[![Build Status](https://travis-ci.org/FreeAllMedia/conan.png?branch=master)](https://travis-ci.org/FreeAllMedia/conan) [![Coverage Status](https://coveralls.io/repos/FreeAllMedia/conan/badge.svg)](https://coveralls.io/r/FreeAllMedia/conan) [![Code Climate](https://codeclimate.com/github/FreeAllMedia/conan/badges/gpa.svg)](https://codeclimate.com/github/FreeAllMedia/conan) [![bitHound Score](https://www.bithound.io/github/FreeAllMedia/conan/badges/score.svg)](https://www.bithound.io/github/FreeAllMedia/conan) [![Dependency Status](https://david-dm.org/FreeAllMedia/conan.png?theme=shields.io)](https://david-dm.org/FreeAllMedia/conan?theme=shields.io) [![Dev Dependency Status](https://david-dm.org/FreeAllMedia/conan/dev-status.svg)](https://david-dm.org/FreeAllMedia/conan?theme=shields.io#info=devDependencies)
+![node 5.x.x](https://img.shields.io/badge/node-5.x.x-brightgreen.svg) ![node 4.x.x](https://img.shields.io/badge/node-4.x.x-brightgreen.svg) ![node 0.12.x](https://img.shields.io/badge/node-0.12.x-brightgreen.svg) ![node 0.11.x](https://img.shields.io/badge/node-0.11.x-brightgreen.svg) ![node 0.10.x](https://img.shields.io/badge/node-0.10.x-brightgreen.svg) ![iojs 2.x.x](https://img.shields.io/badge/iojs-2.x.x-brightgreen.svg) ![iojs 1.x.x](https://img.shields.io/badge/iojs-1.x.x-brightgreen.svg)
 
-# Conan.js
+# Conan: The Deployer
 
-Conan.js is a PRE-ALPHA project under heavy development. Please only consider this version as a preview, and not necessarily representative of its final form.
+Conan.js is a behind-the-scenes framework for developing barbarically simple deployment systems of any kind. Its plugin-based architecture helps to break down complex deployment strategies into simple steps which can be run one after the other, or in parallel.
 
-## What is Conan.js?
+The codebase is 100% tested on a continuous integration, quality control, and dependency management platform to protect against errors and bugs, and to make integration of new features as seamless as possible.
 
-Conan.js is a plugin-based `deployment system framework`. It comes pre-equipped with plugins for `AWS Lambda` & `AWS Gateway API` to show off how it works and to inspire others to create their own `Conan Plugins`.
+## Usage / Available Plugins
 
-## What can Conan.js do out-of-the-box?
+Conan.js doesn't do anything itself except load plugins and provide a framework for developing deployment systems. **Instructions for each plugin are available on their homepages:**
 
-### Deploy `AWS Lambdas`:
+* **[AWS Lambda](https://github.com/FreeAllMedia/conan-aws-lambda)**
+	* Deploy lambdas to AWS without changing the way you code.
+	* Simplify lambda development and testing with class-based lambdas.
+* **[AWS API Gateway](https://github.com/FreeAllMedia/conan-aws-api-gateway)**
+	* Easily deploy complicated APIs which route to your lambdas just the way you
+	* Refer to Lambdas by name; no need to fumble with Amazon Resource Names.
 
-``` javascript
-import conan from "Conan";
+## Writing Custom Plugins
 
-const conan = new Conan();
+* Check out the [Conan.js developers guide](#) to learn about writing a Conan.js Plugin from scratch.
 
-const lambdaName = "MyLambda";
-const lambdaFilePath = "./path/to/myLambda.js";
-const lambdaRoleName = "MyAWSIAMRoleName";
+## Additional Plugins
 
-conan
-	.lambda(lambdaName, lambdaFilePath, lambdaRoleName)
-		.packages({
-			"dovima": "^1.2.4"
-		})
+* More plugins will become available as time and developers become available to join the project.
+* Please [contact our team lead by clicking here](mailto:fam-operations+conan@gmail.com) to discuss expedition of any plugins or features.
 
-.deploy((error) => {
-	if (error) { throw error; }
-	console.log("Lambda deployment complete!");
-});
-```
+## Dev Team Roadmap
 
-### Deploy `AWS Gateway APIs` (with automatic `AWS Lambda` linking):
+1. Refactor the steps system to use classes instead of functions, for easier testing, portability, and reusability.
+2. Improve documentation for plugin developers.
+3. Introduce a command line interface system so that plugins can get automatic CLIs.
 
-``` javascript
-import conan from "Conan";
+## Changelog
 
-const conan = new Conan();
+* 0.1.0 - First BETA release for public review.
 
-conan
-	.api(apiName)
-		.stage("production")
-			.get("/myResource/{id}")
-				// Automatically link our Lambda and resource method!
-				.lambda("MyLambda")
+## How To Contribute
 
-.deploy((error) => {
-	if (error) { throw error; }
-	console.log("Lambda deployment complete!");
-});
-```
+To contribute to the core Conan.js repository, you will need a firm understanding of:
 
-## What Else Can Conan.js Do?
+* behavior-driven-development
+* linting with `eslint`
+* babel & transpiling
 
-### Help You Build Your Own Deployment System
+In order for a pull request to be accepted:
 
-Conan.js is a framework for rapid-development of your own deployment systems for practically any platform you can imagine.
-
-#### Plugin Anatomy
-
-A `Conan.js Plugin` should generally consists of at least three elements:
-
-* **Plugin**
-	* The plugin module's single responsibility is to alter the `conan` object according to your plugin specifications.
-
-* **Components**
-	* A component module is a model-like representation of a resource to be deployed.
-	* Components have one or more parameters which can be set by the user of your deployment system.
-
-* **Steps**
-	* Steps are state-less functions that carry out single tasks for the deployment.
-	* Each receives the results of all previous steps.
-	* Steps can be inserted anywhere in the queue, so they don't have to be added in order.
-
-
-1. One plugin module.
-2. One or more component modules.
-3. One or more step modules.
-
-``` text
-/plugin.js
-/components/component.js
-/steps/step.js
-```
-
-A conan plugin
-
-**`./components/conanServer.js`**
-
-``` javascript
-import { ConanComponent } from "conan";
-import logInStep from "./steps/logInStep.js";
-
-export default class ConanServer extends ConanComponent {
-	initialize(conan, ip, username, password) {
-		this.conan = conan;
-
-		// Auto-create chainable parameters
-		this.parameters(
-			"ip",
-			"username",
-			"password"
-		);
-
-		this
-			.ip(ip)
-			.username(username)
-			.password(password);
-
-		// Add a step to the step queue
-		this.conan.steps.add(logInStep, this);
-	}
-}
-```
-
-**`./conanServerPlugin.js`**
-
-``` javascript
-import Model from "dovima";
-import ConanServer from "./conanServer.js"
-import privateData from "incognito";
-
-export default class ConanServerPlugin {
-	/**
-	 * @constructor
-	 * @param  {Conan} Every plugin constructor is passed the main conan object
-	 * @return {ConanServerPlugin}
-	 */
-	constructor (conan) {
-		const _ = privateData(this);
-
-		_.conan = conan;
-
-		// Extend conan with our component factory method
-		_.conan.server = this.server;
-
-		// Easily make dependent libraries available to all of your steps
-		_.conan.steps.libraries({
-			"Model": Model
-		});
-	}
-
-	server(ip, username, password) {
-		return new ConanServer(conan, ip, username, password);
-	}
-}
-```
-
-**Does Conan.js only work with Amazon Web Services?**
-
-Conan.js is a generic plugin-based framework for developing `deployment systems` in general. The framework itself is not explicitly written for `AWS` compatibility; it just happened to be the platform we wanted to tackle first.
-
-
-# Credit
-
-* ASCII art by "VK" @ [RetroJunkie.com](http://www.retrojunkie.com/asciiart/cartchar/conan.htm)
+* All tests must pass.
+* All tests must be meaningful.
+* There must be 100% coverage for

@@ -1,3 +1,5 @@
+![](../conan-logo.png)
+
 ## AWS API Gateway Plugin
 
 ### Overview

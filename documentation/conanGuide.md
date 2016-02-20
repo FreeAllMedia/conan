@@ -1,78 +1,50 @@
-## Conan Guide
+![](../conan-logo.png)
+# Overview
 
-### Overview
+Conan.js is a behind-the-scenes framework for developing barbarically simple deployment systems of any kind. Its plugin-based architecture helps to break down complex deployment strategies into simple steps which can be run one after the other, or in parallel.
 
-This guide aims to provide you with everything you need to know to understand and use Conan: The Deployer.
+The codebase is 100% tested on a continuous integration, quality control, and dependency management platform to protect against errors and bugs, and to make integration of new features as seamless as possible.
 
-It's dividing into sections for the AWS Lambda Plugin, AWS API Gateway Plugin, and finally a Developer's Guide for those interested in developing their own Conan.js plugins.
+## Available Plugins
 
-### What is Conan?
+**To learn more** about each plugin, click on the following links to be brought directly to their homepage:
 
-Conan: The Deployer is a framework for designing and running un-opinionated custom deployment systems to any hosting platform.
+* **[AWS Lambda](https://github.com/FreeAllMedia/conan-aws-lambda)**
+	* Deploy lambdas to AWS without changing the way you code.
+	* Simplify lambda development and testing with class-based lambdas.
+* **[AWS API Gateway](https://github.com/FreeAllMedia/conan-aws-api-gateway)**
+	* Easily deploy complicated APIs which route to your lambdas just the way you
+	* Refer to Lambdas by name; no need to fumble with Amazon Resource Names.
 
-It is fundamentally designed on a very simple plugin-based architecture to allow maximum flexibility for deployment system developers and those that will end up using their systems.
+## Writing Custom Plugins
 
-Internally, Conan.js manages the workflow of deployment into small, easy-to-test-and-maintain "steps", which can work together to completely automate even the most tedious of hosting platforms.
+* Check out the [Conan.js developers guide](#) to learn about writing a Conan.js Plugin from scratch.
 
-### Plugins
+## Additional Plugins
 
-Conan.js is built from the ground-up as an extendable sytem via an easy-to-build, simple plugin-based architecture.
+* More plugins will become available as time and developers become available to join the project.
+* Please [contact our team lead by clicking here](mailto:fam-operations+conan@gmail.com) to discuss expedition of any plugins or features.
 
-#### Conan AWS Lambda Plugin
+## Dev Team Roadmap
 
-#### Conan AWS API Gateway Plugin
+1. Refactor the steps system to use classes instead of functions, for easier testing, portability, and reusability.
+2. Improve documentation for plugin developers.
+3. Introduce a command line interface system so that plugins can get automatic CLIs.
 
-### Workflow Overview
+## Changelog
 
-``` javascript
-import Conan from "conan";
-import MyPlugin from "conan-my-plugin";
+* 0.1.0 - First BETA release for public review.
 
-const conan = new Conan();
-conan.use(MyPlugin);
+## How To Contribute
 
-// `conan` is now modified by MyPlugin. Refer to its documentation for functionality.
-```
+To contribute to the core Conan.js repository, you will need a firm understanding of:
 
-### Installation
+* behavior-driven-development
+* linting with `eslint`
+* babel & transpiling
 
-Conan can be installed as an npm development dependency with a single terminal command:
+In order for a pull request to be accepted:
 
-``` shell
-$ npm install conan --save-dev
-```
-
-### AWS IAM Roles & Permissions
-
-**Important:** In order for Conan.js to work properly, you must provide an AWS IAM Role with sufficient permissions to:
-
-* Create more IAM Roles and set their permissions
-* Full Access For AWS Lambda
-* Full Access For AWS API Gateway
-* Full Access For AWS S3
-
-### Finding / Using Plugins
-
-1. To find conan plugins, simply use the following npm terminal command:
-
-	``` shell
-	$ npm search conan-plugin
-	```
-
-2. After you've found a plugin that you want to use, simply install it like you would a normal npm module:
-
-	``` shell
-	$ npm install conan-my-plugin
-	```
-
-3. In your software, import the plugin, then tell conan to use it:
-
-	``` javascript
-	import Conan from "conan";
-	import MyPlugin from "conan-my-plugin";
-
-	const conan = new Conan();
-	conan.use(MyPlugin);
-
-	// `conan` is now modified by MyPlugin. Refer to its documentation for functionality.
-	```
+* All tests must pass.
+* All tests must be meaningful.
+* There must be 100% coverage for
