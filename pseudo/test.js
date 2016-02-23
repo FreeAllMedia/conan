@@ -13,6 +13,10 @@ conan.use(ConanAwsApiGatewayPlugin);
 
 conan
 	.lambda("SomeLambda", __dirname + "/lambda.js", "AWSLambda");
+		.dependencies(["/basePath/here/one.js", "/basePath/here/two.js"], {
+			basePath: "/basePath/here"
+		})
+		.dependencies(["/somePath/here/one.js", "/somePath/here/two.js"]);
 
 conan
 	.api("My API")
