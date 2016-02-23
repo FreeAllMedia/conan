@@ -1,11 +1,11 @@
 import privateData from "incognito";
 
 export default class ConanComponent {
-	constructor(...componentArguments) {
+	constructor(...conanComponentArguments) {
 		privateData(this).parameters = {};
 
 		//initialize the parameters object
-		this.initialize.apply(this, componentArguments);
+		this.initialize.apply(this, conanComponentArguments);
 	}
 
 	initialize() {} // Stub for overridding

@@ -29,7 +29,7 @@ The codebase is 100% tested on a continuous integration, quality control, and de
 
 1. Refactor the steps system to use classes instead of functions, for easier testing, portability, and reusability.
 2. Improve documentation for plugin developers.
-3. Introduce a command line interface system so that plugins can get automatic CLIs.
+3. Introduce a command line component system so that plugins can get automatic CLIs.
 
 ## Changelog
 

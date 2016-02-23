@@ -4,7 +4,7 @@
 
 ### Overview
 
-The Conan AWS Api Gateway Plugin provides a way to completely automate the creation and management of AWS API Gateways Objects with a intuitive, [express](https://github.com/strongloop/express)-like interface.
+The Conan AWS Api Gateway Plugin provides a way to completely automate the creation and management of AWS API Gateways Objects with a intuitive, [express](https://github.com/strongloop/express)-like component.
 
 Additionally, it supports extremely simple automatic integration with AWS Lambda functions and other cool features like automatic CORS configuration, request & response mappings, and alias support.
 

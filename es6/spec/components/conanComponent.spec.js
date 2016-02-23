@@ -2,7 +2,7 @@ import ConanComponent from "../../lib/components/conanComponent.js";
 import sinon from "sinon";
 
 describe("ConanComponent()", () => {
-	let component,
+	let conanComponent,
 			name,
 			age,
 			initializeSpy;
@@ -17,14 +17,14 @@ describe("ConanComponent()", () => {
 		initializeSpy = sinon.spy();
 		name = "Bob Belcher";
 		age = 44;
-		component = new MyComponent(name, age);
+		conanComponent = new MyComponent(name, age);
 	});
 
 	it("should stub .initialize", () => {
 		class BlankComponent extends ConanComponent {}
 
-		component = new BlankComponent();
-		(typeof component.initialize).should.eql("function");
+		conanComponent = new BlankComponent();
+		(typeof conanComponent.initialize).should.eql("function");
 	});
 
 	it("should call .initialize with all constructor parameters", () => {
@@ -33,20 +33,20 @@ describe("ConanComponent()", () => {
 
 	describe(".parameters([...newParameters])", () => {
 		it("should create a getter and setter function for each new parameter", () => {
-			component.parameters("name", "age");
+			conanComponent.parameters("name", "age");
 
-			component.name(name);
-			component.age(age);
+			conanComponent.name(name);
+			conanComponent.age(age);
 
-			(component.name() === name && component.age() === age).should.be.true;
+			(conanComponent.name() === name && conanComponent.age() === age).should.be.true;
 		});
 		it("should create a getter and setter function for each new parameter", () => {
-			component.parameters("name", "age");
+			conanComponent.parameters("name", "age");
 
-			component.name(name);
-			component.age(age);
+			conanComponent.name(name);
+			conanComponent.age(age);
 
-			component.parameters().should.eql({
+			conanComponent.parameters().should.eql({
 				name: name,
 				age: age
 			});
@@ -58,9 +58,9 @@ describe("ConanComponent()", () => {
 			const valueOne = "SomeValue";
 			const valueTwo = "AnotherValue";
 
-			component.multipleValueParameters("handler");
-			component.handler(valueOne, valueTwo);
-			component.handler().should.eql([
+			conanComponent.multipleValueParameters("handler");
+			conanComponent.handler(valueOne, valueTwo);
+			conanComponent.handler().should.eql([
 				valueOne,
 				valueTwo
 			]);
@@ -77,12 +77,12 @@ describe("ConanComponent()", () => {
 			valueTwo = "AnotherValue";
 			valueThree = "YetAnotherValue";
 
-			component.aggregateValueParameters("something");
-			component.something(valueOne);
-			component.something(valueTwo, valueThree);
+			conanComponent.aggregateValueParameters("something");
+			conanComponent.something(valueOne);
+			conanComponent.something(valueTwo, valueThree);
 		});
 		it("should create a getter and setter function for each new parameter with aggregate values", () => {
-			component.something().should.eql([
+			conanComponent.something().should.eql([
 				valueOne,
 				valueTwo,
 				valueThree
@@ -97,18 +97,18 @@ describe("ConanComponent()", () => {
 			const valueThree = "SomeValueAgain";
 			const valueFour = "AnotherValueAgain";
 
-			component.multipleValueAggregateParameters("handler");
-			component.handler(valueOne, valueTwo);
-			component.handler(valueThree, valueFour);
-			component.handler().should.eql([
+			conanComponent.multipleValueAggregateParameters("handler");
+			conanComponent.handler(valueOne, valueTwo);
+			conanComponent.handler(valueThree, valueFour);
+			conanComponent.handler().should.eql([
 				[ valueOne,	valueTwo ],
 				[	valueThree,	valueFour	]
 			]);
 		});
 
 		it("should initialize with an empty array as the value", () => {
-			component.multipleValueAggregateParameters("handler");
-			component.handler().should.eql([]);
+			conanComponent.multipleValueAggregateParameters("handler");
+			conanComponent.handler().should.eql([]);
 		});
 	});
 });

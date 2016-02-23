@@ -23,7 +23,7 @@ If you don't like the way something in Conan.js works, you can easily use its pl
 
 ## Features
 
-**Command-Line Interface w/ Generator: (PHASE 2)**
+**Command-Line Component w/ Generator: (PHASE 2)**
 
 * `deploy`
 

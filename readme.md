@@ -6,7 +6,7 @@
 
 # Conan: The Deployer
 
-Conan.js is a behind-the-scenes framework for developing barbarically simple deployment systems of any kind. Its plugin-based architecture helps to break down complex deployment strategies into simple steps which can be run one after the other, or in parallel.
+Conan.js is a framework for developing barbarically simple, unobtrusive deployment systems of any kind. Its plugin-based architecture helps to break down complex deployment strategies into simple steps which can be run one after the other or in parallel.
 
 The codebase is 100% tested on a continuous integration, quality control, and dependency management platform to protect against errors and bugs, and to make integration of new features as seamless as possible.
 
@@ -21,9 +21,35 @@ Conan.js doesn't do anything itself except load plugins and provide a framework 
 	* Easily deploy complicated APIs which route to your lambdas just the way you
 	* Refer to Lambdas by name; no need to fumble with Amazon Resource Names.
 
+### Finding / Using Plugins
+
+1. To find conan plugins, simply use the following npm terminal command:
+
+	``` shell
+	$ npm search conan-plugin
+	```
+
+2. After you've found a plugin that you want to use, simply install it like you would a normal npm module:
+
+	``` shell
+	$ npm install conan-my-plugin --save-dev
+	```
+
+3. In your script, import the plugin, then tell conan to use it:
+
+	``` javascript
+	import Conan from "conan";
+	import MyPlugin from "conan-my-plugin";
+
+	const conan = new Conan();
+	conan.use(MyPlugin);
+
+	// `conan` is now modified by MyPlugin. Refer to its documentation for functionality.
+	```
+
 ## Writing Custom Plugins
 
-* Check out the [Conan.js developers guide](#) to learn about writing a Conan.js Plugin from scratch.
+* Check out the [Conan.js developers guide](./developers.md) to learn about writing a Conan.js Plugin from scratch.
 
 ## Additional Plugins
 
@@ -34,7 +60,7 @@ Conan.js doesn't do anything itself except load plugins and provide a framework 
 
 1. Refactor the steps system to use classes instead of functions, for easier testing, portability, and reusability.
 2. Improve documentation for plugin developers.
-3. Introduce a command line interface system so that plugins can get automatic CLIs.
+3. Introduce a command line component system so that plugins can get automatic CLIs.
 
 ## Changelog
 
