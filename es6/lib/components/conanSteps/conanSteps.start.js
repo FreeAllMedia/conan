@@ -14,7 +14,7 @@ export default function start(callback) {
 		Async.mapSeries(_.steps, (step, done) => {
 			const context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
-				libraries: _.libraries,
+				libraries: this.libraries,
 				parameters: step.parameters,
 				results: Object.assign({}, accumulatedResults)
 			};

@@ -3,9 +3,9 @@ import privateData from "incognito";
 export default class ConanSteps {
 	constructor(parent) {
 		const _ = privateData(this);
-		_.libraries = {};
 		_.parent = parent;
 		_.steps = [];
+		this.libraries = {};
 	}
 
 	get parent() {

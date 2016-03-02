@@ -7,6 +7,12 @@ describe("conanSteps.library(name, value)", () => {
 		conanSteps = new ConanSteps();
 	});
 
+	it("should add library to .libraries", () => {
+		class FakeAWS {}
+		conanSteps.library("AWS", FakeAWS);
+		conanSteps.libraries.AWS.should.eql(FakeAWS);
+	});
+
 	it("should add library to each step's context", testDone => {
 		class FakeAWS {}
 		conanSteps.library("AWS", FakeAWS);
