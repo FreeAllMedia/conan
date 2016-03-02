@@ -1,7 +1,7 @@
 {
   "generatorVersion": "0.2.21",
   "name": "conan",
-  "version": "0.0.22",
+  "version": "0.0.23",
   "description": "Barbarically simple framework for building deployment systems.",
   "main": "es5/lib/conan.js",
   "scripts": {
