@@ -33,7 +33,7 @@ export default class Conan {
 	addComponent(componentName, ComponentConstructor) {
 		this.components[componentName] = [];
 		this[componentName] = (...parameters) => {
-			parameters.push(this);
+			parameters.unshift(this);
 			const component = new ComponentConstructor(...parameters);
 			this.components[componentName].push(component);
 			this.components.all.push(component);
