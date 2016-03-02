@@ -61,7 +61,7 @@ var Conan = function () {
 					parameters[_key] = arguments[_key];
 				}
 
-				parameters.push(_this);
+				parameters.unshift(_this);
 				var component = new (Function.prototype.bind.apply(ComponentConstructor, [null].concat(parameters)))();
 				_this.components[componentName].push(component);
 				_this.components.all.push(component);

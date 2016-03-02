@@ -49,8 +49,6 @@
   "homepage": "https://github.com/FreeAllMedia/conan",
   "dependencies": {
     "archiver": "^0.21.0",
-    "aws-sdk": "^2.2.24",
-    "cli-table": "^0.3.1",
     "flowsync": "^0.1.11",
     "glob": "^6.0.3",
     "hacher": "^0.1.4",

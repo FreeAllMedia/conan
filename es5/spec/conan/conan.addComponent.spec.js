@@ -26,12 +26,12 @@ describe("conan.addComponent(componentName, ComponentConstructor)", function () 
 		conan.addComponent("server", ServerComponent);
 	});
 
-	it("should pass conan as the last parameter to the component constructor", function () {
+	it("should pass conan as the first parameter to the component constructor", function () {
 		var _conan;
 
 		var parameters = [1, 2, 3];
 		var server = (_conan = conan).server.apply(_conan, parameters);
-		server.parameters[server.parameters.length - 1].should.eql(conan);
+		server.parameters[0].should.eql(conan);
 	});
 
 	it("should pass the parameters to the component constructor", function () {
@@ -39,7 +39,7 @@ describe("conan.addComponent(componentName, ComponentConstructor)", function () 
 
 		var parameters = [1, 2, 3];
 		var server = (_conan2 = conan).server.apply(_conan2, parameters);
-		parameters.push(conan);
+		parameters.unshift(conan);
 		server.parameters.should.eql(parameters);
 	});
 
