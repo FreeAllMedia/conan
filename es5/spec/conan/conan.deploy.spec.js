@@ -1,72 +1,61 @@
-"use strict";
+import Conan from "../../lib/conan.js";
+import sinon from "sinon";
 
-var _conan = require("../../lib/conan.js");
+describe("conan.deploy(callback)", () => {
+	let conan;
 
-var _conan2 = _interopRequireDefault(_conan);
-
-var _sinon = require("sinon");
-
-var _sinon2 = _interopRequireDefault(_sinon);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-describe("conan.deploy(callback)", function () {
-	var conan = undefined;
-
-	beforeEach(function () {
-		conan = new _conan2.default();
+	beforeEach(() => {
+		conan = new Conan();
 	});
 
-	it("should run all step functions in order", function (done) {
-		var conanStepFunction = function conanStepFunction(stepConan, context, stepDone) {
-			return stepDone();
-		};
+	it("should run all step functions in order", done => {
+		const conanStepFunction = (stepConan, context, stepDone) => stepDone();
 
-		var conanStepOne = _sinon2.default.spy(conanStepFunction);
-		var conanStepTwo = _sinon2.default.spy(conanStepFunction);
+		const conanStepOne = sinon.spy(conanStepFunction);
+		const conanStepTwo = sinon.spy(conanStepFunction);
 
 		conan.steps.add(conanStepOne);
 		conan.steps.add(conanStepTwo);
 
-		conan.deploy(function (error) {
-			_sinon2.default.assert.callOrder(conanStepOne, conanStepTwo);
+		conan.deploy((error) => {
+			sinon.assert.callOrder(conanStepOne, conanStepTwo);
 			done(error);
 		});
 	});
 
-	it("should return step errors", function (done) {
-		var conanStepError = new Error("Some error happened!");
+	it("should return step errors", done => {
+		const conanStepError = new Error("Some error happened!");
 
-		var conanStepWithErrorFunction = function conanStepWithErrorFunction(stepConan, context, stepDone) {
+		const conanStepWithErrorFunction = (stepConan, context, stepDone) => {
 			stepDone(conanStepError);
 		};
 
-		var conanStepOne = _sinon2.default.spy(conanStepWithErrorFunction);
-		var conanStepTwo = _sinon2.default.spy();
+		const conanStepOne = sinon.spy(conanStepWithErrorFunction);
+		const conanStepTwo = sinon.spy();
 
 		conan.steps.add(conanStepOne);
 		conan.steps.add(conanStepTwo);
 
-		conan.deploy(function (error) {
+		conan.deploy((error) => {
 			error.should.eql(conanStepError);
 			done();
 		});
 	});
 
-	it("should halt step execution if an error is returned", function (done) {
-		var conanStepError = new Error("Some error happened!");
+	it("should halt step execution if an error is returned", done => {
+		const conanStepError = new Error("Some error happened!");
 
-		var conanStepWithError = function conanStepWithError(stepConan, context, stepDone) {
+		const conanStepWithError = (stepConan, context, stepDone) => {
 			stepDone(conanStepError);
 		};
 
-		var conanStepOne = _sinon2.default.spy(conanStepWithError);
-		var conanStepTwo = _sinon2.default.spy();
+		const conanStepOne = sinon.spy(conanStepWithError);
+		const conanStepTwo = sinon.spy();
 
 		conan.steps.add(conanStepOne);
 		conan.steps.add(conanStepTwo);
 
-		conan.deploy(function () {
+		conan.deploy(() => {
 			conanStepTwo.called.should.be.false;
 			done();
 		});

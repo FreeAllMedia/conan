@@ -1,31 +1,27 @@
-"use strict";
+import ConanSteps from "../../../lib/components/conanSteps.js";
 
-var _conanSteps = require("../../../lib/components/conanSteps.js");
+describe("conanSteps.all", () => {
+	let conanSteps;
 
-var _conanSteps2 = _interopRequireDefault(_conanSteps);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-describe("conanSteps.all", function () {
-	var conanSteps = undefined;
-
-	beforeEach(function () {
-		conanSteps = new _conanSteps2.default();
+	beforeEach(() => {
+		conanSteps = new ConanSteps();
 	});
 
-	it("should default to an empty array", function () {
+	it("should default to an empty array", () => {
 		conanSteps.all.should.eql([]);
 	});
 
-	it("should return all steps", function () {
+	it("should return all steps", () => {
 		function conanStep(conan, done) {
 			done();
 		}
-		var parameters = { foo: "bar" };
+		const parameters = {foo: "bar"};
 		conanSteps.add(conanStep, parameters);
-		conanSteps.all.should.eql([{
-			handler: conanStep,
-			parameters: parameters
-		}]);
+		conanSteps.all.should.eql([
+			{
+				handler: conanStep,
+				parameters: parameters
+			}
+		]);
 	});
 });
