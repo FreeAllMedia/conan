@@ -19,9 +19,9 @@ var ConanSteps = function () {
 		_classCallCheck(this, ConanSteps);
 
 		var _ = (0, _incognito2.default)(this);
-		_.libraries = {};
 		_.parent = parent;
 		_.steps = [];
+		this.libraries = {};
 	}
 
 	_createClass(ConanSteps, [{

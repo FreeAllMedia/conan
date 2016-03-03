@@ -15,6 +15,15 @@ describe("conanSteps.library(name, value)", function () {
 		conanSteps = new _conanSteps2.default();
 	});
 
+	it("should add library to .libraries", function () {
+		var FakeAWS = function FakeAWS() {
+			_classCallCheck(this, FakeAWS);
+		};
+
+		conanSteps.library("AWS", FakeAWS);
+		conanSteps.libraries.AWS.should.eql(FakeAWS);
+	});
+
 	it("should add library to each step's context", function (testDone) {
 		var FakeAWS = function FakeAWS() {
 			_classCallCheck(this, FakeAWS);
