@@ -6,7 +6,7 @@ import paths from "../paths.json";
 import chai from "chai";
 chai.should(); // This enables should-style syntax
 
-gulp.task("test-es6", (cb) => {
+gulp.task("test-es6", ["build"], (cb) => {
 	gulp.src(paths.source.lib)
 		.pipe(istanbul()) // Covering files
 		.pipe(istanbul.hookRequire()) // Force `require` to return covered files

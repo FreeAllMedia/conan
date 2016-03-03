@@ -21,32 +21,6 @@ Conan.js doesn't do anything itself except load plugins and provide a framework 
 	* Easily deploy complicated APIs which route to your lambdas just the way you
 	* Refer to Lambdas by name; no need to fumble with Amazon Resource Names.
 
-### Finding / Using Plugins
-
-1. To find conan plugins, simply use the following npm terminal command:
-
-	``` shell
-	$ npm search conan-plugin
-	```
-
-2. After you've found a plugin that you want to use, simply install it like you would a normal npm module:
-
-	``` shell
-	$ npm install conan-my-plugin --save-dev
-	```
-
-3. In your script, import the plugin, then tell conan to use it:
-
-	``` javascript
-	import Conan from "conan";
-	import MyPlugin from "conan-my-plugin";
-
-	const conan = new Conan();
-	conan.use(MyPlugin);
-
-	// `conan` is now modified by MyPlugin. Refer to its documentation for functionality.
-	```
-
 ## Writing Custom Plugins
 
 * Check out the [Conan.js developers guide](./developers.md) to learn about writing a Conan.js Plugin from scratch.
@@ -64,7 +38,7 @@ Conan.js doesn't do anything itself except load plugins and provide a framework 
 
 ## Changelog
 
-* 0.1.0 - First BETA release for public review.
+See the releases page for a changelog.
 
 ## How To Contribute
 

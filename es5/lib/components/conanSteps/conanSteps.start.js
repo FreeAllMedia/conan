@@ -24,6 +24,8 @@ var _jargon2 = _interopRequireDefault(_jargon);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function start(callback) {
+	var _this = this;
+
 	var _ = (0, _incognito2.default)(this);
 	var accumulatedResults = {};
 
@@ -34,7 +36,7 @@ function start(callback) {
 		_flowsync2.default.mapSeries(_.steps, function (step, done) {
 			var context = {
 				temporaryDirectoryPath: temporaryDirectoryPath,
-				libraries: _.libraries,
+				libraries: _this.libraries,
 				parameters: step.parameters,
 				results: Object.assign({}, accumulatedResults)
 			};

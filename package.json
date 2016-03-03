@@ -1,7 +1,7 @@
 {
   "generatorVersion": "0.2.21",
   "name": "conan",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Barbarically simple framework for building deployment systems.",
   "main": "es5/lib/conan.js",
   "scripts": {
@@ -55,7 +55,6 @@
     "incognito": "^0.1.4",
     "jargon": "^0.1.22",
     "proven": "^0.2.0",
-    "run-sequence": "^1.1.5",
     "temp": "^0.8.3",
     "unzip2": "^0.2.5"
   },
@@ -64,13 +63,12 @@
     "babel-core": "^6.5.1",
     "babel-eslint": "^4.1.8",
     "babel-preset-es2015": "^6.5.0",
-    "gulp-babel": "^6.1.2",
-    "gulp-babel-istanbul": "^0.11.0",
     "chai": "^3.0.0",
-    "compare-version": "^0.1.2",
     "coveralls": "^2.11.2",
-    "eslint": "^1.10.3",
+    "eslint": "^2.2.0",
     "gulp": "^3.9.0",
+    "gulp-babel": "^6.1.2",
+    "gulp-babel-istanbul": "^1.0.0",
     "gulp-if": "^2.0.0",
     "gulp-istanbul": "^0.10.0",
     "gulp-mocha": "^2.1.3",
