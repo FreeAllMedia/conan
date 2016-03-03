@@ -1,54 +1,47 @@
-"use strict";
+/* eslint-disable no-unused-vars */
+import Conan, {
+	ConanComponent
+} from "../lib/conan.js";
 
-var _conan = require("../lib/conan.js");
+import ExpectedConanComponent from "../lib/components/conanComponent.js";
 
-var _conan2 = _interopRequireDefault(_conan);
+import sinon from "sinon";
 
-var _conanComponent = require("../lib/components/conanComponent.js");
+describe("Conan(config)", () => {
+	let conan;
 
-var _conanComponent2 = _interopRequireDefault(_conanComponent);
-
-var _sinon = require("sinon");
-
-var _sinon2 = _interopRequireDefault(_sinon);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-describe("Conan(config)", function () {
-	var conan = undefined;
-
-	beforeEach(function () {
-		conan = new _conan2.default();
+	beforeEach(() => {
+		conan = new Conan();
 	});
 
-	it("should pass itself to ConanSteps", function () {
+	it("should pass itself to ConanSteps", () => {
 		conan.steps.parent.should.eql(conan);
 	});
 
-	describe("(Instantiating with a config object)", function () {
-		it("should not throw an error", function () {
-			(function () {
-				var config = { key: "value" };
-				conan = new _conan2.default(config);
+	describe("(Instantiating with a config object)", () => {
+		it("should not throw an error", () => {
+			(() => {
+				const config = {key: "value"};
+				conan = new Conan(config);
 			}).should.not.throw();
 		});
 
-		it("should save config object to conan.config", function () {
-			var config = { key: "value" };
-			conan = new _conan2.default(config);
+		it("should save config object to conan.config", () => {
+			const config = {key: "value"};
+			conan = new Conan(config);
 			conan.config.should.eql(config);
 		});
 	});
 
-	describe("(Instantiating without a config object)", function () {
-		it("should save an empty object to conan.config", function () {
+	describe("(Instantiating without a config object)", () => {
+		it("should save an empty object to conan.config", () => {
 			conan.config.should.eql({});
 		});
 	});
 
-	describe("(Exports)", function () {
-		it("should export ConanComponent", function () {
-			_conan.ConanComponent.should.eql(_conanComponent2.default);
+	describe("(Exports)", () => {
+		it("should export ConanComponent", () => {
+			ConanComponent.should.eql(ExpectedConanComponent);
 		});
 	});
-}); /* eslint-disable no-unused-vars */
+});
