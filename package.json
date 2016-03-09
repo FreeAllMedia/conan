@@ -49,7 +49,6 @@
   "homepage": "https://github.com/FreeAllMedia/conan",
   "dependencies": {
     "flowsync": "^0.1.11",
-    "glob": "^7.0.3",
     "incognito": "^0.1.4",
     "jargon": "^0.1.22",
     "temp": "^0.8.3"
