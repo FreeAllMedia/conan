@@ -44,7 +44,8 @@ function start(callback) {
 			// console.log(`${step.handler.name} Started`);
 			step.handler(_.parent, context, function (stepError, stepResult) {
 				Object.assign(accumulatedResults, stepResult);
-				console.log((0, _jargon2.default)(step.handler.name).table.toString().replace(/_/g, " ").replace(" steps", "") + " - " + (new Date().getTime() - beforeRunTime) + "ms");
+				// HACK: Need proper logging/reporting.
+				process.stdout.write((0, _jargon2.default)(step.handler.name).table.toString().replace(/_/g, " ").replace(" steps", "") + " - " + (new Date().getTime() - beforeRunTime) + "ms\n");
 				done(stepError, stepResult);
 			});
 		}, function (errors) {

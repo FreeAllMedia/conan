@@ -13,23 +13,27 @@ export default class ConanComponent {
 	parameters(...newParameters) {
 		const _ = privateData(this);
 
+		let returnValue;
+
 		if (newParameters.length > 0) {
 			newParameters.forEach(parameterName => {
 
 				const getterSetterFunction = (newValue) => {
 					if (newValue) {
 						_.parameters[parameterName] = newValue;
-						return this; // For chaining
+						returnValue = this; // For chaining
 					} else {
-						return _.parameters[parameterName];
+						returnValue = _.parameters[parameterName];
 					}
 				};
 
 				this[parameterName] = getterSetterFunction;
 			});
 		} else {
-			return _.parameters;
+			returnValue = _.parameters;
 		}
+
+		return returnValue;
 	}
 
 	multipleValueParameters(...newParameters) {
