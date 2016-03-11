@@ -21,9 +21,9 @@ export default class ConanComponent {
 				const getterSetterFunction = (newValue) => {
 					if (newValue) {
 						_.parameters[parameterName] = newValue;
-						returnValue = this; // For chaining
+						return this; // For chaining
 					} else {
-						returnValue = _.parameters[parameterName];
+						return _.parameters[parameterName];
 					}
 				};
 
