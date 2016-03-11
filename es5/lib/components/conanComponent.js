@@ -40,6 +40,8 @@ var ConanComponent = function () {
 
 			var _ = (0, _incognito2.default)(this);
 
+			var returnValue = void 0;
+
 			for (var _len2 = arguments.length, newParameters = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
 				newParameters[_key2] = arguments[_key2];
 			}
@@ -59,8 +61,10 @@ var ConanComponent = function () {
 					_this[parameterName] = getterSetterFunction;
 				});
 			} else {
-				return _.parameters;
+				returnValue = _.parameters;
 			}
+
+			return returnValue;
 		}
 	}, {
 		key: "multipleValueParameters",
