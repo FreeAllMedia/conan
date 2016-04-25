@@ -25,16 +25,12 @@ describe("conan.use(ConanPlugin)", () => {
 		returnValue.should.eql(conan);
 	});
 
-	it("should instantiate all ConanPlugins with conan", () => {
-		const expectedResults = {
-			testOne: conan.testOne,
-			testTwo: conan.testTwo
-		};
+	it("should instantiate ConanPlugins with conan", () => {
+		conan.testOne.should.be.true;
+	});
 
-		expectedResults.should.eql({
-			testOne: true,
-			testTwo: true
-		});
+	it("should instantiate additional ConanPlugins with conan", () => {
+		conan.testTwo.should.be.true;
 	});
 
 	it("should add the instantiated plugin to the conan.plugins array", () => {
