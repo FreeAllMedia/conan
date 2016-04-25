@@ -18,8 +18,11 @@ export default class Conan {
 		this.plugins = [];
 	}
 
-	use(ConanPlugin) {
-		this.plugins.push(new ConanPlugin(this));
+	use(...conanPlugins) {
+		conanPlugins.forEach(ConanPlugin => {
+			this.plugins.push(new ConanPlugin(this));
+		});
+		return this;
 	}
 
 	deploy(callback) {

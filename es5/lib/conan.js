@@ -42,8 +42,17 @@ var Conan = function () {
 
 	_createClass(Conan, [{
 		key: "use",
-		value: function use(ConanPlugin) {
-			this.plugins.push(new ConanPlugin(this));
+		value: function use() {
+			var _this = this;
+
+			for (var _len = arguments.length, conanPlugins = Array(_len), _key = 0; _key < _len; _key++) {
+				conanPlugins[_key] = arguments[_key];
+			}
+
+			conanPlugins.forEach(function (ConanPlugin) {
+				_this.plugins.push(new ConanPlugin(_this));
+			});
+			return this;
 		}
 	}, {
 		key: "deploy",
@@ -53,18 +62,18 @@ var Conan = function () {
 	}, {
 		key: "addComponent",
 		value: function addComponent(componentName, ComponentConstructor) {
-			var _this = this;
+			var _this2 = this;
 
 			this.components[componentName] = [];
 			this[componentName] = function () {
-				for (var _len = arguments.length, parameters = Array(_len), _key = 0; _key < _len; _key++) {
-					parameters[_key] = arguments[_key];
+				for (var _len2 = arguments.length, parameters = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+					parameters[_key2] = arguments[_key2];
 				}
 
-				parameters.unshift(_this);
+				parameters.unshift(_this2);
 				var component = new (Function.prototype.bind.apply(ComponentConstructor, [null].concat(parameters)))();
-				_this.components[componentName].push(component);
-				_this.components.all.push(component);
+				_this2.components[componentName].push(component);
+				_this2.components.all.push(component);
 				return component;
 			};
 		}
