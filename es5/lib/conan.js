@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.ConanComponent = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -11,46 +10,55 @@ var _conanSteps = require("./components/conanSteps.js");
 
 var _conanSteps2 = _interopRequireDefault(_conanSteps);
 
-var _conanComponent = require("./components/conanComponent.js");
+var _mrt = require("mrt");
 
-var _conanComponent2 = _interopRequireDefault(_conanComponent);
+var _mrt2 = _interopRequireDefault(_mrt);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 /**
  * @class Conan
  */
 
-var Conan = function () {
-	/**
-  * @constructor
-  * @method constructor
-  * @param {Object} config A configuration object that is saved to `conan.config`. There are no options by default, but plugins can add many of them.
-  * @return {Conan} An instantiated copy of Conan
-  */
+var Conan = function (_ChainLink) {
+	_inherits(Conan, _ChainLink);
 
-	function Conan(config) {
+	function Conan() {
 		_classCallCheck(this, Conan);
 
-		this.config = config || {};
-		this.components = { all: [] };
-		this.steps = new _conanSteps2.default(this);
-		this.plugins = [];
+		return _possibleConstructorReturn(this, Object.getPrototypeOf(Conan).apply(this, arguments));
 	}
 
 	_createClass(Conan, [{
+		key: "initialize",
+
+		/**
+   * @method initialize
+   * @param {Object} config A configuration object that is saved to `conan.config`. There are no options by default, but plugins can add many of them.
+   * @return {Conan} An instantiated copy of Conan
+   */
+		value: function initialize(config) {
+			this.config = config || {};
+			this.steps = new _conanSteps2.default(this);
+			this.plugins = [];
+		}
+	}, {
 		key: "use",
 		value: function use() {
-			var _this = this;
+			var _this2 = this;
 
 			for (var _len = arguments.length, conanPlugins = Array(_len), _key = 0; _key < _len; _key++) {
 				conanPlugins[_key] = arguments[_key];
 			}
 
 			conanPlugins.forEach(function (ConanPlugin) {
-				_this.plugins.push(new ConanPlugin(_this));
+				return _this2.plugins.push(new ConanPlugin(_this2));
 			});
 			return this;
 		}
@@ -60,24 +68,6 @@ var Conan = function () {
 			this.steps.start(callback);
 		}
 	}, {
-		key: "addComponent",
-		value: function addComponent(componentName, ComponentConstructor) {
-			var _this2 = this;
-
-			this.components[componentName] = [];
-			this[componentName] = function () {
-				for (var _len2 = arguments.length, parameters = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-					parameters[_key2] = arguments[_key2];
-				}
-
-				parameters.unshift(_this2);
-				var component = new (Function.prototype.bind.apply(ComponentConstructor, [null].concat(parameters)))();
-				_this2.components[componentName].push(component);
-				_this2.components.all.push(component);
-				return component;
-			};
-		}
-	}, {
 		key: "version",
 		get: function get() {
 			return require("../../package.json").version;
@@ -85,7 +75,6 @@ var Conan = function () {
 	}]);
 
 	return Conan;
-}();
+}(_mrt2.default);
 
 exports.default = Conan;
-exports.ConanComponent = _conanComponent2.default;

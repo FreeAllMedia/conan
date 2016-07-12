@@ -51,6 +51,7 @@
     "flowsync": "^0.1.11",
     "incognito": "^0.1.4",
     "jargon": "^0.1.22",
+    "mrt": "^0.1.9",
     "temp": "^0.8.3"
   },
   "devDependencies": {
