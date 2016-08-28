@@ -1,15 +1,10 @@
-import Conan from "../lib/conan.js";
-import ChainLink from "mrt";
+import Conan from "../../lib/conan.js";
 
 describe("Conan(config)", () => {
 	let conan;
 
 	beforeEach(() => {
 		conan = new Conan();
-	});
-
-	it("should extend ChainLink", () => {
-		conan.should.be.instanceOf(ChainLink);
 	});
 
 	describe("(with a config object)", () => {
