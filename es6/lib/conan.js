@@ -20,8 +20,6 @@ export default class Conan extends ChainLink {
 		_.staircase = new Staircase(this);
 
 		this.steps = _.staircase.steps;
-
-		//console.log({ parallel: _.staircase.parallel.bind(_.staircase) });
 	}
 
 	parallel(...steps) {

@@ -55,8 +55,6 @@ var Conan = function (_ChainLink) {
 			_.staircase = new _staircase2.default(this);
 
 			this.steps = _.staircase.steps;
-
-			//console.log({ parallel: _.staircase.parallel.bind(_.staircase) });
 		}
 	}, {
 		key: "parallel",

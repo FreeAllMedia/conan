@@ -3,7 +3,7 @@
   "name": "conan",
   "version": "0.0.26",
   "description": "Barbarically simple framework for building deployment systems.",
-  "main": "es5/lib/conan.js",
+  "main": "es5/lib/index.js",
   "scripts": {
     "test": "gulp test"
   },
