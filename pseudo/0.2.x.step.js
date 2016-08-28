@@ -1,5 +1,5 @@
-export default class ConanAWSLambda {
-	setup(conan) {
-		conan.steps()
+export default class ConanStep {
+	constructor(conan) {
+
 	}
 }

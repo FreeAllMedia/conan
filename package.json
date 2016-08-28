@@ -50,11 +50,17 @@
   "dependencies": {
     "flowsync": "^0.1.11",
     "incognito": "^0.1.4",
-    "jargon": "^0.1.22",
-    "mrt": "^0.1.9",
-    "temp": "^0.8.3"
+    "jargon": "^0.2.0",
+    "mrt": "^0.3.1",
+    "staircase": "^0.2.1"
   },
   "devDependencies": {
+		"mocha": "^3.0.2",
+    "temp": "^0.8.3",
+		"gulp-istanbul": "^1.1.1",
+    "gulp-mocha": "^3.0.1",
+		"babel-eslint": "^6.1.2",
+	  "eslint": "^3.4.0",
     "babel": "^6.5.1",
     "babel-core": "^6.5.1",
     "babel-eslint": "^5.0.0",

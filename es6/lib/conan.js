@@ -1,5 +1,6 @@
-import ConanSteps from "./components/conanSteps.js";
 import ChainLink from "mrt";
+import Staircase from "staircase";
+import privateData from "incognito";
 
 /**
  * @class Conan
@@ -7,13 +8,35 @@ import ChainLink from "mrt";
 export default class Conan extends ChainLink {
 	/**
 	 * @method initialize
-	 * @param {Object} config A configuration object that is saved to `conan.config`. There are no options by default, but plugins can add many of them.
+	 * @param {Object} config A configuration object that is saved to `conan.config`. There are no options by default, but plugins can add them.
 	 * @return {Conan} An instantiated copy of Conan
 	 */
 	initialize(config) {
 		this.config = config || {};
-		this.steps = new ConanSteps(this);
 		this.plugins = [];
+
+		const _ = privateData(this);
+
+		_.staircase = new Staircase(this);
+
+		this.steps = _.staircase.steps;
+
+		//console.log({ parallel: _.staircase.parallel.bind(_.staircase) });
+	}
+
+	parallel(...steps) {
+		privateData(this).staircase.parallel(...steps);
+		return this;
+	}
+
+	series(...steps) {
+		privateData(this).staircase.series(...steps);
+		return this;
+	}
+
+	step(...steps) {
+		privateData(this).staircase.step(...steps);
+		return this;
 	}
 
 	use(...conanPlugins) {
@@ -22,7 +45,7 @@ export default class Conan extends ChainLink {
 	}
 
 	deploy(callback) {
-		this.steps.start(callback);
+		privateData(this).staircase.results(callback);
 	}
 
 	get version() {

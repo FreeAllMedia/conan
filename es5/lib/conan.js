@@ -6,13 +6,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _conanSteps = require("./components/conanSteps.js");
-
-var _conanSteps2 = _interopRequireDefault(_conanSteps);
-
 var _mrt = require("mrt");
 
 var _mrt2 = _interopRequireDefault(_mrt);
+
+var _staircase = require("staircase");
+
+var _staircase2 = _interopRequireDefault(_staircase);
+
+var _incognito = require("incognito");
+
+var _incognito2 = _interopRequireDefault(_incognito);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25,14 +29,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * @class Conan
  */
-
 var Conan = function (_ChainLink) {
 	_inherits(Conan, _ChainLink);
 
 	function Conan() {
 		_classCallCheck(this, Conan);
 
-		return _possibleConstructorReturn(this, Object.getPrototypeOf(Conan).apply(this, arguments));
+		return _possibleConstructorReturn(this, (Conan.__proto__ || Object.getPrototypeOf(Conan)).apply(this, arguments));
 	}
 
 	_createClass(Conan, [{
@@ -40,13 +43,44 @@ var Conan = function (_ChainLink) {
 
 		/**
    * @method initialize
-   * @param {Object} config A configuration object that is saved to `conan.config`. There are no options by default, but plugins can add many of them.
+   * @param {Object} config A configuration object that is saved to `conan.config`. There are no options by default, but plugins can add them.
    * @return {Conan} An instantiated copy of Conan
    */
 		value: function initialize(config) {
 			this.config = config || {};
-			this.steps = new _conanSteps2.default(this);
 			this.plugins = [];
+
+			var _ = (0, _incognito2.default)(this);
+
+			_.staircase = new _staircase2.default(this);
+
+			this.steps = _.staircase.steps;
+
+			//console.log({ parallel: _.staircase.parallel.bind(_.staircase) });
+		}
+	}, {
+		key: "parallel",
+		value: function parallel() {
+			var _privateData$staircas;
+
+			(_privateData$staircas = (0, _incognito2.default)(this).staircase).parallel.apply(_privateData$staircas, arguments);
+			return this;
+		}
+	}, {
+		key: "series",
+		value: function series() {
+			var _privateData$staircas2;
+
+			(_privateData$staircas2 = (0, _incognito2.default)(this).staircase).series.apply(_privateData$staircas2, arguments);
+			return this;
+		}
+	}, {
+		key: "step",
+		value: function step() {
+			var _privateData$staircas3;
+
+			(_privateData$staircas3 = (0, _incognito2.default)(this).staircase).step.apply(_privateData$staircas3, arguments);
+			return this;
 		}
 	}, {
 		key: "use",
@@ -65,7 +99,7 @@ var Conan = function (_ChainLink) {
 	}, {
 		key: "deploy",
 		value: function deploy(callback) {
-			this.steps.start(callback);
+			(0, _incognito2.default)(this).staircase.results(callback);
 		}
 	}, {
 		key: "version",
