@@ -1,11 +1,11 @@
-import ChainLink from "mrt";
 import Staircase from "staircase";
 import privateData from "incognito";
+import ConanComponent from "./conanComponent.js";
 
 /**
  * @class Conan
  */
-export default class Conan extends ChainLink {
+export default class Conan extends ConanComponent {
 	/**
 	 * @method initialize
 	 * @param {Object} config A configuration object that is saved to `conan.config`. There are no options by default, but plugins can add them.
@@ -20,6 +20,10 @@ export default class Conan extends ChainLink {
 		_.staircase = new Staircase(this);
 
 		this.steps = _.staircase.steps;
+	}
+
+	component(name, Constructor) {
+		return this.link(name, Constructor).arguments(this);
 	}
 
 	parallel(...steps) {

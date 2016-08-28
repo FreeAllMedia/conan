@@ -1,5 +1,5 @@
 import Conan from "./conan.js";
-import ConanPlugin from "./conanPlugin.js";
+import ConanComponent from "./conanComponent.js";
 
 export default Conan;
-export { ConanPlugin };
+export { ConanComponent };

@@ -6,10 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _mrt = require("mrt");
-
-var _mrt2 = _interopRequireDefault(_mrt);
-
 var _staircase = require("staircase");
 
 var _staircase2 = _interopRequireDefault(_staircase);
@@ -17,6 +13,10 @@ var _staircase2 = _interopRequireDefault(_staircase);
 var _incognito = require("incognito");
 
 var _incognito2 = _interopRequireDefault(_incognito);
+
+var _conanComponent = require("./conanComponent.js");
+
+var _conanComponent2 = _interopRequireDefault(_conanComponent);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29,8 +29,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * @class Conan
  */
-var Conan = function (_ChainLink) {
-	_inherits(Conan, _ChainLink);
+var Conan = function (_ConanComponent) {
+	_inherits(Conan, _ConanComponent);
 
 	function Conan() {
 		_classCallCheck(this, Conan);
@@ -55,6 +55,11 @@ var Conan = function (_ChainLink) {
 			_.staircase = new _staircase2.default(this);
 
 			this.steps = _.staircase.steps;
+		}
+	}, {
+		key: "component",
+		value: function component(name, Constructor) {
+			return this.link(name, Constructor).arguments(this);
 		}
 	}, {
 		key: "parallel",
@@ -107,6 +112,6 @@ var Conan = function (_ChainLink) {
 	}]);
 
 	return Conan;
-}(_mrt2.default);
+}(_conanComponent2.default);
 
 exports.default = Conan;

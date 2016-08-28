@@ -1,12 +1,11 @@
-import { ConanComponent } from "conan";
+import { ConanPlugin } from "conan";
 import SomeStep from "./steps/someStep.js";
 
-export default class ConanAWSLambda extends ConanComponent {
+export default class ConanAWSLambda extends ConanPlugin {
 	initialize(conan) {
-		conan.steps
-			.step(() => {
-				conan.step(SomeStep);
-			});
+		conan.step(() => {
+			conan.step(SomeStep);
+		});
 	}
 }
 

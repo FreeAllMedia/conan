@@ -1,5 +1,4 @@
-import Conan from "../../lib/conan.js";
-import ConanPlugin from "../../lib/conanPlugin.js";
+import Conan, { ConanPlugin } from "../../lib/index.js";
 import ChainLink from "mrt";
 
 describe("ConanPlugin()", () => {
@@ -8,7 +7,6 @@ describe("ConanPlugin()", () => {
 
 	class MyPlugin extends ConanPlugin {
 		initialize(deployer) {
-			console.log({ deployer });
 			this.conan = deployer;
 		}
 	}
