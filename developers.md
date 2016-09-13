@@ -1,5 +1,7 @@
 [![](./conan-logo.png)](./README.md)
 
+# WARNING: This guide is out of date and needs updating!
+
 # Custom Conan Plugins
 
 Creating your own Conan Plugin is very simple, involving only a few steps:
@@ -61,7 +63,10 @@ conan.deploy(error => {
 
 ## 2: Create a Plugin Constructor
 
-Conan's plugin system is as simple and un-opinionated as it gets. You start by creating a normal constructor that accepts the current instance of `conan` as its sole argument. This can be done with classic es5 constructors, or the es6 `class` keyword as well:
+Conan's plugin system is as simple and un-opinionated as it gets:
+
+* You start by creating a normal constructor that accepts the current instance of `conan` as its sole argument.
+* This can be done with classic es5 constructors, or the es6 `class` keyword as well:
 
 **/lib/plugin.js**:
 
@@ -88,9 +93,9 @@ export default class SSHPlugin {
 **/lib/component.js**
 
 ``` javascript
-import { ConanPlugin } from "conan";
+import { ConanComponent } from "conan";
 
-class SSH extends ConanPlugin {
+class SSH extends ConanComponent {
 	initialize(hostName, conan) {
 		this.conan = conan;
 
@@ -107,12 +112,12 @@ class SSH extends ConanPlugin {
 }
 ```
 
-**/lib/plugin.js**
+**/plugins/deployWithSSH.js**
 
 ``` javascript
-import SSH from "./component.js";
+import SSH from "./components/ssh.js";
 
-export default class CustomConanPlugin {
+export default class DeployWithSSH {
 	initialize(conan) {
 		// This will create conan.ssh, which
 		// will return an instance of SSH
@@ -121,12 +126,12 @@ export default class CustomConanPlugin {
 }
 ```
 
-## 4: Add Steps To Components
+## 4: Add Properties To Components
 
-**/lib/component.js**
+**/components/ssh.js**
 
 ``` javascript
-import { ConanPlugin } from "conan";
+import { ConanComponent } from "conan";
 
 import loginToServer from "./steps/loginToServer.js";
 import changeDirectory from "./steps/changeDirectory.js";
@@ -134,7 +139,7 @@ import gitClone from "./steps/gitClone.js";
 import remove from "./steps/remove.js";
 import softLink from "./steps/softLink.js";
 
-class SSH extends ConanPlugin {
+class SSH extends ConanComponent {
 	initialize(conan, hostName) {
 		// Each designated property will be given its own
 		// getter/setter function on the component instance:
@@ -146,31 +151,49 @@ class SSH extends ConanPlugin {
 		// this.hostName() was created by this.properties()
 		this.hostName(hostName);
 
-		conan.step(loginToServer, {
-			server: this
-		});
+		conan.series(
+			loginToServer,
+			changeDirectory,
+			gitClone,
+			remove,
+			softLink
+		).apply(this);		
 	}
+}
+```
 
-	changeDirectory(directoryPath) {
-		this.stepParameters.directoryPath = directoryPath;
-		this.conan.steps.add(changeDirectory, this.stepParameters);
-	}
+## 5: Add Steps To Components
 
-	gitClone(gitRepoUri, localDirectoryPath) {
-		this.stepParameters.gitRepoUri = gitRepoUri;
-		this.stepParameters.localDirectoryPath = localDirectoryPath;
-		this.conan.steps.add(gitClone, this.stepParameters);
-	}
+**/lib/component.js**
 
-	remove(filePath) {
-		this.stepParameters.filePath = filePath;
-		this.conan.steps.add(remove, this.stepParameters);
-	}
+``` javascript
+import { ConanComponent } from "conan";
 
-	softLink(fromFilePath, toFilePath) {
-		this.stepParameters.fromFilePath = fromFilePath;
-		this.stepParameters.toFilePath = toFilePath;
-		this.conan.steps.add(softLink, this.stepParameters);
+import loginToServer from "./steps/loginToServer.js";
+import changeDirectory from "./steps/changeDirectory.js";
+import gitClone from "./steps/gitClone.js";
+import remove from "./steps/remove.js";
+import softLink from "./steps/softLink.js";
+
+class SSH extends ConanComponent {
+	initialize(conan, hostName) {
+		// Each designated property will be given its own
+		// getter/setter function on the component instance:
+		this.properties(
+			"hostName",
+			"port"
+		);
+
+		// this.hostName() was created by this.properties()
+		this.hostName(hostName);
+
+		conan.series(
+			loginToServer,
+			changeDirectory,
+			gitClone,
+			remove,
+			softLink
+		).apply(this);		
 	}
 }
 ```

@@ -51,8 +51,8 @@
     "flowsync": "^0.1.11",
     "incognito": "^0.1.4",
     "jargon": "^0.2.0",
-    "mrt": "^0.3.1",
-    "staircase": "^0.3.0"
+    "mrt": "^0.4.6",
+    "staircase": "^0.3.2"
   },
   "devDependencies": {
     "babel": "^6.5.1",

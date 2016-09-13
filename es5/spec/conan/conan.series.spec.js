@@ -18,13 +18,17 @@ describe("conan.series(...steps)", () => {
 		);
 	});
 
-	it("should return conan to enable chaining", () => {
-		returnValue.should.eql(conan);
+	it("should return a StepGroupSetter", () => {
+		returnValue.constructor.name.should.eql("StepGroupSetter");
+	});
+
+	it("should set the stepGroup to a `series` type", () => {
+		returnValue.stepGroup.type.should.eql("series");
 	});
 
 	it("should add a series step to conan", () => {
-		conan.steps[0].should.eql({
-			concurrency: "series",
+		conan.stepGroups()[0].should.eql({
+			type: "series",
 			steps: [stepOne, stepTwo]
 		});
 	});

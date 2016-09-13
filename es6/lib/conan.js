@@ -19,25 +19,19 @@ export default class Conan extends ConanComponent {
 
 		_.staircase = new Staircase(this);
 
-		this.steps = _.staircase.steps;
-	}
-
-	component(name, Constructor) {
-		return this.link(name, Constructor).arguments(this);
+		this.stepGroups = _.staircase.stepGroups;
 	}
 
 	parallel(...steps) {
-		privateData(this).staircase.parallel(...steps);
-		return this;
+		return privateData(this).staircase.parallel(...steps);
 	}
 
 	series(...steps) {
-		privateData(this).staircase.series(...steps);
-		return this;
+		return privateData(this).staircase.series(...steps);
 	}
 
-	step(...steps) {
-		privateData(this).staircase.step(...steps);
+	step(step) {
+		privateData(this).staircase.step(step);
 		return this;
 	}
 

@@ -1,8 +1,10 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _mrt = require("mrt");
 
@@ -17,15 +19,22 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var ConanComponent = function (_ChainLink) {
-  _inherits(ConanComponent, _ChainLink);
+	_inherits(ConanComponent, _ChainLink);
 
-  function ConanComponent() {
-    _classCallCheck(this, ConanComponent);
+	function ConanComponent() {
+		_classCallCheck(this, ConanComponent);
 
-    return _possibleConstructorReturn(this, (ConanComponent.__proto__ || Object.getPrototypeOf(ConanComponent)).apply(this, arguments));
-  }
+		return _possibleConstructorReturn(this, (ConanComponent.__proto__ || Object.getPrototypeOf(ConanComponent)).apply(this, arguments));
+	}
 
-  return ConanComponent;
+	_createClass(ConanComponent, [{
+		key: "component",
+		value: function component(name, Constructor) {
+			return this.link(name, Constructor).apply(this);
+		}
+	}]);
+
+	return ConanComponent;
 }(_mrt2.default);
 
 exports.default = ConanComponent;

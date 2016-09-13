@@ -22,8 +22,9 @@ describe("conan.deploy(callback) (parallel)", () => {
 		.parallel(
 			stepOne,
 			stepTwo
-		)
-		.deploy();
+		);
+
+		conan.deploy();
 	});
 
 	afterEach(() => clock.restore());

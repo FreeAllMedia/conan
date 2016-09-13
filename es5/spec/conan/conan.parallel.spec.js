@@ -18,13 +18,17 @@ describe("conan.parallel(...steps)", () => {
 		);
 	});
 
-	it("should return conan to enable chaining", () => {
-		returnValue.should.eql(conan);
+	it("should return a StepGroupSetter", () => {
+		returnValue.constructor.name.should.eql("StepGroupSetter");
+	});
+
+	it("should set the stepGroup to a `parallel` type", () => {
+		returnValue.stepGroup.type.should.eql("parallel");
 	});
 
 	it("should add a parallel step to conan", () => {
-		conan.steps[0].should.eql({
-			concurrency: "parallel",
+		conan.stepGroups()[0].should.eql({
+			type: "parallel",
 			steps: [stepOne, stepTwo]
 		});
 	});

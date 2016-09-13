@@ -54,35 +54,26 @@ var Conan = function (_ConanComponent) {
 
 			_.staircase = new _staircase2.default(this);
 
-			this.steps = _.staircase.steps;
-		}
-	}, {
-		key: "component",
-		value: function component(name, Constructor) {
-			return this.link(name, Constructor).arguments(this);
+			this.stepGroups = _.staircase.stepGroups;
 		}
 	}, {
 		key: "parallel",
 		value: function parallel() {
 			var _privateData$staircas;
 
-			(_privateData$staircas = (0, _incognito2.default)(this).staircase).parallel.apply(_privateData$staircas, arguments);
-			return this;
+			return (_privateData$staircas = (0, _incognito2.default)(this).staircase).parallel.apply(_privateData$staircas, arguments);
 		}
 	}, {
 		key: "series",
 		value: function series() {
 			var _privateData$staircas2;
 
-			(_privateData$staircas2 = (0, _incognito2.default)(this).staircase).series.apply(_privateData$staircas2, arguments);
-			return this;
+			return (_privateData$staircas2 = (0, _incognito2.default)(this).staircase).series.apply(_privateData$staircas2, arguments);
 		}
 	}, {
 		key: "step",
-		value: function step() {
-			var _privateData$staircas3;
-
-			(_privateData$staircas3 = (0, _incognito2.default)(this).staircase).step.apply(_privateData$staircas3, arguments);
+		value: function step(_step) {
+			(0, _incognito2.default)(this).staircase.step(_step);
 			return this;
 		}
 	}, {

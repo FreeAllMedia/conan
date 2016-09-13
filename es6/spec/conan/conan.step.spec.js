@@ -18,8 +18,8 @@ describe("conan.series(...steps)", () => {
 	});
 
 	it("should add a series step to conan with the single provided step", () => {
-		conan.steps[0].should.eql({
-			concurrency: "series",
+		conan.stepGroups()[0].should.eql({
+			type: "series",
 			steps: [step]
 		});
 	});
