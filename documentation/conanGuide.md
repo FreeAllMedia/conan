@@ -33,6 +33,8 @@ The codebase is 100% tested on a continuous integration, quality control, and de
 
 ## Changelog
 
+* 0.2.0 - Optimizations
+	* Internal step system extracted into `staircase`, which can now be independently improved upon.
 * 0.1.0 - First BETA release for public review.
 
 ## How To Contribute

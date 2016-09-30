@@ -1,6 +1,6 @@
 import Conan from "../../lib/conan.js";
 
-describe("conan.steps", () => {
+describe("conan.stepGroups", () => {
 	let conan,
 			stepOne,
 			stepTwo;
@@ -23,6 +23,6 @@ describe("conan.steps", () => {
 	});
 
 	it("should contain a step for each step group", () => {
-		conan.steps.length.should.eql(2);
+		conan.stepGroups().length.should.eql(2);
 	});
 });

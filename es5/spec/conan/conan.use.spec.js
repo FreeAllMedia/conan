@@ -1,24 +1,26 @@
 import Conan from "../../lib/conan.js";
 
 describe("conan.use(ConanPlugin)", () => {
-	class ConanPluginOne {
-		constructor(conan) {
-			conan.testOne = true;
-		}
-	}
-
-	class ConanPluginTwo {
-		constructor(conan) {
-			conan.testTwo = true;
-		}
-	}
-
 	let conan,
 			returnValue;
 
+	class ConanPluginOne {
+		constructor(conanObject) {
+			this.conan = conanObject;
+		}
+	}
+	class ConanPluginTwo {
+		constructor(conanObject) {
+			this.conan = conanObject;
+		}
+	}
+
 	beforeEach(() => {
 		conan = new Conan();
-		returnValue = conan.use(ConanPluginOne, ConanPluginTwo);
+		returnValue = conan.use(
+			ConanPluginOne,
+			ConanPluginTwo
+		);
 	});
 
 	it("should return conan to enable chaining", () => {
@@ -26,11 +28,11 @@ describe("conan.use(ConanPlugin)", () => {
 	});
 
 	it("should instantiate ConanPlugins with conan", () => {
-		conan.testOne.should.be.true;
+		conan.plugins[0].conan.should.eql(conan);
 	});
 
 	it("should instantiate additional ConanPlugins with conan", () => {
-		conan.testTwo.should.be.true;
+		conan.plugins[1].conan.should.eql(conan);
 	});
 
 	it("should add the instantiated plugin to the conan.plugins array", () => {

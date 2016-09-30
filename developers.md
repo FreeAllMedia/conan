@@ -1,5 +1,7 @@
 [![](./conan-logo.png)](./README.md)
 
+# WARNING: This guide is out of date and needs updating!
+
 # Custom Conan Plugins
 
 Creating your own Conan Plugin is very simple, involving only a few steps:
@@ -41,10 +43,11 @@ For this example, we're going to design an interface for logging into a posix-ba
 ``` javascript
 const conan = new Conan({});
 
-conan.posixServer("my.staging.server").port(8000);
-conan.posixServer("my.production.server").port(8000);
+conan
+	.ssh("my.staging.server").port(8000)
+	.ssh("my.production.server").port(8000);
 
-conan.components.posixServer.forEach(server => {
+conan.components.ssh.forEach(server => {
 	server
 		.changeDirectory("~/myApp/")
 		.gitClone("https://github.com/MyCompany/my-conan-plugin.git", "releases/2016-02-10")
@@ -60,20 +63,23 @@ conan.deploy(error => {
 
 ## 2: Create a Plugin Constructor
 
-Conan's plugin system is as simple and un-opinionated as it gets. You start by creating a normal constructor that accepts the current instance of `conan` as its sole argument. This can be done with classic es5 constructors, or the es6 `class` keyword as well:
+Conan's plugin system is as simple and un-opinionated as it gets:
+
+* You start by creating a normal constructor that accepts the current instance of `conan` as its sole argument.
+* This can be done with classic es5 constructors, or the es6 `class` keyword as well:
 
 **/lib/plugin.js**:
 
 ``` javascript
 // ES5
-module.exports = function PosixServerPlugin(conan) {
+module.exports = function SSHPlugin(conan) {
 	this.conan = conan;
 }
 ```
 
 ``` javascript
 // ES6
-export default class PosixServerPlugin {
+export default class SSHPlugin {
 	constructor(conan) {
 		this.conan = conan;
 	}
@@ -82,45 +88,81 @@ export default class PosixServerPlugin {
 
 ## 3: Add Components
 
-`Components` designate parts of a plugin's interface, and the `deployment steps` to be run. For example, let's setup the `posixServer` component and add it to conan in `plugin.js`:
+`Components` designate parts of a plugin's interface, and the `deployment steps` to be run. For example, let's setup the `ssh` component and add it to conan in `plugin.js`:
 
 **/lib/component.js**
 
 ``` javascript
 import { ConanComponent } from "conan";
 
-class PosixServer extends ConanComponent {
-	constructor(hostName, conan) {
+class SSH extends ConanComponent {
+	initialize(hostName, conan) {
 		this.conan = conan;
 
-		// Each designated parameter will be given its own
+		// Each designated property will be given its own
 		// getter/setter function on the component instance:
-		this.parameters(
+		this.properties(
 			"hostName",
 			"port"
 		);
 
-		// this.hostName() was created by this.parameters()
+		// this.hostName() was created by this.properties()
 		this.hostName(hostName);
 	}
 }
 ```
 
-**/lib/plugin.js**
+**/plugins/deployWithSSH.js**
 
 ``` javascript
-import PosixServer from "./component.js";
+import SSH from "./components/ssh.js";
 
-export default class CustomConanPlugin {
-	constructor(conan) {
-		// This will create conan.posixServer, which
-		// will return an instance of PosixServer
-		conan.addComponent("posixServer", PosixServer);
+export default class DeployWithSSH {
+	initialize(conan) {
+		// This will create conan.ssh, which
+		// will return an instance of SSH
+		conan.addComponent("ssh", SSH);
 	}
 }
 ```
 
-## 4: Add Steps To Components
+## 4: Add Properties To Components
+
+**/components/ssh.js**
+
+``` javascript
+import { ConanComponent } from "conan";
+
+import loginToServer from "./steps/loginToServer.js";
+import changeDirectory from "./steps/changeDirectory.js";
+import gitClone from "./steps/gitClone.js";
+import remove from "./steps/remove.js";
+import softLink from "./steps/softLink.js";
+
+class SSH extends ConanComponent {
+	initialize(conan, hostName) {
+		// Each designated property will be given its own
+		// getter/setter function on the component instance:
+		this.properties(
+			"hostName",
+			"port"
+		);
+
+		// this.hostName() was created by this.properties()
+		this.hostName(hostName);
+
+		conan.series(
+			loginToServer,
+			changeDirectory,
+			gitClone,
+			remove,
+			softLink
+		).apply(this);		
+	}
+}
+```
+
+## 5: Add Steps To Components
 
 **/lib/component.js**
 
@@ -133,65 +175,34 @@ import gitClone from "./steps/gitClone.js";
 import remove from "./steps/remove.js";
 import softLink from "./steps/softLink.js";
 
-class PosixServer extends ConanComponent {
-	constructor(hostName, conan) {
-		this.conan = conan;
-
-		// Each designated parameter will be given its own
+class SSH extends ConanComponent {
+	initialize(conan, hostName) {
+		// Each designated property will be given its own
 		// getter/setter function on the component instance:
-		this.parameters(
+		this.properties(
 			"hostName",
 			"port"
 		);
 
-		// this.hostName() was created by this.parameters()
+		// this.hostName() was created by this.properties()
 		this.hostName(hostName);
 
-		// Add default steps here
-		this.conan.steps.add(loginToServer, {
-			server: this
-		});
-
-		this.changeDirectory();
-
-		this.stepParameters = {
-			server: this
-		};
-	}
-
-	changeDirectory(directoryPath) {
-		this.stepParameters.directoryPath = directoryPath;
-		this.conan.steps.add(changeDirectory, this.stepParameters);
-	}
-
-	gitClone(gitRepoUri, localDirectoryPath) {
-		this.stepParameters.gitRepoUri = gitRepoUri;
-		this.stepParameters.localDirectoryPath = localDirectoryPath;
-		this.conan.steps.add(gitClone, this.stepParameters);
-	}
-
-	remove(filePath) {
-		this.stepParameters.filePath = filePath;
-		this.conan.steps.add(remove, this.stepParameters);
-	}
-
-	softLink(fromFilePath, toFilePath) {
-		this.stepParameters.fromFilePath = fromFilePath;
-		this.stepParameters.toFilePath = toFilePath;
-		this.conan.steps.add(softLink, this.stepParameters);
+		conan.series(
+			loginToServer,
+			changeDirectory,
+			gitClone,
+			remove,
+			softLink
+		).apply(this);		
 	}
 }
 ```
 
 # 5: Create Each Deployment Step
 
-Each step is a single function that automatically receives exactly three arguments:
+Each step is a single function that automatically receives exactly two arguments:
 
 * **conan** - This is the instance of conan you're using.
-* **context** - An object with three properties:
-    * **context.parameters** - The parameters sent in by your plugin.
-    * **context.libraries** - Libraries you can setup to be available to every step.
-    * **context.results** - An aggregate of each result value passed back by each step.
 * **stepDone** - The callback for when the step has completed. Accepts an error as the first argument, and an object as the second which is aggregated into `context.results`;
 
 For example, here is the complete step for the above example's `loginToServer` step:
@@ -202,7 +213,7 @@ For example, here is the complete step for the above example's `loginToServer` s
 import SSH from "simple-ssh";
 
 export default function loginToServer(conan, context, stepDone) {
-	const server = context.parameters.server;
+	const server = context.properties.server;
 
 	const hostName = server.hostName();
 	const userName = server.username();
