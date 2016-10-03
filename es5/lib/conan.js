@@ -77,6 +77,19 @@ var Conan = function (_ConanComponent) {
 			return this;
 		}
 	}, {
+		key: "stepNames",
+		value: function stepNames() {
+			var names = [];
+
+			this.stepGroups().forEach(function (stepGroup) {
+				stepGroup.steps.forEach(function (step) {
+					names.push(step.name);
+				});
+			});
+
+			return names;
+		}
+	}, {
 		key: "use",
 		value: function use() {
 			var _this2 = this;

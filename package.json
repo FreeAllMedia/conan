@@ -52,7 +52,7 @@
     "incognito": "^0.1.4",
     "jargon": "^0.2.0",
     "mrt": "^0.4.7",
-    "staircase": "^0.3.2"
+    "staircase": "^0.3.3"
   },
   "devDependencies": {
     "babel": "^6.5.1",

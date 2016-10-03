@@ -35,6 +35,18 @@ export default class Conan extends ConanComponent {
 		return this;
 	}
 
+	stepNames() {
+		const names = [];
+
+		this.stepGroups().forEach(stepGroup => {
+			stepGroup.steps.forEach(step => {
+				names.push(step.name);
+			});
+		});
+
+		return names;
+	}
+
 	use(...conanPlugins) {
 		conanPlugins.forEach(ConanPlugin => this.plugins.push(new ConanPlugin(this)));
 		return this;
