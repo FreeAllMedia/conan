@@ -18,6 +18,10 @@ var _conanComponent = require("./conanComponent.js");
 
 var _conanComponent2 = _interopRequireDefault(_conanComponent);
 
+var _events = require("events");
+
+var _events2 = _interopRequireDefault(_events);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -55,6 +59,13 @@ var Conan = function (_ConanComponent) {
 			_.staircase = new _staircase2.default(this);
 
 			this.stepGroups = _.staircase.stepGroups;
+			this.events = _.staircase.events;
+		}
+	}, {
+		key: "on",
+		value: function on(name, listener) {
+			this.events.on(name, listener);
+			return this;
 		}
 	}, {
 		key: "parallel",

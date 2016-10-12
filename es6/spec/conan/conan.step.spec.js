@@ -13,7 +13,7 @@ describe("conan.series(...steps)", () => {
 		returnValue = conan.step(step);
 	});
 
-	it("should return conan to enable chaining", () => {
+	it("should return this to enable chaining", () => {
 		returnValue.should.eql(conan);
 	});
 

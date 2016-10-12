@@ -2,6 +2,8 @@ import Staircase from "staircase";
 import privateData from "incognito";
 import ConanComponent from "./conanComponent.js";
 
+import EventEmitter from "events";
+
 /**
  * @class Conan
  */
@@ -20,6 +22,12 @@ export default class Conan extends ConanComponent {
 		_.staircase = new Staircase(this);
 
 		this.stepGroups = _.staircase.stepGroups;
+		this.events = _.staircase.events;
+	}
+
+	on(name, listener) {
+		this.events.on(name, listener);
+		return this;
 	}
 
 	parallel(...steps) {

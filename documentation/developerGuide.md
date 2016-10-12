@@ -20,6 +20,14 @@ Conan is a generic system that helps break down complex tasks into managable `co
 	* Defines the interface for the deployer and contains all `components`, `properties`, and `steps` for the deployment.
 	* Portable. Can be used multiple times or stubbed into a new object that automatically `.use`
 
+**Additional Terminology:**
+
+* **pseudo.js**
+	* An optional file that serves only as a notepad to jot down API ideas for the plugin.
+	* None of the code in this file is ever intended to be executed.
+	* It's not required or used in any way other than as a guide for the developer.
+	* Feel free to skip making a `pseudo.js` if you don't think it's useful.
+
 ## Design The Plugin's API
 
 The first step to making a great plugin is to design the API for it. This gives you an idea of what the finished product will look like, and which components / properties you'll need.
@@ -29,24 +37,25 @@ The first step to making a great plugin is to design the API for it. This gives 
 ``` javascript
 // pseudo.js
 
-new Conan().use(MyPlugin)
+const myDeployer = new Conan().use(MyPlugin);
+
+myDeployer
 
 .server("127.0.0.1")
 	.username("bob")
 	.password("12345")
-	.directory("~/my-server/")
+	.directory("~/my-server/") // deployment directory
 
 .server("127.0.0.2")
 	.username("bob")
 	.password("12345")
-	.directory("~/my-server/")
+	.directory("~/my-server/") // deployment directory
 
-.base("./some/dir/")
+.base("./some/dir/") // local base directory, default to process.cwd()
 
-.file("util/something.js")
+.file("util/something.js") // single file in base directory
 
-.files("bin/**/*")
-.files("lib/**/*")
+.files("bin/**/*") // multiple files by glob path
 
 .deploy(error => {
 	if (error) { throw error; }
@@ -56,28 +65,49 @@ new Conan().use(MyPlugin)
 
 **Note:** Use your imagination! This is just one way conan can be utilized to break down a complex task into a portable container!
 
-## Defining Components
+## Create The Plugin File
 
-From the `pseudo.js` file, we see that a `server` and `file` component are needed, each with their respective `properties`. We also need a `fileCollection` component to find multiple `files` by glob string.
+The plugin file's single responsibility is to define the top-level interface of the deployer.
 
-The idea is to ensure that every `component`, `property`, and `step` has a single responsibility so that they remain small and managable units of code. By that logic, we can break out each component in our example with it's properties in a list like this:
+Here's an example of a bare-bones **plugin.js**:
 
-* **deployer**
-	* **base**: string
-* **server**
-	* **hostname**: string
-	* **username**: string
-	* **password**: string
-	* **directory**: string
-* **file**
-	* **path**: string
-	* **content**: string
-	* **name**: string
-	* **base**: string
-* **fileCollection**
-	* **glob**: string
-	* **base**: string
-	* **files**: array of files
+``` javascript
+export default class MyPlugin {
+	constructor(deployer) {
+		// Here is where you customize the deployer's interface
+		// using `.properties` and `.component`
+	}
+}
+```
+
+The next step is to define `properties` and `components` on the deployer.
+
+## List Out Components & Properties
+
+So, which `properties` and `components` get defined where? That's what we want to answer next.
+
+From the `pseudo.js` file, we see that a `server` and `file` component are needed. We can also infer that we'll need a `fileCollection` component to find multiple `files` by glob string.
+
+Each have with their respective `properties`, along with the deployer itself that has a single `base` property.
+
+``` markdown
+* deployer
+	* base: string
+* server
+	* hostname: string
+	* username: string
+	* password: string
+	* directory: string
+* file
+	* path: string
+	* content: string
+	* name: string
+	* base: string
+* fileCollection
+	* glob: string
+	* base: string
+	* files: array of files
+```
 
 ### Component Files
 
@@ -91,7 +121,7 @@ import { Component } from "conan";
 
 export default class Server extends Component {
 	initialize() {
-		
+		ss
 	}
 }
 ```
